@@ -1,4 +1,4 @@
-# wa-testing-tool
+# WA-Testing-Tool
 Scripts that run against Watson Assistant for K fold validation on training set, testing on blind test, and draw precision curves for comparison.
 
 ## Features
