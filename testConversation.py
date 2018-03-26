@@ -1,5 +1,5 @@
 #! /usr/bin/python
-""" Test conversation instance using utterance
+""" Test assistant instance using utterance
 """
 import os
 import csv
