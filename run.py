@@ -54,6 +54,17 @@ STANDARD_TEST = 'test'
 bool_map = {True: 'yes', False: 'no'}
 SPEC_FILENAME = 'workspace.json'
 
+current_file_path = os.path.dirname(__file__)
+# Sub-script paths
+CREATE_TEST_TRAIN_FOLDS_PATH = os.path.join(current_file_path,
+                                            'createTestTrainFolds.py')
+TRAIN_CONVERSATION_PATH = os.path.join(current_file_path,
+                                       'trainConversation.py')
+TEST_CONVERSATION_PATH = os.path.join(current_file_path,
+                                      'testConversation.py')
+CREATE_PRECISION_CURVE_PATH = os.path.join(current_file_path,
+                                           'createPrecisionCurve.py')
+
 
 def validate_config(fields, section):
     for field in fields:
@@ -99,7 +110,7 @@ def kfold(fold_num, temp_dir, intent_train_file, entity_train_file,
         os.makedirs(working_dir)
 
     # Prepare folds
-    if subprocess.run([sys.executable, 'createTestTrainFolds.py',
+    if subprocess.run([sys.executable, CREATE_TEST_TRAIN_FOLDS_PATH,
                        '-i', intent_train_file, '-o', working_dir,
                        '-k', str(fold_num)],
                       stdout=subprocess.PIPE).returncode == 0:
@@ -123,7 +134,7 @@ def kfold(fold_num, temp_dir, intent_train_file, entity_train_file,
     train_processes_specs = {}
     for fold_param in fold_params:
         spec_file = open(fold_param[WORKSPACE_SPEC], 'w')
-        train_args = [sys.executable, 'trainConversation.py',
+        train_args = [sys.executable, TRAIN_CONVERSATION_PATH,
                       '-i', fold_param[FOLD_TRAIN],
                       '-n', fold_param[WORKSPACE_NAME],
                       '-u', username, '-p', password]
@@ -153,7 +164,7 @@ def kfold(fold_num, temp_dir, intent_train_file, entity_train_file,
         with open(fold_param[WORKSPACE_SPEC]) as f:
             workspace_id = json.load(f)[WORKSPACE_ID_TAG]
             workspace_ids.append(workspace_id)
-        test_args = [sys.executable, 'testConversation.py',
+        test_args = [sys.executable, TEST_CONVERSATION_PATH,
                      '-i', fold_param[FOLD_TEST],
                      '-o', fold_param[TEST_OUT],
                      '-u', username, '-p', password,
@@ -176,7 +187,7 @@ def kfold(fold_num, temp_dir, intent_train_file, entity_train_file,
 
     classfier_names = ['Fold {}'.format(idx) for idx in range(fold_num)]
 
-    plot_args = [sys.executable, 'createPrecisionCurve.py',
+    plot_args = [sys.executable, CREATE_PRECISION_CURVE_PATH,
                  '-t', '{} Fold Test'.format(str(fold_num)),
                  '-o', figure_path, '-n'] + classfier_names + \
                 ['-i'] + test_out_files
@@ -225,7 +236,7 @@ def blind(temp_dir, intent_train_file, entity_train_file, figure_path,
         os.makedirs(working_dir)
 
     workspace_spec_json = os.path.join(working_dir, SPEC_FILENAME)
-    train_args = [sys.executable, 'trainConversation.py',
+    train_args = [sys.executable, TRAIN_CONVERSATION_PATH,
                   '-i', intent_train_file, '-n', 'blind test',
                   '-u', username, '-p', password]
     if entity_train_file is not None:
@@ -240,7 +251,7 @@ def blind(temp_dir, intent_train_file, entity_train_file, figure_path,
     with open(workspace_spec_json, 'r') as f:
         workspace_id = json.load(f)[WORKSPACE_ID_TAG]
 
-    if subprocess.run([sys.executable, 'testConversation.py',
+    if subprocess.run([sys.executable, TEST_CONVERSATION_PATH,
                        '-i', test_input_file,
                        '-o', test_out_path, '-m',
                        '-u', username, '-p', password,
@@ -250,7 +261,7 @@ def blind(temp_dir, intent_train_file, entity_train_file, figure_path,
     else:
         raise RuntimeError('Failure in testing blind data')
 
-    if subprocess.run([sys.executable, 'createPrecisionCurve.py',
+    if subprocess.run([sys.executable, CREATE_PRECISION_CURVE_PATH,
                        '-t', 'Blind Test',
                        '-o', figure_path, '-n'] + classfier_names +
                       ['-i'] + test_out_files).returncode == 0:
@@ -289,7 +300,7 @@ def test(temp_dir, intent_train_file, entity_train_file, test_out_path,
         os.makedirs(working_dir)
 
     workspace_spec_json = os.path.join(working_dir, SPEC_FILENAME)
-    train_args = [sys.executable, 'trainConversation.py',
+    train_args = [sys.executable, TRAIN_CONVERSATION_PATH,
                   '-i', intent_train_file,
                   '-n', 'standard test',
                   '-u', username, '-p', password]
@@ -305,7 +316,7 @@ def test(temp_dir, intent_train_file, entity_train_file, test_out_path,
     with open(workspace_spec_json, 'r') as f:
         workspace_id = json.load(f)[WORKSPACE_ID_TAG]
 
-    if subprocess.run([sys.executable, 'testConversation.py',
+    if subprocess.run([sys.executable, TEST_CONVERSATION_PATH,
                        '-i', test_input_file,
                        '-o', test_out_path, '-m',
                        '-u', username, '-p', password,
