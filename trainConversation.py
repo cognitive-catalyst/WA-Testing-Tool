@@ -65,6 +65,9 @@ def to_entity_values(entity_group):
     values = []
     for _, row in entity_group.iterrows():
         value = row[ENTITY_VALUE_COLUMN]
+        if not value:  # Handle reserved entities
+            continue
+
         synonyms = []
         patterns = []
         # Drop first two item and iterate the rest items (synonym or pattern)
@@ -76,14 +79,12 @@ def to_entity_values(entity_group):
                 else:
                     synonyms.append(val)
         # Construct CreateValue[]
-        if len(synonyms) != 0:
-            values.append({'value': value, 'synonyms': synonyms,
-                           'type': 'synonyms'})
-        elif len(patterns) != 0:
+        if len(patterns) != 0:
             values.append({'value': value, 'patterns': patterns,
                            'type': 'patterns'})
         else:
-            values.append({'value': value})
+            values.append({'value': value, 'synonyms': synonyms,
+                           'type': 'synonyms'})
 
     return values
 
