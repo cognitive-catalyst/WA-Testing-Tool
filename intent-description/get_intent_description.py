@@ -1,0 +1,59 @@
+import argparse
+from watson_developer_cloud import ConversationV1
+import json
+import csv
+
+
+def add_output_arg(parser):
+    parser.add_argument('--output', '-o', help='Output file', default='intent_desc.csv')
+
+
+def get_remote_workspace(args):
+    conv = ConversationV1(
+        ConversationV1.VERSION_DATE_2017_05_26,
+        username=args.user,
+        password=args.password
+    )
+    workspace = conv.get_workspace(args.workspace_id, export=True)
+    write_output(workspace, args.output)
+
+
+def get_local_workspace(args):
+    with open(args.json, 'r') as f:
+        workspace = json.load(f)
+
+    write_output(workspace, args.output)
+
+
+def write_output(workspace_json, output_file):
+    intents = workspace_json['intents']
+
+    keys = ['intent', 'description']
+    with open(output_file, 'w') as f:
+        writer = csv.DictWriter(f, fieldnames=keys, extrasaction='ignore')
+
+        writer.writeheader()
+        writer.writerows(intents)
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Create Intent Descriptions file from workspace json', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+
+    subparsers = parser.add_subparsers(help='help for subcommand')
+
+    credentials_parser = subparsers.add_parser('remote', help='Watson Assistant Credentials', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    add_output_arg(credentials_parser)
+
+    requiredNamed = credentials_parser.add_argument_group('required arguments')
+    requiredNamed.add_argument('--user', '-u', help='Watson Assistant Username', required=True)
+    requiredNamed.add_argument('--password', '-p', help='Watson Assistant Password', required=True)
+    requiredNamed.add_argument('--workspace_id', '-w', help='Watson Assistant Workspace ID', required=True)
+    credentials_parser.set_defaults(func=get_remote_workspace)
+
+    local_parser = subparsers.add_parser('local', help='Local workspace file', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    add_output_arg(local_parser)
+    local_parser.add_argument('json', help='Path to workspace json file')
+    local_parser.set_defaults(func=get_local_workspace)
+
+    args = parser.parse_args()
+    args.func(args)
