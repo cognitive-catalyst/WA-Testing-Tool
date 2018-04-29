@@ -20,6 +20,7 @@ import numpy as np
 import matplotlib
 matplotlib.use('Agg')  # Generate images without having a window appear
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 from argparse import ArgumentParser
 from itertools import cycle
 import pandas as pd
@@ -40,6 +41,8 @@ WEIGHT_COLUMN = 'weight'
 
 POPULATION_WEIGHT_MODE = 'population'
 EQUAL_WEIGHT_MODE = 'equal'
+
+CONF_THRES = 0.2
 
 
 def func(args):
@@ -109,7 +112,6 @@ def func(args):
         conf = all_confidences[i]
         for j in range(classifier_num):
             cf_frame = cf_frames[j]
-
             precision = 0
             answered = \
                 cf_frame[cf_frame[CONFIDENCE_COLUMN] >= conf].shape[0]
@@ -160,8 +162,9 @@ def func(args):
             classifier_stat_list[j][i, 1] = 100 * answered / len(cf_frame)
             classifier_stat_list[j][i, 2] = conf
 
-    for precision in classifier_stat_list:
-        precision = precision[::-1]  # reversing order for helpful plotting
+    for idx in range(len(classifier_stat_list)):
+        # reversing order for helpful plotting
+        classifier_stat_list[idx] = classifier_stat_list[idx][::-1]
 
     # plotting
     fig = plt.figure()
@@ -174,15 +177,29 @@ def func(args):
     line_style_cycler = cycle(line_styles)
     line_color_cycler = cycle(line_color)
 
+    lines = []  # reference to lines
     # plot the curve and save the figure
     for i in range(len(classifier_stat_list)):
         classifier_stat = classifier_stat_list[i]
-        plt.plot(classifier_stat[:, 1], classifier_stat[:, 0],
-                 color=next(line_color_cycler),
-                 linestyle=next(line_style_cycler), label=labels[i])
+        mark = []
+        indices_gtr_tau, = np.where(classifier_stat[:, 2] <= CONF_THRES)
+        if len(indices_gtr_tau) > 0:
+            tau_idx = indices_gtr_tau[0]
+            print(tau_idx)
+            print(len(classifier_stat[:, 2]))
+            print(classifier_stat[:, 2][tau_idx])
+            print()
+            mark = [tau_idx]
 
-    # text box
-    ax.legend(loc='upper right', shadow=False,
+        line, = plt.plot(classifier_stat[:, 1], classifier_stat[:, 0],
+                         color=next(line_color_cycler), label=labels[i],
+                         linestyle=next(line_style_cycler),
+                         markevery=mark, marker='o')
+        lines.append(line)
+
+    tau_desc = mpatches.Patch(color='white',
+                              label='tau: {}'.format(CONF_THRES))
+    ax.legend(handles=lines + [tau_desc], loc='upper right', shadow=False,
               prop={'size': LEGEND_AXIS_FONT_SIZE})
     ax.set_title(args.figure_title,
                  fontsize=TITLE_FONT_SIZE)
