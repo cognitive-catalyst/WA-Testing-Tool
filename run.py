@@ -22,6 +22,7 @@ import subprocess
 import json
 from argparse import ArgumentParser
 import csv
+import pandas as pd
 from watson_developer_cloud import AssistantV1
 from utils import TRAIN_FILENAME, TEST_FILENAME, UTTERANCE_COLUMN, \
                   GOLDEN_INTENT_COLUMN, TEST_OUT_FILENAME, WORKSPACE_ID_TAG, \
@@ -66,6 +67,8 @@ CREATE_PRECISION_CURVE_PATH = os.path.join(current_file_path,
                                            'createPrecisionCurve.py')
 # Max test request rate
 MAX_TEST_RATE = 100
+
+KFOLD_UNION_FILE = 'kfold-test-out-union.csv'
 
 
 def validate_config(fields, section):
@@ -188,6 +191,13 @@ def kfold(fold_num, temp_dir, intent_train_file, entity_train_file,
     print('Tested {} workspaces'.format(str(fold_num)))
 
     test_out_files = [fold_param[TEST_OUT] for fold_param in fold_params]
+
+    # Union test out
+    pd.concat([pd.read_csv(file, quoting=csv.QUOTE_ALL, encoding=UTF_8,
+                           keep_default_na=False)
+               for file in test_out_files]) \
+      .to_csv(os.path.join(working_dir, KFOLD_UNION_FILE),
+              encoding='utf-8', quoting=csv.QUOTE_ALL, index=False)
 
     classfier_names = ['Fold {}'.format(idx) for idx in range(fold_num)]
 
