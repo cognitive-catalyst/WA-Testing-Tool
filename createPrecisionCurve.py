@@ -185,10 +185,6 @@ def func(args):
         indices_gtr_tau, = np.where(classifier_stat[:, 2] <= CONF_THRES)
         if len(indices_gtr_tau) > 0:
             tau_idx = indices_gtr_tau[0]
-            print(tau_idx)
-            print(len(classifier_stat[:, 2]))
-            print(classifier_stat[:, 2][tau_idx])
-            print()
             mark = [tau_idx]
 
         line, = plt.plot(classifier_stat[:, 1], classifier_stat[:, 0],
