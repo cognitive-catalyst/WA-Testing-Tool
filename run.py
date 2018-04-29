@@ -64,6 +64,8 @@ TEST_CONVERSATION_PATH = os.path.join(current_file_path,
                                       'testConversation.py')
 CREATE_PRECISION_CURVE_PATH = os.path.join(current_file_path,
                                            'createPrecisionCurve.py')
+# Max test request rate
+MAX_TEST_RATE = 100
 
 
 def validate_config(fields, section):
@@ -159,6 +161,7 @@ def kfold(fold_num, temp_dir, intent_train_file, entity_train_file,
     # Begin testing
     test_processes = []
     workspace_ids = []
+    FOLD_TEST_RATE = int(MAX_TEST_RATE / fold_num)
     for fold_param in fold_params:
         workspace_id = None
         with open(fold_param[WORKSPACE_SPEC]) as f:
@@ -169,7 +172,8 @@ def kfold(fold_num, temp_dir, intent_train_file, entity_train_file,
                      '-o', fold_param[TEST_OUT],
                      '-u', username, '-p', password,
                      '-t', UTTERANCE_COLUMN, '-g', GOLDEN_INTENT_COLUMN,
-                     '-w', workspace_id]
+                     '-w', workspace_id, '-r', str(FOLD_TEST_RATE),
+                     '-m']
         test_processes.append(subprocess.Popen(test_args))
 
     test_failure_idx_str = []
@@ -256,13 +260,14 @@ def blind(temp_dir, intent_train_file, entity_train_file, figure_path,
                        '-o', test_out_path, '-m',
                        '-u', username, '-p', password,
                        '-t', UTTERANCE_COLUMN, '-g', GOLDEN_INTENT_COLUMN,
-                       '-w', workspace_id]).returncode == 0:
+                       '-w', workspace_id,
+                       '-r', str(MAX_TEST_RATE)]).returncode == 0:
         print('Tested blind workspace')
     else:
         raise RuntimeError('Failure in testing blind data')
 
     if subprocess.run([sys.executable, CREATE_PRECISION_CURVE_PATH,
-                       '-t', 'Blind Test',
+                       '-t', 'Golden Test Set',
                        '-o', figure_path, '-n'] + classfier_names +
                       ['-i'] + test_out_files).returncode == 0:
         print('Generated precision curves for blind set')
@@ -320,7 +325,9 @@ def test(temp_dir, intent_train_file, entity_train_file, test_out_path,
                        '-i', test_input_file,
                        '-o', test_out_path, '-m',
                        '-u', username, '-p', password,
-                       '-w', workspace_id] + extra_params).returncode == 0:
+                       '-w', workspace_id,
+                       '-r', str(MAX_TEST_RATE)] + extra_params
+                      ).returncode == 0:
         print('Tested workspace')
     else:
         raise RuntimeError('Failure in testing data')
