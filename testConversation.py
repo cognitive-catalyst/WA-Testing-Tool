@@ -50,7 +50,8 @@ async def fill_df(utterance, row_idx, out_df, workspace_id, wa_username,
             auth=aiohttp.BasicAuth(wa_username, wa_password)) as session:
         url = 'https://gateway.watsonplatform.net/assistant/api/v1/workspaces/{}/message?version=2018-02-16'.format(workspace_id)
 
-        resp = await post(session, {'input': {'text': utterance}}, url, sem)
+        resp = await post(session, {'input': {'text': utterance},
+                                    'alternate_intents': True}, url, sem)
         intents = resp['intents']
         if len(intents) != 0:
             out_df.loc[row_idx, PREDICTED_INTENT_COLUMN] = \
