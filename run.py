@@ -26,7 +26,7 @@ import pandas as pd
 from watson_developer_cloud import AssistantV1
 from utils import TRAIN_FILENAME, TEST_FILENAME, UTTERANCE_COLUMN, \
                   GOLDEN_INTENT_COLUMN, TEST_OUT_FILENAME, WORKSPACE_ID_TAG, \
-                  WCS_VERSION, UTF_8, INTENT_JUDGE_COLUMN
+                  WCS_VERSION, UTF_8, INTENT_JUDGE_COLUMN, BOOL_MAP
 
 # SECTIONS
 DEFAULT_SECTION = 'DEFAULT'
@@ -52,7 +52,6 @@ KFOLD = 'kfold'
 BLIND_TEST = 'blind'
 STANDARD_TEST = 'test'
 
-bool_map = {True: 'yes', False: 'no'}
 SPEC_FILENAME = 'workspace.json'
 
 current_file_path = os.path.dirname(__file__)
@@ -107,7 +106,7 @@ def kfold(fold_num, temp_dir, intent_train_file, entity_train_file,
     print('{}={}'.format(FIGURE_PATH_ITEM, figure_path))
     print('{}={}'.format(TEMP_DIR_ITEM, temp_dir))
     print('{}={}'.format(FOLD_NUM_ITEM, fold_num))
-    print('{}={}'.format(DO_KEEP_WORKSPACE_ITEM, bool_map[keep_workspace]))
+    print('{}={}'.format(DO_KEEP_WORKSPACE_ITEM, BOOL_MAP[keep_workspace]))
     print('{}={}'.format(WCS_USERNAME_ITEM, username))
 
     working_dir = os.path.join(temp_dir, KFOLD)
@@ -227,7 +226,7 @@ def blind(temp_dir, intent_train_file, entity_train_file, figure_path,
     print('{}={}'.format(FIGURE_PATH_ITEM, figure_path))
     print('{}={}'.format(TEST_OUT_PATH_ITEM, test_out_path))
     print('{}={}'.format(TEMP_DIR_ITEM, temp_dir))
-    print('{}={}'.format(DO_KEEP_WORKSPACE_ITEM, bool_map[keep_workspace]))
+    print('{}={}'.format(DO_KEEP_WORKSPACE_ITEM, BOOL_MAP[keep_workspace]))
     print('{}={}'.format(WCS_USERNAME_ITEM, username))
 
     # Validate previous blind out format
@@ -296,7 +295,7 @@ def test(temp_dir, intent_train_file, entity_train_file, test_out_path,
     print('{}={}'.format(TEST_FILE_ITEM, test_input_file))
     print('{}={}'.format(TEST_OUT_PATH_ITEM, test_out_path))
     print('{}={}'.format(TEMP_DIR_ITEM, temp_dir))
-    print('{}={}'.format(DO_KEEP_WORKSPACE_ITEM, bool_map[keep_workspace]))
+    print('{}={}'.format(DO_KEEP_WORKSPACE_ITEM, BOOL_MAP[keep_workspace]))
     print('{}={}'.format(WCS_USERNAME_ITEM, username))
 
     # Validate test file

@@ -22,6 +22,7 @@ TRAIN_FILENAME = 'train.csv'
 TEST_FILENAME = 'test.csv'
 TEST_OUT_FILENAME = 'test-out.csv'
 
+# CSV column names
 INTENT_COLUMN = 'intent'
 CONFIDENCE_COLUMN = 'confidence'
 UTTERANCE_COLUMN = 'utterance'  # used in any intermediate file
@@ -35,6 +36,7 @@ FOLD_NUM_DEFAULT = '5'
 WCS_VERSION = '2018-02-16'
 WORKSPACE_ID_TAG = 'workspace_id'
 TIME_TO_WAIT = 600
+BOOL_MAP = {True: 'yes', False: 'no'}
 
 
 logger = logging.getLogger(__name__)
