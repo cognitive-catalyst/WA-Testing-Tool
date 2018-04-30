@@ -1,6 +1,15 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## 2018-04-30
+### Fixed
+- Allowed intents with confidence less than 0.2 to be returned.
+
+### Added
+- Calculate precision using different weighting configuration.
+- Highlight confidence threshold on the precision curve figure.
+- Union all folds test output as `kfold-test-out-union.csv`.
+
 ## 2018-04-13
 ### Fixed
 - Reserved entities can be imported to workspaces.
