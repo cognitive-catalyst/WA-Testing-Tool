@@ -28,7 +28,7 @@ from utils import UTF_8, CONFIDENCE_COLUMN, \
     UTTERANCE_COLUMN, PREDICTED_INTENT_COLUMN, \
     DETECTED_ENTITY_COLUMN, DIALOG_RESPONSE_COLUMN, \
     marshall_entity, save_dataframe_as_csv, INTENT_JUDGE_COLUMN, \
-    TEST_OUT_FILENAME
+    TEST_OUT_FILENAME, BOOL_MAP
 
 test_out_header = [PREDICTED_INTENT_COLUMN, CONFIDENCE_COLUMN,
                    DETECTED_ENTITY_COLUMN, DIALOG_RESPONSE_COLUMN]
@@ -119,10 +119,9 @@ def func(args):
             print("No golden intent column '{}' is found in input."
                   .format(golden_intent_column))
         else:  # Add INTENT_JUDGE_COLUMN based on golden_intent_column
-            bool_map = {True: 'yes', False: 'no'}
             out_df[INTENT_JUDGE_COLUMN] = \
                 (in_df[golden_intent_column]
-                    == out_df[PREDICTED_INTENT_COLUMN]).map(bool_map)
+                    == out_df[PREDICTED_INTENT_COLUMN]).map(BOOL_MAP)
 
     save_dataframe_as_csv(df=out_df, file=args.outfile)
 
