@@ -17,9 +17,11 @@
 
 
 import argparse
-from watson_developer_cloud import ConversationV1
+from watson_developer_cloud import AssistantV1
 import json
 import csv
+
+WA_API_VERSION = '2017-05-26'
 
 
 def add_output_arg(parser):
@@ -31,8 +33,8 @@ def add_output_arg(parser):
 
 
 def get_remote_workspace(args):
-    conv = ConversationV1(
-        ConversationV1.VERSION_DATE_2017_05_26,
+    conv = AssistantV1(
+        WA_API_VERSION,
         username=args.user,
         password=args.password
     )
