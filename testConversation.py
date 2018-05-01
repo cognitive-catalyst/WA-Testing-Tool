@@ -105,12 +105,13 @@ def func(args):
     # Applied coroutines
     sem = asyncio.Semaphore(args.rate_limit)
     loop = asyncio.get_event_loop()
-    tasks = [asyncio.ensure_future(fill_df(out_df.loc[row_idx, test_column],
-                                           row_idx, out_df, args.workspace_id,
-                                           args.username, args.password,
-                                           sem))
-             for row_idx in range(out_df.shape[0])]
-    loop.run_until_complete(asyncio.wait(tasks))
+
+    tasks = (fill_df(out_df.loc[row_idx, test_column],
+                     row_idx, out_df, args.workspace_id,
+                     args.username, args.password, sem)
+             for row_idx in range(out_df.shape[0]))
+    loop.run_until_complete(asyncio.gather(*tasks))
+
     loop.close()
 
     if args.golden_intent_column is not None:
