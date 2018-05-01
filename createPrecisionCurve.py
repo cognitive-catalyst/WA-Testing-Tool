@@ -20,7 +20,7 @@ import numpy as np
 import matplotlib
 matplotlib.use('Agg')  # Generate images without having a window appear
 import matplotlib.pyplot as plt
-import matplotlib.patches as mpatches
+import matplotlib.lines as mlines
 from argparse import ArgumentParser
 from itertools import cycle
 import pandas as pd
@@ -181,20 +181,25 @@ def func(args):
     # plot the curve and save the figure
     for i in range(len(classifier_stat_list)):
         classifier_stat = classifier_stat_list[i]
-        mark = []
+        tau_idx = None
         indices_gtr_tau, = np.where(classifier_stat[:, 2] <= CONF_THRES)
         if len(indices_gtr_tau) > 0:
             tau_idx = indices_gtr_tau[0]
-            mark = [tau_idx]
 
+        color = next(line_color_cycler)
         line, = plt.plot(classifier_stat[:, 1], classifier_stat[:, 0],
-                         color=next(line_color_cycler), label=labels[i],
-                         linestyle=next(line_style_cycler),
-                         markevery=mark, marker='o')
+                         color=color, label=labels[i],
+                         linestyle=next(line_style_cycler))
+
+        plt.plot(classifier_stat[tau_idx, 1], classifier_stat[tau_idx, 0],
+                 '{}o'.format(color), markerfacecolor='None')
         lines.append(line)
 
-    tau_desc = mpatches.Patch(color='white',
-                              label='tau: {}'.format(CONF_THRES))
+    tau_desc = mlines.Line2D([], [], markeredgecolor='black', marker='o',
+                             linestyle='None', markerfacecolor='None',
+                             markersize=10,
+                             label='tau = {}'.format(CONF_THRES))
+
     ax.legend(handles=lines + [tau_desc], loc='upper right', shadow=False,
               prop={'size': LEGEND_AXIS_FONT_SIZE})
     ax.set_title(args.figure_title,
