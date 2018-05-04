@@ -37,6 +37,11 @@ WCS_VERSION = '2018-02-16'
 WORKSPACE_ID_TAG = 'workspace_id'
 TIME_TO_WAIT = 600
 BOOL_MAP = {True: 'yes', False: 'no'}
+DEFAULT_TEST_RATE = 100
+DEFAULT_CONF_THRES = 0.2
+
+POPULATION_WEIGHT_MODE = 'population'
+EQUAL_WEIGHT_MODE = 'equal'
 
 
 logger = logging.getLogger(__name__)

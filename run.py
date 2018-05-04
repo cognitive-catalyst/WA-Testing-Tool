@@ -26,7 +26,8 @@ import pandas as pd
 from watson_developer_cloud import AssistantV1
 from utils import TRAIN_FILENAME, TEST_FILENAME, UTTERANCE_COLUMN, \
                   GOLDEN_INTENT_COLUMN, TEST_OUT_FILENAME, WORKSPACE_ID_TAG, \
-                  WCS_VERSION, UTF_8, INTENT_JUDGE_COLUMN, BOOL_MAP
+                  WCS_VERSION, UTF_8, INTENT_JUDGE_COLUMN, BOOL_MAP, \
+                  DEFAULT_TEST_RATE, POPULATION_WEIGHT_MODE, DEFAULT_CONF_THRES
 
 # SECTIONS
 DEFAULT_SECTION = 'DEFAULT'
@@ -43,6 +44,9 @@ FIGURE_PATH_ITEM = 'out_figure_path'
 FOLD_NUM_ITEM = 'fold_num'
 DO_KEEP_WORKSPACE_ITEM = 'keep_workspace_after_test'
 PREVIOUS_BLIND_OUT_ITEM = 'previous_blind_out'
+MAX_TEST_RATE_ITEM = 'max_test_rate'
+WEIGHT_MODE_ITEM = 'weight_mode'
+CONF_THRES_ITEM = 'conf_thres'
 
 WCS_USERNAME_ITEM = 'username'
 WCS_PASSWORD_ITEM = 'password'
@@ -65,7 +69,7 @@ TEST_CONVERSATION_PATH = os.path.join(current_file_path,
 CREATE_PRECISION_CURVE_PATH = os.path.join(current_file_path,
                                            'createPrecisionCurve.py')
 # Max test request rate
-MAX_TEST_RATE = 100
+MAX_TEST_RATE = DEFAULT_TEST_RATE
 
 KFOLD_UNION_FILE = 'kfold-test-out-union.csv'
 
@@ -93,7 +97,8 @@ def delete_workspaces(username, password, workspace_ids):
 
 
 def kfold(fold_num, temp_dir, intent_train_file, entity_train_file,
-          figure_path, keep_workspace, username, password):
+          figure_path, keep_workspace, username, password, weight_mode,
+          conf_thres):
     FOLD_TRAIN = 'fold_train'
     FOLD_TEST = 'fold_test'
     WORKSPACE_SPEC = 'fold_workspace'
@@ -107,6 +112,8 @@ def kfold(fold_num, temp_dir, intent_train_file, entity_train_file,
     print('{}={}'.format(TEMP_DIR_ITEM, temp_dir))
     print('{}={}'.format(FOLD_NUM_ITEM, fold_num))
     print('{}={}'.format(DO_KEEP_WORKSPACE_ITEM, BOOL_MAP[keep_workspace]))
+    print('{}={}'.format(WEIGHT_MODE_ITEM, weight_mode))
+    print('{}={}'.format(CONF_THRES_ITEM, conf_thres))
     print('{}={}'.format(WCS_USERNAME_ITEM, username))
 
     working_dir = os.path.join(temp_dir, KFOLD)
@@ -204,8 +211,9 @@ def kfold(fold_num, temp_dir, intent_train_file, entity_train_file,
 
         plot_args = [sys.executable, CREATE_PRECISION_CURVE_PATH,
                      '-t', '{} Fold Test'.format(str(fold_num)),
-                     '-o', figure_path, '-n'] + classfier_names + \
-                    ['-i'] + test_out_files
+                     '-o', figure_path, '-w', weight_mode,
+                     '--tau', conf_thres, '-n'] + \
+            classfier_names + ['-i'] + test_out_files
 
         if subprocess.run(plot_args).returncode == 0:
             print('Generated precision curves for {} folds'.format(
@@ -226,7 +234,7 @@ def kfold(fold_num, temp_dir, intent_train_file, entity_train_file,
 
 def blind(temp_dir, intent_train_file, entity_train_file, figure_path,
           test_out_path, test_input_file, previous_blind_out, keep_workspace,
-          username, password):
+          username, password, weight_mode, conf_thres):
     print('Begin {} with following details:'.format(BLIND_TEST.upper()))
     print('{}={}'.format(INTENT_FILE_ITEM, intent_train_file))
     print('{}={}'.format(ENTITY_FILE_ITEM, entity_train_file))
@@ -236,6 +244,8 @@ def blind(temp_dir, intent_train_file, entity_train_file, figure_path,
     print('{}={}'.format(TEST_OUT_PATH_ITEM, test_out_path))
     print('{}={}'.format(TEMP_DIR_ITEM, temp_dir))
     print('{}={}'.format(DO_KEEP_WORKSPACE_ITEM, BOOL_MAP[keep_workspace]))
+    print('{}={}'.format(WEIGHT_MODE_ITEM, weight_mode))
+    print('{}={}'.format(CONF_THRES_ITEM, conf_thres))
     print('{}={}'.format(WCS_USERNAME_ITEM, username))
 
     # Validate previous blind out format
@@ -285,8 +295,9 @@ def blind(temp_dir, intent_train_file, entity_train_file, figure_path,
             raise RuntimeError('Failure in testing blind data')
 
         if subprocess.run([sys.executable, CREATE_PRECISION_CURVE_PATH,
-                           '-t', 'Golden Test Set',
-                           '-o', figure_path, '-n'] + classfier_names +
+                           '-t', 'Golden Test Set', '-w', weight_mode, '--tau',
+                           conf_thres, '-o', figure_path,
+                           '-n'] + classfier_names +
                           ['-i'] + test_out_files).returncode == 0:
             print('Generated precision curves for blind set')
         else:
@@ -450,6 +461,23 @@ def func(args):
 
     mode = default_section[MODE_ITEM].lower()  # Ignore case
 
+    if MAX_TEST_RATE_ITEM in default_section:
+        user_test_rate = default_section[MAX_TEST_RATE_ITEM]
+        try:
+            global MAX_TEST_RATE
+            MAX_TEST_RATE = int(user_test_rate)
+        except ValueError as e:
+            print(e)
+    print('Maximum testing rate: {}/cycle'.format(MAX_TEST_RATE))
+
+    weight_mode = POPULATION_WEIGHT_MODE
+    if WEIGHT_MODE_ITEM in default_section:
+        weight_mode = default_section[WEIGHT_MODE_ITEM]
+
+    conf_thres_str = str(DEFAULT_CONF_THRES)
+    if CONF_THRES_ITEM in default_section:
+        conf_thres_str = default_section[CONF_THRES_ITEM]
+
     if KFOLD == mode:
         # Field validation for kfold
         validate_config([FOLD_NUM_ITEM, FIGURE_PATH_ITEM], default_section)
@@ -460,8 +488,8 @@ def func(args):
               entity_train_file=entity_train_file,
               figure_path=default_section[FIGURE_PATH_ITEM],
               keep_workspace=keep_workspace,
-              username=username,
-              password=password)
+              username=username, password=password,
+              weight_mode=weight_mode, conf_thres=conf_thres_str)
     else:
         validate_config([TEST_FILE_ITEM, TEST_OUT_PATH_ITEM], default_section)
 
@@ -476,8 +504,8 @@ def func(args):
                   test_out_path=default_section[TEST_OUT_PATH_ITEM],
                   previous_blind_out=previous_blind_out,
                   keep_workspace=keep_workspace,
-                  username=username,
-                  password=password)
+                  username=username, password=password,
+                  weight_mode=weight_mode, conf_thres=conf_thres_str)
         elif STANDARD_TEST == mode:
             test(temp_dir=default_section[TEMP_DIR_ITEM],
                  intent_train_file=default_section[INTENT_FILE_ITEM],

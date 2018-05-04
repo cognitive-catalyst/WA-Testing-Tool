@@ -28,7 +28,8 @@ import csv
 
 from utils import INTENT_JUDGE_COLUMN, UTF_8, CONFIDENCE_COLUMN, \
                   PREDICTED_INTENT_COLUMN, GOLDEN_INTENT_COLUMN, \
-                  INTENT_COLUMN
+                  INTENT_COLUMN, POPULATION_WEIGHT_MODE, \
+                  EQUAL_WEIGHT_MODE, DEFAULT_CONF_THRES
 
 # total different number of line style len(line_styles) * len(line_color) = 12
 line_styles = ['-', '--', '-.', ':']
@@ -38,11 +39,6 @@ LEGEND_AXIS_FONT_SIZE = 14
 TITLE_FONT_SIZE = 16
 
 WEIGHT_COLUMN = 'weight'
-
-POPULATION_WEIGHT_MODE = 'population'
-EQUAL_WEIGHT_MODE = 'equal'
-
-CONF_THRES = 0.2
 
 
 def func(args):
@@ -94,13 +90,18 @@ def func(args):
     # Read the intent weights pairs from file
     if weight_mode != POPULATION_WEIGHT_MODE and \
        weight_mode != EQUAL_WEIGHT_MODE:
-        weights_df = pd.read_csv(weight_mode, encoding=UTF_8,
-                                 quoting=csv.QUOTE_ALL)
-        # Validate the completeness
-        for _, intent in intents_in_results.iteritems():
-            if not any(weights_df[INTENT_COLUMN] == intent):
-                raise ValueError("'{}' intent not in {}".format(
-                    intent, weight_mode))
+        try:
+            weights_df = pd.read_csv(args.weight, encoding=UTF_8,
+                                     quoting=csv.QUOTE_ALL)
+            # Validate the completeness
+            for _, intent in intents_in_results.iteritems():
+                if not any(weights_df[INTENT_COLUMN] == intent):
+                    raise ValueError("'{}' intent not in {}".format(
+                        intent, args.weight))
+        except Exception as e:
+            print(e)
+            weight_mode = POPULATION_WEIGHT_MODE  # default population mode
+            print('Fall back to {} mode'.format(POPULATION_WEIGHT_MODE))
 
     confidence_num = len(all_confidences)
     # Init the classifier_stat_list:
@@ -182,7 +183,7 @@ def func(args):
     for i in range(len(classifier_stat_list)):
         classifier_stat = classifier_stat_list[i]
         tau_idx = None
-        indices_gtr_tau, = np.where(classifier_stat[:, 2] <= CONF_THRES)
+        indices_gtr_tau, = np.where(classifier_stat[:, 2] <= args.tau)
         if len(indices_gtr_tau) > 0:
             tau_idx = indices_gtr_tau[0]
 
@@ -198,7 +199,7 @@ def func(args):
     tau_desc = mlines.Line2D([], [], markeredgecolor='black', marker='o',
                              linestyle='None', markerfacecolor='None',
                              markersize=10,
-                             label='tau = {}'.format(CONF_THRES))
+                             label='tau = {}'.format(args.tau))
 
     ax.legend(handles=lines + [tau_desc], loc='upper right', shadow=False,
               prop={'size': LEGEND_AXIS_FONT_SIZE})
@@ -222,5 +223,7 @@ if __name__ == '__main__':
                         default='figure.png', type=str)
     PARSER.add_argument('-w', '--weight', default='population', type=str,
                         help='Weight configuration for each intent')
+    PARSER.add_argument('--tau', default=DEFAULT_CONF_THRES, type=float,
+                        help='Confidence threshold for curve marker')
     ARGS = PARSER.parse_args()
     func(ARGS)
