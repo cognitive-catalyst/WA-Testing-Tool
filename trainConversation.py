@@ -161,19 +161,24 @@ def func(args):
     raise TrainTimeoutException('Assistant training is timeout')
 
 
-if __name__ == '__main__':
-    PARSER = ArgumentParser(
+def create_parser():
+    parser = ArgumentParser(
         description='Train assistant instance with intents and entities')
-    PARSER.add_argument('-i', '--intentfile', type=str, required=True,
+    parser.add_argument('-i', '--intentfile', type=str, required=True,
                         help='Intent file')
-    PARSER.add_argument('-e', '--entityfile', type=str, help='Entity file')
-    PARSER.add_argument('-n', '--workspace_name', type=str,
+    parser.add_argument('-e', '--entityfile', type=str, help='Entity file')
+    parser.add_argument('-n', '--workspace_name', type=str,
                         help='Workspace name')
-    PARSER.add_argument('-d', '--workspace_description', type=str,
+    parser.add_argument('-d', '--workspace_description', type=str,
                         help='Workspace description')
-    PARSER.add_argument('-u', '--username', type=str, required=True,
+    parser.add_argument('-u', '--username', type=str, required=True,
                         help='Assistant service username')
-    PARSER.add_argument('-p', '--password', type=str, required=True,
+    parser.add_argument('-p', '--password', type=str, required=True,
                         help='Assistant service password')
-    ARGS = PARSER.parse_args()
+
+    return parser
+
+
+if __name__ == '__main__':
+    ARGS = create_parser().parse_args()
     func(ARGS)

@@ -16,6 +16,8 @@
 
 import logging
 import csv
+import os
+from watson_developer_cloud import AssistantV1
 
 UTF_8 = 'utf-8'
 TRAIN_FILENAME = 'train.csv'
@@ -31,6 +33,23 @@ PREDICTED_INTENT_COLUMN = 'predicted intent'
 DETECTED_ENTITY_COLUMN = 'detected entity'
 DIALOG_RESPONSE_COLUMN = 'dialog response'
 GOLDEN_INTENT_COLUMN = 'golden intent'
+
+WCS_USERNAME_ITEM = 'username'
+WCS_PASSWORD_ITEM = 'password'
+WCS_CREDS_SECTION = 'ASSISTANT CREDENTIALS'
+
+SPEC_FILENAME = 'workspace.json'
+
+current_file_path = os.path.dirname(__file__)
+# Sub-script paths
+CREATE_TEST_TRAIN_FOLDS_PATH = os.path.join(current_file_path,
+                                            'createTestTrainFolds.py')
+TRAIN_CONVERSATION_PATH = os.path.join(current_file_path,
+                                       'trainConversation.py')
+TEST_CONVERSATION_PATH = os.path.join(current_file_path,
+                                      'testConversation.py')
+CREATE_PRECISION_CURVE_PATH = os.path.join(current_file_path,
+                                           'createPrecisionCurve.py')
 
 FOLD_NUM_DEFAULT = '5'
 WCS_VERSION = '2018-02-16'
@@ -78,3 +97,13 @@ def unmarshall_entity(entities_str):
         splitted = entity_str.split(':')
         entities.append({'entity': splitted[0], 'value': splitted[0]})
     return entities
+
+
+def delete_workspaces(username, password, workspace_ids):
+    """ Delete workspaces
+    """
+    c = AssistantV1(username=username, password=password,
+                    version=WCS_VERSION)
+    for workspace_id in workspace_ids:
+        c.delete_workspace(workspace_id=workspace_id)
+    print('Cleaned up workspaces')

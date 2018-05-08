@@ -44,13 +44,18 @@ def func(args):
                                                       GOLDEN_INTENT_COLUMN])
 
 
-if __name__ == '__main__':
-    PARSER = ArgumentParser(description="Create the intent test and \
+def create_parser():
+    parser = ArgumentParser(description="Create the intent test and \
                             train folds for cross validation")
-    PARSER.add_argument('-i', '--infile', type=str, required=True,
+    parser.add_argument('-i', '--infile', type=str, required=True,
                         help='Input file')
-    PARSER.add_argument('-o', '--outdir', type=str, help='Output directory',
+    parser.add_argument('-o', '--outdir', type=str, help='Output directory',
                         default=os.getcwd())
-    PARSER.add_argument('-k', '--fold_num', type=int, default=FOLD_NUM_DEFAULT)
-    ARGS = PARSER.parse_args()
+    parser.add_argument('-k', '--fold_num', type=int, default=FOLD_NUM_DEFAULT)
+
+    return parser
+
+
+if __name__ == '__main__':
+    ARGS = create_parser().parse_args()
     func(ARGS)
