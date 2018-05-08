@@ -182,7 +182,8 @@ def func(args):
     # plot the curve and save the figure
     for i in range(len(classifier_stat_list)):
         classifier_stat = classifier_stat_list[i]
-        tau_idx = None
+        # Default to the idx of lowest conf
+        tau_idx = len(classifier_stat[:, 2]) - 1
         indices_gtr_tau, = np.where(classifier_stat[:, 2] <= args.tau)
         if len(indices_gtr_tau) > 0:
             tau_idx = indices_gtr_tau[0]
