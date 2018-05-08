@@ -209,21 +209,25 @@ def func(args):
     plt.savefig(args.outfile)
 
 
-if __name__ == '__main__':
-    PARSER = ArgumentParser(description="Draw precision curves on a single canvas \
+def create_parser():
+    parser = ArgumentParser(description="Draw precision curves on a single canvas \
                             from multiple classifiers' classification results")
-    PARSER.add_argument('-i', '--classifiers_results', nargs='+',
+    parser.add_argument('-i', '--classifiers_results', nargs='+',
                         required=True,
                         help='Files of results from individual classifiers')
-    PARSER.add_argument('-n', '--classifier_names', nargs='*',
+    parser.add_argument('-n', '--classifier_names', nargs='*',
                         help='Names of each classifier')
-    PARSER.add_argument('-t', '--figure_title', required=True, type=str,
+    parser.add_argument('-t', '--figure_title', required=True, type=str,
                         help='Title of output figure')
-    PARSER.add_argument('-o', '--outfile', help='File of the output figure',
+    parser.add_argument('-o', '--outfile', help='File of the output figure',
                         default='figure.png', type=str)
-    PARSER.add_argument('-w', '--weight', default='population', type=str,
+    parser.add_argument('-w', '--weight', default='population', type=str,
                         help='Weight configuration for each intent')
-    PARSER.add_argument('--tau', default=DEFAULT_CONF_THRES, type=float,
+    parser.add_argument('--tau', default=DEFAULT_CONF_THRES, type=float,
                         help='Confidence threshold for curve marker')
-    ARGS = PARSER.parse_args()
+    return parser
+
+
+if __name__ == '__main__':
+    ARGS = create_parser.parse_args()
     func(ARGS)
