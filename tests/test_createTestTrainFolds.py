@@ -21,6 +21,7 @@ import os
 tool_base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, tool_base)
 import createTestTrainFolds
+from utils import FOLD_NUM_DEFAULT
 
 
 class CreateTestTrainFoldsTestCase(CommandLineTestCase):
@@ -42,7 +43,7 @@ class CreateTestTrainFoldsTestCase(CommandLineTestCase):
                 ['-i',
                  os.path.join(tool_base, 'resources', 'sample',
                               'intents.csv'),
-                 '-o', self.test_dir, '-k', '5'])
+                 '-o', self.test_dir, '-k', str(FOLD_NUM_DEFAULT)])
         try:
             createTestTrainFolds.func(args)
         except Exception as e:
