@@ -17,8 +17,6 @@ entity_train_file = ./data/entity_train_file.csv
 test_input_file = ./data/test.csv
 test_output_path = ./data/test-out.csv
 temporary_file_directory = ./data
-; Figure path for kfold and blind test
-out_figure_path= ./data/figure.png
 ; Clean the workspaces after testing
 keep_workspace_after_test = no
 

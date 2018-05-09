@@ -51,6 +51,11 @@ TEST_CONVERSATION_PATH = os.path.join(current_file_path,
 CREATE_PRECISION_CURVE_PATH = os.path.join(current_file_path,
                                            'createPrecisionCurve.py')
 
+# MODE
+KFOLD = 'kfold'
+BLIND_TEST = 'blind'
+STANDARD_TEST = 'test'
+
 FOLD_NUM_DEFAULT = 5
 WCS_VERSION = '2018-02-16'
 WORKSPACE_ID_TAG = 'workspace_id'

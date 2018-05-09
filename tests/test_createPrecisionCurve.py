@@ -5,7 +5,7 @@ import os
 tool_base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, tool_base)
 import createPrecisionCurve
-from utils import CREATE_PRECISION_CURVE_PATH, FOLD_NUM_DEFAULT
+from utils import FOLD_NUM_DEFAULT
 
 
 class CreatePrecisionCurveTestCase(CommandLineTestCase):

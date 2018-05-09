@@ -31,7 +31,8 @@ from utils import TRAIN_FILENAME, TEST_FILENAME, UTTERANCE_COLUMN, \
                   DEFAULT_CONF_THRES, WCS_USERNAME_ITEM, WCS_PASSWORD_ITEM, \
                   WCS_CREDS_SECTION, CREATE_TEST_TRAIN_FOLDS_PATH, \
                   TRAIN_CONVERSATION_PATH, TEST_CONVERSATION_PATH, \
-                  CREATE_PRECISION_CURVE_PATH, SPEC_FILENAME, delete_workspaces
+                  CREATE_PRECISION_CURVE_PATH, SPEC_FILENAME, \
+                  delete_workspaces, KFOLD, BLIND_TEST, STANDARD_TEST
 
 # SECTIONS
 DEFAULT_SECTION = 'DEFAULT'
@@ -50,13 +51,6 @@ PREVIOUS_BLIND_OUT_ITEM = 'previous_blind_out'
 MAX_TEST_RATE_ITEM = 'max_test_rate'
 WEIGHT_MODE_ITEM = 'weight_mode'
 CONF_THRES_ITEM = 'conf_thres'
-
-
-# MODE
-KFOLD = 'kfold'
-BLIND_TEST = 'blind'
-STANDARD_TEST = 'test'
-
 
 # Max test request rate
 MAX_TEST_RATE = DEFAULT_TEST_RATE
