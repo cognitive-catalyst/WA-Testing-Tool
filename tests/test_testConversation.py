@@ -13,9 +13,10 @@ from utils import TRAIN_CONVERSATION_PATH, TEST_CONVERSATION_PATH, \
                   delete_workspaces
 
 
-class testConversationTestCase(CommandLineTestCase):
+class TestConversationTestCase(CommandLineTestCase):
     def setUp(self):
         self.script_path = TEST_CONVERSATION_PATH
+        self.parser =
 
     def test_with_empty_args(self):
         """ User passes no args, should fail with SystemExit
