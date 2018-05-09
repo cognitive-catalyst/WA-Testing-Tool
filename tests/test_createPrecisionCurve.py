@@ -28,8 +28,7 @@ class CreatePrecisionCurveTestCase(CommandLineTestCase):
                           'test-out.csv') for idx in range(FOLD_NUM_DEFAULT)]
         classifier_names = \
             ['Classfier {}'.format(idx) for idx in range(FOLD_NUM_DEFAULT)]
-        if not os.path.exists(self.test_dir):
-            os.makedirs(self.test_dir)
+
         fig_path = os.path.join(self.test_dir, 'figure.png')
 
         args = \
