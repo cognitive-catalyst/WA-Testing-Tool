@@ -1,0 +1,115 @@
+amenity,gas,fuel,fuel station,fuel stations,gas station,gas stations,pump,pumps
+amenity,restroom, bathroom, bathrooms,boy's room,boys' room,girl's room,girls' room,loo,outhouse,out house,rest room, restrooms,rest rooms,shitter, toilet, toilets,water closet,wc
+amenity,place,class,home,office,school,work
+amenity,restaurant,cafe,cafes,diner,diners,eat, food,hungry, meal, meals, restaurants
+appliance,fan,cooler,fans
+appliance,volume,sound,speaker,speakers,vol
+appliance,wipers,windscreen wiper,windscreen wipers,windshield wiper,windshield wipers,wiper
+appliance,lights,bulb,bulbs,foglight,fog light,foglights,fog lights,headlight,head light,headlights,head lights,highbeam,high beam,highbeams,high beams,light,tubelight,tubelights
+appliance,heater,heat,heating,heat vent,heat vents,hotter
+appliance,AC,ac,acs,air conditioner,air conditioners,air conditioning,colder,cooling,cooling system,cooling systems
+appliance,music,itune,itunes,music station,music stations,radio,radio station,song,songs,sound system,sound systems,station,stereo,stereo system,tune,tunes
+capabilities_subject,time,hour,minutes,seconds,the time,time,what time
+capabilities_subject,date,date,day,month,the date,what date,year
+cuisine,burgers,burger,burgers,cheeseburger,cheese burger,cheeseburgers,cheese burgers,hamburger,ham burger,hamburgers,ham burgers,mcdonalds,mcdonald's
+cuisine,tacos,burrito,burritos,Mexican,taco,tacos
+cuisine,seafood,fish,prawns,seafood,shrimp
+cuisine,pasta,calzone,canneloni,fettucine,Italian,pasta,pizza,pizzas,ravioli,spaghetti
+cuisine_bad,southern
+cuisine_bad,danish
+cuisine_bad,english
+cuisine_bad,european
+cuisine_bad,french
+cuisine_bad,galician
+cuisine_bad,german
+cuisine_bad,gluten free
+cuisine_bad,greek
+cuisine_bad,halal
+cuisine_bad,hawaiian
+cuisine_bad,indian
+cuisine_bad,irish
+cuisine_bad,israeli
+cuisine_bad,jamaican
+cuisine_bad,japanese
+cuisine_bad,korean
+cuisine_bad,kosher
+cuisine_bad,latin
+cuisine_bad,lebanese
+cuisine_bad,malaysian
+cuisine_bad,mediterranean
+cuisine_bad,middle eastern
+cuisine_bad,moroccan
+cuisine_bad,paleo
+cuisine_bad,persian
+cuisine_bad,peruvian
+cuisine_bad,pescatarian
+cuisine_bad,portuguese
+cuisine_bad,russian
+cuisine_bad,scandinavian
+cuisine_bad,scottish
+cuisine_bad,sichuan
+cuisine_bad,soul
+cuisine_bad,southwestern
+cuisine_bad,spanish
+cuisine_bad,sushi
+cuisine_bad,texan
+cuisine_bad,tex mex
+cuisine_bad,thai
+cuisine_bad,turkish
+cuisine_bad,tuscan
+cuisine_bad,vegan
+cuisine_bad,vegetarian
+cuisine_bad,vietnamese
+cuisine_bad,african
+cuisine_bad,american
+cuisine_bad,argentine
+cuisine_bad,asian
+cuisine_bad,austrian
+cuisine_bad,basque
+cuisine_bad,belgian
+cuisine_bad,breakfast
+cuisine_bad,british,bangers and mash,pies
+cuisine_bad,cajun
+cuisine_bad,californian
+cuisine_bad,canadian
+cuisine_bad,caribbean
+cuisine_bad,chinese
+cuisine_bad,christmas
+cuisine_bad,comfort
+cuisine_bad,creole
+cuisine_bad,cuban
+genre,jazz,bebop,big band,dixie,jazz,lounge,swing
+genre,rock,jam,metal,prog,progressive,punk,punkrock,rock,surf
+genre,pop,chart topper,modern,pop,popular,top 10,top 20,top 40
+genre,classical,avant-garde,baroque,chamber,chant,choral,classical,impressionist,medieval,opera,orchestra,orchestral,renaissance,string quartet,wedding
+genre_bad,Dance,club,deep house,dubstep,edm,electro house,electroswing,exercise,house,jungle,techno,trance,trap
+genre_bad,Electronic,ambient,crunk,drum and bass,drum & bass,electro,electronica,industrial,trip hop
+genre_bad,Folk,Acoustic,traditional
+genre_bad,Holiday,Chanukah,christmas,easter,halloween,thanksgiving
+genre_bad,Instrumental,marching band
+genre_bad,J-Pop,J-Rock
+genre_bad,Latin,Baladas,bossa nova,brazilian,cubmia,flamenco,portuguese,reggaeton,salsa,Tango
+genre_bad,New Age,Environmental,healing,meditation,relaxation
+genre_bad,R&B,Disco,Funk,Motown,Soul
+genre_bad,Reggae,dancehall,dub,roots,ska
+genre_bad,Religious,buddhist,choir,christian,gospel,muslim
+genre_bad,Soundtrack,cinema,musical
+genre_bad,Vocal,acapella,acappella,A cappella,barbershop,doowop
+genre_bad,World,Afrobeat,afropop,cajun,calypso,caribbean,celtic,congo,polka,soca,zydeco
+genre_bad,Hip Hop,Bounce,dirty south,rap
+genre_bad,Alternative,alt,altrock,grunge,new wave
+genre_bad,Birthday,birthday,birthdays
+genre_bad,Blues,Ragtime,sad
+genre_bad,Childrens,disney,lullabies,singalong
+genre_bad,Comedy,standup,tv
+genre_bad,Country,americana,bluegrass,honky tonk,outlaw,urban cowboy
+option,fourth,4th,fourth,penultimate,second to last
+option,third,3rd,average,cheap,cheapest,middle, third
+option,fifth,5th,farthest,fifth,last,lowest rated,worst
+option,first,1st,any,best,closeby,close by,closest,finest, first,hgihest rated,near,nearby,nearest,recommended,top rated,whatever
+option,second,2nd, second,second best,second rated
+phone,call,call, calls,voice message
+phone,text, message, messages,short message service,sms,sms message,text, texts
+response_types,positive,absolutely,definitely,yeah,yep,yeppers,yes
+response_types,uncertain,don't know,maybe,no idea,not sure,unknown
+response_types,negative,definitely not,no,nope,not at all,no way

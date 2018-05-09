@@ -126,6 +126,7 @@ def func(args):
 
     save_dataframe_as_csv(df=out_df, file=args.outfile)
 
+
 def create_parser():
     parser = ArgumentParser(
         description='Test conversation instance using utterance')
@@ -153,5 +154,5 @@ def create_parser():
 
 
 if __name__ == '__main__':
-    ARGS = create_parser.parse_args()
+    ARGS = create_parser().parse_args()
     func(ARGS)

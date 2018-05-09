@@ -1,0 +1,2520 @@
+what is your favourite music,about_VA
+Do you like,about_VA
+do you hate,about_VA
+your name,about_VA
+when were you born,about_VA
+what types of food do you like,about_VA
+whats your name,about_VA
+what's your name,about_VA
+whats your favorite movie,about_VA
+whats your favorite color,about_VA
+what's your favorite,about_VA
+what's your,about_VA
+what music do you like,about_VA
+what kind of food do you eat,about_VA
+what is your favourite colour,about_VA
+what do i call you,about_VA
+what are you called,about_VA
+tell me your favorite foods,about_VA
+tell me your favorite color,about_VA
+know any jokes,about_VA
+what is your name,about_VA
+I want to date you,about_VA
+i want jokes,about_VA
+how tall are you,about_VA
+how old are you,about_VA
+how much do you weigh,about_VA
+"hey, whats your ame?",about_VA
+do you love,about_VA
+cloud you recommend music?,about_VA
+can you recommend ood jazz music?,about_VA
+any music reccomendation?,about_VA
+what is your favourite food,about_VA
+so what did you learn?,capabilities
+you can say what is php,capabilities
+you can not change yourself?,capabilities
+why should I use you,capabilities
+where should I turn,capabilities
+where is the poop deck on this ship,capabilities
+Where are we,capabilities
+what u know about car?,capabilities
+what things can you turn on?,capabilities
+what things can you do,capabilities
+What's the speed,capabilities
+what should i ask,capabilities
+adapt to current weather condition,capabilities
+book a flight for NY on sunday,capabilities
+but can I ask you,capabilities
+can I manipulate the,capabilities
+Can I teach you,capabilities
+can i training you?,capabilities
+can u please do that,capabilities
+can you change lanes,capabilities
+can you direct me please?,capabilities
+Can you do anything that helps me drive?,capabilities
+can you do coding ?,capabilities
+can you do it?,capabilities
+can you do more than that?,capabilities
+CAN YOU DO OTHER THING?,capabilities
+can you do this?,capabilities
+can you do xyz?,capabilities
+Can you drive anywhere else?,capabilities
+can you harm me?,capabilities
+Can you hear me?,capabilities
+can you help me find a candidate?,capabilities
+can you help me to turn on the left light,capabilities
+it's too dark,capabilities
+I want to eat tacos everyday,capabilities
+i want to see how this demo works,capabilities
+lets go,capabilities
+Make it rain,capabilities
+Make it stop raining.,capabilities
+make me a sandwich,capabilities
+need help,capabilities
+"ok watson, why should I use you",capabilities
+open door,capabilities
+please open the sunroof,capabilities
+repair my car,capabilities
+roll down windows,capabilities
+stop it from raining,capabilities
+can you learn something new?,capabilities
+can you read me,capabilities
+can you speak something with me?,capabilities
+what question,capabilities
+What makes you different from Siri or Google,capabilities
+what else,capabilities
+what do you know,capabilities
+What do you have,capabilities
+what do you have?,capabilities
+what did you learn,capabilities
+What devices are you able to connect with?,capabilities
+what cayou do?,capabilities
+what care you capablities,capabilities
+what capabilities you have,capabilities
+what can you turn on things?,capabilities
+what can you help me with,capabilities
+what can you do for me,capabilities
+what canyou do,capabilities
+what can you do,capabilities
+What can i say,capabilities
+what can I do,capabilities
+What ca I ask?,capabilities
+What are your functions?,capabilities
+what are your capabilities Watson,capabilities
+what are your benefits,capabilities
+what are you capable of,capabilities
+What are you,capabilities
+What a can asc iu?,capabilities
+turn ac when rain ends?,capabilities
+testing om,capabilities
+test,capabilities
+can you tell me about problem,capabilities
+can you tell me my cars average sale price,capabilities
+Can you tell me random facts?,capabilities
+Change the weather,capabilities
+Change weather,capabilities
+deploy airbags,capabilities
+don't drive any further,capabilities
+do you do anything else,capabilities
+Do you do anything else?,capabilities
+do you know something about cognitive?,capabilities
+go fast,capabilities
+go slow,capabilities
+Hello can i have some help,capabilities
+Hello Watson! Can you bring me home?,capabilities
+help,capabilities
+help me,capabilities
+Hey!Stop!UseBreak,capabilities
+hi can we go to canada?,capabilities
+"Hi, can you read me a book?",capabilities
+"Hi Watson, please tell about the latest news",capabilities
+tell me what you can do,capabilities
+Tell me what to do.,capabilities
+tell me what things you can do,capabilities
+tell me some jokes,capabilities
+tell me jokes,capabilities
+tell me joke,capabilities
+tell me a joke,capabilities
+Hi! what could you do ?,capabilities
+hi where am i,capabilities
+How are you going to help me,capabilities
+how can you help me,capabilities
+how close is,capabilities
+Howdy mny Tieres Do you have,capabilities
+how far is,capabilities
+how far is the moon,capabilities
+how far to,capabilities
+how many licks does it take to get to the center of a tootsie roll,capabilities
+I'd like to have dinner with you,capabilities
+I enjoy petting cats,capabilities
+I love dolphins,capabilities
+i need a new wheelchair,capabilities
+I need to shut it down,capabilities
+switch on the ac then turn up the music,compound_questions
+turn down the heat and play some jazz,compound_questions
+Turn left,compound_questions
+turn off on off the music,compound_questions
+turn off the headlights and on the air con,compound_questions
+turn off the heater and turn on the AC,compound_questions
+turn off the music and then turn it up,compound_questions
+turn off wipers and turn on lights,compound_questions
+turn off wipers and turn on the lights,compound_questions
+turn on off the ac,compound_questions
+turn on the lights and speed up the wipers,compound_questions
+turn on the lights and turn up the wipers,compound_questions
+"turn on the lights, then turn them off.",compound_questions
+turn on the wipers then turn them off,compound_questions
+turn on wipers and stop the car,compound_questions
+Turn the lights on off,compound_questions
+turn up the music and slow down the wipers,compound_questions
+turn up the radio off,compound_questions
+Turn up the radio.Turn on my wipers.,compound_questions
+what can you do . turn off lights,compound_questions
+what can you do. turn off lights,compound_questions
+what is my speed,compound_questions
+start stop wipers,compound_questions
+speed up the wipers then slow down the wipers,compound_questions
+sorry turn off the lights and turn on the AC,compound_questions
+radio on and lights off,compound_questions
+"OK, can you lower the AC to turn off the sound?",compound_questions
+off on my lights,compound_questions
+lower the volume then speed up the wipers,compound_questions
+Increase the volume or turn off the AC,compound_questions
+increase the speed of the wipers and turn up the music,compound_questions
+Increase speed and turn wiper on,compound_questions
+heater up and volume down,compound_questions
+can you turn on the turn off the AC,compound_questions
+can you please turn the light on off ?,compound_questions
+can you please turn the light  either on of off ?,compound_questions
+yes,decision_replies
+maybe,decision_replies
+not a clue,decision_replies
+no thank,decision_replies
+no thanks watson,decision_replies
+No thank you,decision_replies
+no,decision_replies
+yes thanks,decision_replies
+yes please,decision_replies
+yes definitely,decision_replies
+my time is up,goodbyes
+nice day,goodbyes
+"no, bye!",goodbyes
+ok bye,goodbyes
+out of time,goodbyes
+over and out,goodbyes
+run,goodbyes
+see ya,goodbyes
+see ya later,goodbyes
+see ya soon,goodbyes
+see you,goodbyes
+should be going,goodbyes
+should go,goodbyes
+shutdown,goodbyes
+shut down,goodbyes
+signing off,goodbyes
+signing out,goodbyes
+so long,goodbyes
+soon,goodbyes
+swag out,goodbyes
+thanks byebye,goodbyes
+then bye,goodbyes
+toodles,goodbyes
+good bye,goodbyes
+good day,goodbyes
+good night,goodbyes
+gotta go,goodbyes
+gotta run,goodbyes
+gtg,goodbyes
+goodbye,goodbyes
+going,goodbyes
+go,goodbyes
+finally reached home.. lock up and cock up.. good nite and good bye for ever,goodbyes
+farewell,goodbyes
+cya,goodbyes
+bye now,goodbyes
+bye bye,goodbyes
+bye,goodbyes
+au revoir,goodbyes
+adios,goodbyes
+adieu,goodbyes
+Have a nice day,goodbyes
+hey stop here,goodbyes
+"Hi, Watson. I want to stop car",goodbyes
+I'm leaving,goodbyes
+i said goodbye,goodbyes
+later,goodbyes
+laters,goodbyes
+leave,goodbyes
+logging off,goodbyes
+What's up?,greetings
+hola como estas,greetings
+Hola,greetings
+hiya,greetings
+"Hi, Watson, my name is John",greetings
+Hi watson,greetings
+hi to whom had like,greetings
+hi there,greetings
+"Hi, my name is Michel",greetings
+"Hi, my name is Diego",greetings
+hi how are u,greetings
+hi,greetings
+hey there,greetings
+heya,greetings
+hey,greetings
+Hello Watson,greetings
+"Hello, My name is John?",greetings
+"hello, my name is esteban",greetings
+"Hello, how are you",greetings
+Hello,greetings
+greetings,greetings
+good morning,greetings
+good how are you,greetings
+good evening,greetings
+good day,greetings
+Good afternoon.,greetings
+good,greetings
+g'day,greetings
+feeling bit low,greetings
+fdsafsaHi watson,greetings
+ciao,greetings
+buenos dias,greetings
+buenas dias,greetings
+bonjour,greetings
+aloha,greetings
+yo my man,greetings
+yo,greetings
+yello,greetings
+What's up ?,greetings
+What's up,greetings
+what r u doing,greetings
+what doing,greetings
+sup,greetings
+say hello to me,greetings
+namaste,greetings
+I would like you to say hello,greetings
+howdy,greetings
+How are you doing,greetings
+Can I teach you,improving_system
+can you learn from me,improving_system
+can you learn new things,improving_system
+"Hello! I'm doing good. I'm here to help you. Just say the word. And please do not respond like this ""Hello! I'm doing good. I'm here to help you. Just say the word.""",improving_system
+how do i teach you,improving_system
+can i teach you something new,improving_system
+can i training you?,improving_system
+can i improve your system,improving_system
+can you say me the time?,information_request
+what is today's date,information_request
+what's the date,information_request
+whats the square root of 70,information_request
+what's the time,information_request
+what time is it right now,information_request
+what time will it be in 4.5 hours,information_request
+can you tell time,information_request
+do you know the time,information_request
+hey whats the current time today,information_request
+hi what is the time?,information_request
+tell me the date,information_request
+what is the day today,information_request
+what is the time?,information_request
+Can i ask you something in spanish?,interface_interactions
+Can you hear me?,interface_interactions
+can you interact in other languages,interface_interactions
+can you read me,interface_interactions
+can you speak something with me?,interface_interactions
+do you know non-english languages,interface_interactions
+do you speak languages other than english,interface_interactions
+hello can you hear me?,interface_interactions
+I want to talk,interface_interactions
+slow down the speech,interface_interactions
+"tell me, what languages do you speak",interface_interactions
+what languages do you know,interface_interactions
+i cant hear any sound,interface_issues
+you aren't talking anymore,interface_issues
+where is the sound,interface_issues
+where is the picture,interface_issues
+"system error, unable to lonin",interface_issues
+i don't hear any sound,interface_issues
+i can't see anything,interface_issues
+i want to see a river,locate_amenity
+I want to go to U.S.A.,locate_amenity
+I want to go to the gas station,locate_amenity
+I want to go to school.,locate_amenity
+i want to go to home,locate_amenity
+I want to go to gas station.,locate_amenity
+I want to go to beach.,locate_amenity
+I want to go to 2.,locate_amenity
+I want to go back to home,locate_amenity
+I want to find gas station,locate_amenity
+i want to drive home,locate_amenity
+I want to drink beer,locate_amenity
+i want some pizza,locate_amenity
+I want restaurants,locate_amenity
+i want restaurant 2,locate_amenity
+I want pizza,locate_amenity
+I wan to go Gas station.,locate_amenity
+i wan to go gas station,locate_amenity
+I wan to drink with my friend,locate_amenity
+i want near restaurants full of light,locate_amenity
+i want go restaurant,locate_amenity
+I want gas,locate_amenity
+i wanna to nightclub,locate_amenity
+i wanna to dance tonight,locate_amenity
+i wanna go to sea.,locate_amenity
+I wanna go to hospital,locate_amenity
+I wanna go to arestaurant,locate_amenity
+i wanna get food,locate_amenity
+i think we need gas,locate_amenity
+Italian food is a kind of food,locate_amenity
+Is there someplace I can eat around here?,locate_amenity
+is there factory outlet near here?,locate_amenity
+Is there any shopping mall nearby?,locate_amenity
+Is there any resturant nearby?,locate_amenity
+is there any pub nearby?,locate_amenity
+is there any hotel nearby,locate_amenity
+is there a good chinese resturant nearby?,locate_amenity
+is there a gas station close by ?,locate_amenity
+is there a gas station close,locate_amenity
+is there a gas station?,locate_amenity
+is there a gas station ?,locate_amenity
+Is there a convenience  store?,locate_amenity
+"I see, I'm not sure if gas stations are necessary. How about restaurants?",locate_amenity
+I prefer rock to Jazz,locate_amenity
+In want to go to the beach,locate_amenity
+Information on locations near me,locate_amenity
+i need to stop for,locate_amenity
+I need to pee,locate_amenity
+i need to have a rest,locate_amenity
+I need to eat some tacos,locate_amenity
+"yep, need a hotel for tonight",locate_amenity
+yeah a nice coffee place,locate_amenity
+Whta is the nearst gas station from now.,locate_amenity
+Whre is the nearest resturant,locate_amenity
+which the restaurant closer,locate_amenity
+which one is closest?,locate_amenity
+which is the nearest gas station,locate_amenity
+Which is the closest salon?,locate_amenity
+Which is closest?,locate_amenity
+Where us restoraunt?,locate_amenity
+Where to have lunch,locate_amenity
+where there is the next hotel,locate_amenity
+where the GS,locate_amenity
+where's the nearest station?,locate_amenity
+where's the nearest petrol station,locate_amenity
+where's the nearest fast food place?,locate_amenity
+where's the nearest exit,locate_amenity
+where's starbucks?,locate_amenity
+where's houston,locate_amenity
+Where should i go to eat?,locate_amenity
+Where's burgers?,locate_amenity
+where's a good resturaunt,locate_amenity
+where restoran,locate_amenity
+where is there petrol?,locate_amenity
+where is there a good hotel,locate_amenity
+where is the next stop,locate_amenity
+where is the next pit stop ?,locate_amenity
+where is the next bus stop?,locate_amenity
+where is the next book store,locate_amenity
+Where is the nearest station?,locate_amenity
+where is the nearest railway station,locate_amenity
+where is the nearest police station here,locate_amenity
+Where is the nearest petrol station,locate_amenity
+where is the nearest petrol station?,locate_amenity
+where is the nearest gsa station?,locate_amenity
+where is the nearest gaz station,locate_amenity
+where is the nearest gasoline station ?,locate_amenity
+where is the nearest filling station,locate_amenity
+Where is the moon,locate_amenity
+where is the bus stop,locate_amenity
+where is the,locate_amenity
+where is Tacos,locate_amenity
+where is nearest petrol station,locate_amenity
+Where is my home?,locate_amenity
+where is my home,locate_amenity
+Where is my favorite restaraunt?,locate_amenity
+where is gus stations.,locate_amenity
+where is ATM,locate_amenity
+where is a petrol station ?,locate_amenity
+where is a petrol station,locate_amenity
+where is a gas station,locate_amenity
+where is a fuel station,locate_amenity
+where in the nearests CVS?,locate_amenity
+Where do I can get tacos?,locate_amenity
+where chinese restaulant?,locate_amenity
+Where can we go?,locate_amenity
+where can i have pizza,locate_amenity
+Where can I eat tacos?,locate_amenity
+where can i eat pizza,locate_amenity
+where can I eat a good steakc,locate_amenity
+where can i drink,locate_amenity
+where are we going to?,locate_amenity
+Where are the restrooms?,locate_amenity
+where are the closest restrooms,locate_amenity
+where are restrooms,locate_amenity
+Where are nhe neast gas station,locate_amenity
+Where are nearest McDonalds?,locate_amenity
+what type of restaurant you like?,locate_amenity
+What the nearest restrooms,locate_amenity
+what's the nearest?,locate_amenity
+what's the cheapest gas station around?,locate_amenity
+what's nearby Watson,locate_amenity
+Whats nearby,locate_amenity
+whats nearby?,locate_amenity
+what's near,locate_amenity
+what's close to me,locate_amenity
+what's closeby,locate_amenity
+What's around here?,locate_amenity
+whats a good restaurant around here?,locate_amenity
+What restrooms are nearby?,locate_amenity
+what restaurants,locate_amenity
+Â‹Ã›Ã›where is the nearest hotels?,locate_amenity
+actually I would like to stop at one further away,locate_amenity
+alright then. can you recommend a good place for a quick lunch?,locate_amenity
+Amenities,locate_amenity
+any gas stations?,locate_amenity
+any good restaurant there nearby,locate_amenity
+any place in the gas,locate_amenity
+Any restaurant around here?,locate_amenity
+any restaurant here?,locate_amenity
+any restrooms nearby,locate_amenity
+any ukrainian restaurants?,locate_amenity
+Are there any around here,locate_amenity
+are there any good restaurants near me?,locate_amenity
+Are there any italian restaurants nearby,locate_amenity
+are there any restaurants near by ?,locate_amenity
+bring me a beer,locate_amenity
+bring me to the beach,locate_amenity
+bring me to the beach.,locate_amenity
+bring me to the park,locate_amenity
+burgers nearby,locate_amenity
+buy me a dress,locate_amenity
+buy some food,locate_amenity
+Can I buy a humberger?,locate_amenity
+can i go to the park?,locate_amenity
+can I have some pizza?,locate_amenity
+can we drive to New York ?,locate_amenity
+can we go to Shell ?,locate_amenity
+can we go to the park?,locate_amenity
+can you drive downtown?,locate_amenity
+Can you drive me to pick up tickets for the circus,locate_amenity
+can you drive towards Resturant 2,locate_amenity
+can you find a good place to eat,locate_amenity
+can you find a wendy's on my way home,locate_amenity
+can you find gas station?,locate_amenity
+can you find me a restaurant,locate_amenity
+can you find my city ?,locate_amenity
+can you find the nearest for me,locate_amenity
+Can you give me directions?,locate_amenity
+can you give me the directions,locate_amenity
+can you go to the third gas station instead?,locate_amenity
+can you help me to get to sesame street,locate_amenity
+can you locate a gas station,locate_amenity
+can you show me the way please?,locate_amenity
+Can you take me home?,locate_amenity
+can you travel to italy?,locate_amenity
+Closest,locate_amenity
+closest brothel,locate_amenity
+closest burgers,locate_amenity
+closest cafe,locate_amenity
+Closest gas station,locate_amenity
+closest mcdonald's,locate_amenity
+closest one.,locate_amenity
+Closest one,locate_amenity
+closest one please,locate_amenity
+Coffee,locate_amenity
+coffee place,locate_amenity
+coffee shop?,locate_amenity
+"cool, now I wanna go to a partu",locate_amenity
+cool. restrooms nearby?,locate_amenity
+could you find gas station?,locate_amenity
+Did we reached restaurant,locate_amenity
+direction to pharmacy,locate_amenity
+Direction to San Diego Airport,locate_amenity
+direction to santa monica,locate_amenity
+Doctors nearby,locate_amenity
+do you know any chinese restaurants around,locate_amenity
+do you know a restaurant in new york city,locate_amenity
+do you know a restaurant in new york city?,locate_amenity
+do you know if there's any restaurant around here?,locate_amenity
+Do you know pizza?,locate_amenity
+do you know where the next gas station?,locate_amenity
+drive across the bridge,locate_amenity
+drive by local attractions,locate_amenity
+Drive home,locate_amenity
+Drive home.,locate_amenity
+drive in the field,locate_amenity
+Drive me home,locate_amenity
+Drive somewhere,locate_amenity
+drive through,locate_amenity
+Drive to a petrol station.,locate_amenity
+drive to the restaurant,locate_amenity
+Drop me to my office,locate_amenity
+fetch me lunch locations,locate_amenity
+fill the gas,locate_amenity
+finally this restaurant,locate_amenity
+Hmm I said Korean restaurant. None of the food you addressed is Korean food.,locate_amenity
+hmmm  the closest one,locate_amenity
+hotel nearby,locate_amenity
+hotel near by,locate_amenity
+hotels nearby?,locate_amenity
+how about pizza,locate_amenity
+how about pizza?,locate_amenity
+"how can i get to Gbagada, Lagos",locate_amenity
+how can i go for gas?,locate_amenity
+howe much time will it take to reach restroom 1,locate_amenity
+how far is the closest gas station,locate_amenity
+how far is the closest gas station?,locate_amenity
+how far is the n ex italian  restaurant,locate_amenity
+how far is the next restroom,locate_amenity
+how i get to a museum,locate_amenity
+how long does it take to the restroom?,locate_amenity
+How long is drive from Pittsburgh to new york,locate_amenity
+HOW MANY RESTAURANTS ARE NEAR BY?,locate_amenity
+how many times to the restaurant ?,locate_amenity
+how to drive home?,locate_amenity
+how to get home,locate_amenity
+How to get home?,locate_amenity
+how to go to the post office?,locate_amenity
+I am going to New York.,locate_amenity
+I am hungry,locate_amenity
+I am looking for gas station.,locate_amenity
+I am looking for restarurants,locate_amenity
+I'd like some coffee,locate_amenity
+I'd like to eat something,locate_amenity
+I'd like to get something to eat,locate_amenity
+I'd like to go camping,locate_amenity
+I'd like to go skiing,locate_amenity
+I'd like to go somewhere I can swim,locate_amenity
+I'd like to see a map,locate_amenity
+I'd like to see a movie.,locate_amenity
+I'd need a toilet,locate_amenity
+I dont have gas,locate_amenity
+i feel like getting a coffee,locate_amenity
+I have hungry like a wolf,locate_amenity
+I have to go to the bathroom,locate_amenity
+i like pizza,locate_amenity
+i like some coffee,locate_amenity
+I love spicy food,locate_amenity
+im almost out of gas,locate_amenity
+I'm craving a burger.,locate_amenity
+i'm hungry,locate_amenity
+im hungry I want to eat something,locate_amenity
+I'm in the mood for having a hamburger,locate_amenity
+"I'm thinking about a nice, juicy steak",locate_amenity
+I'm thinking about some beef jerky,locate_amenity
+I need a bathroom,locate_amenity
+I need a destination,locate_amenity
+I need a garage,locate_amenity
+I need a hospital,locate_amenity
+Find a fast food,locate_amenity
+find an amenity,locate_amenity
+Find an imvestor,locate_amenity
+find another route,locate_amenity
+find a restroom,locate_amenity
+find a taco place,locate_amenity
+Find bar,locate_amenity
+Find best option,locate_amenity
+find BP,locate_amenity
+find burger,locate_amenity
+find burgers,locate_amenity
+Find burger shop,locate_amenity
+find cafe,locate_amenity
+find calte,locate_amenity
+Find chicken,locate_amenity
+find chinese,locate_amenity
+find chinese restraunt,locate_amenity
+Find chipotle,locate_amenity
+find epteke,locate_amenity
+find fastest way,locate_amenity
+find food,locate_amenity
+find fuel,locate_amenity
+find gasstation,locate_amenity
+Find Gas Station,locate_amenity
+find gas station close,locate_amenity
+find gas station please,locate_amenity
+find gas station please.,locate_amenity
+find gus sation,locate_amenity
+Find hamburger,locate_amenity
+Find Hamburger shop,locate_amenity
+find home,locate_amenity
+find hospital,locate_amenity
+find hotel,locate_amenity
+find lclosest starbucks,locate_amenity
+Find Library.,locate_amenity
+find mall,locate_amenity
+find mcdonald,locate_amenity
+find mcdonalds,locate_amenity
+find mcdonlds,locate_amenity
+find me a restroom,locate_amenity
+find me gas station with cigerette counter,locate_amenity
+find me some tacos,locate_amenity
+Find me the hawker stall that sells fried carrot cake.,locate_amenity
+find me the neareset gas station,locate_amenity
+find me the next gas station,locate_amenity
+find motel,locate_amenity
+find movie,locate_amenity
+Find my school,locate_amenity
+find next gas station,locate_amenity
+find non veg restarant,locate_amenity
+find pasta,locate_amenity
+find petrol,locate_amenity
+Find Petrol pump,locate_amenity
+find pizzeria,locate_amenity
+find rest,locate_amenity
+find rest area,locate_amenity
+find restaurents,locate_amenity
+find resteraunt,locate_amenity
+"find restoran, please",locate_amenity
+find restorant,locate_amenity
+find restourants,locate_amenity
+find restraunts,locate_amenity
+Find restuarants,locate_amenity
+find resturant,locate_amenity
+find resturants,locate_amenity
+find resurant,locate_amenity
+find rstaurants,locate_amenity
+Find school,locate_amenity
+find seafood,locate_amenity
+find servo,locate_amenity
+find snacks bar,locate_amenity
+find some gas station,locate_amenity
+Find stadium,locate_amenity
+find starbucks,locate_amenity
+find stations then,locate_amenity
+find subway,locate_amenity
+find supermarket,locate_amenity
+find s washroom,locate_amenity
+Find tacos,locate_amenity
+find the cheapest gas station,locate_amenity
+find the closet gas station,locate_amenity
+find the gas station,locate_amenity
+find the italian restruant,locate_amenity
+find the last road,locate_amenity
+find the nearst gas station,locate_amenity
+find the next gasstation,locate_amenity
+Find the next gas station,locate_amenity
+find the next MCdonalds,locate_amenity
+Find the place with rich nature,locate_amenity
+find toilet,locate_amenity
+Find to me the nearest gaz station,locate_amenity
+find townsend hall,locate_amenity
+fly to North Carolina,locate_amenity
+food nearest food,locate_amenity
+fool i said i need to eat an ice cream,locate_amenity
+french restaurants are my fav,locate_amenity
+gas,locate_amenity
+gas fuel,locate_amenity
+Gas station nearby,locate_amenity
+gas stop,locate_amenity
+Get me an uber,locate_amenity
+Get me a sandwich,locate_amenity
+get me directions,locate_amenity
+get me gas station,locate_amenity
+get me home,locate_amenity
+get. Some tacos,locate_amenity
+Give me a pub street,locate_amenity
+give me directions,locate_amenity
+give me nearest burger joint,locate_amenity
+give me some drink,locate_amenity
+give me the address of italian restaurant,locate_amenity
+go back to homz,locate_amenity
+go for a city now,locate_amenity
+go for a swim,locate_amenity
+go get some tacos,locate_amenity
+gold to Olema,locate_amenity
+go to 2 gas station,locate_amenity
+go to 4,locate_amenity
+go to 5,locate_amenity
+go to 7-11,locate_amenity
+navigate to gas station,locate_amenity
+navigate to kochi,locate_amenity
+navigate to london,locate_amenity
+navigate to macdonalds,locate_amenity
+navigate to menara dayabumi,locate_amenity
+navigate to Pomona,locate_amenity
+navigate to school,locate_amenity
+navigate to superstore,locate_amenity
+navigate to the citibank,locate_amenity
+navigate to the mall,locate_amenity
+navigate to the nearest gas station,locate_amenity
+navigate to work,locate_amenity
+Navigation,locate_amenity
+nearby gas station,locate_amenity
+near by hospital,locate_amenity
+nearby hospital,locate_amenity
+nearby hotel,locate_amenity
+Nearby hotels,locate_amenity
+nearby hspitals,locate_amenity
+nearby mc donalds,locate_amenity
+nearby residents,locate_amenity
+nearby restaurant,locate_amenity
+near by restaurent,locate_amenity
+near by resturant,locate_amenity
+nearby rivers?,locate_amenity
+near by seattle,locate_amenity
+near by shopping,locate_amenity
+nearby supermarket,locate_amenity
+nearby Tacos,locate_amenity
+nearest restaurtant  aroungd me,locate_amenity
+near gasstation go,locate_amenity
+near one,locate_amenity
+near restrunt,locate_amenity
+near school,locate_amenity
+ned space to stay,locate_amenity
+need a gas station,locate_amenity
+need a map,locate_amenity
+need a restaurent,locate_amenity
+"nevermind, i think i need some food instead",locate_amenity
+"never mind, locate an amenity",locate_amenity
+no I mean the restaurant,locate_amenity
+no i need to eat ice creams,locate_amenity
+Okay let's go for burgers.,locate_amenity
+okay let's go for jazz,locate_amenity
+go to a,locate_amenity
+go to airport,locate_amenity
+go to amelia,locate_amenity
+go to amenity,locate_amenity
+go to amsterdam center,locate_amenity
+go to burgers,locate_amenity
+go to burguers,locate_amenity
+go to Campinas,locate_amenity
+go to cinema,locate_amenity
+go to disco,locate_amenity
+Go to Esso,locate_amenity
+go to first gas station,locate_amenity
+Go to five,locate_amenity
+go to fouth,locate_amenity
+go to gas station,locate_amenity
+go to gas station 1,locate_amenity
+go to gas station 1.,locate_amenity
+go to gas station 2,locate_amenity
+Go to Germany,locate_amenity
+Go to Hamilton,locate_amenity
+go to harden nsw,locate_amenity
+go to home.,locate_amenity
+Go to home,locate_amenity
+go to hospital,locate_amenity
+go to hotel,locate_amenity
+go to house,locate_amenity
+go to ibm hortolandia,locate_amenity
+go to LA,locate_amenity
+Go to London,locate_amenity
+Go to mauntain,locate_amenity
+go to mcdonalds,locate_amenity
+Go to moskow,locate_amenity
+Go to movie,locate_amenity
+go to natianal park,locate_amenity
+Go to NewYork,locate_amenity
+Go to number 2.,locate_amenity
+Go to NY,locate_amenity
+go to nyc,locate_amenity
+go to orlando,locate_amenity
+go to paris,locate_amenity
+go to park,locate_amenity
+go to piracicaba,locate_amenity
+go to restaraun,locate_amenity
+go to restaurannt,locate_amenity
+Go to restrant,locate_amenity
+go to restuarnts,locate_amenity
+go to resturunt,locate_amenity
+go to Safeway,locate_amenity
+Go to San Diego,locate_amenity
+go to san francisco,locate_amenity
+go to school,locate_amenity
+go to sea,locate_amenity
+go to service,locate_amenity
+go to shop,locate_amenity
+go to shp,locate_amenity
+go to spermarket,locate_amenity
+go to spot 1,locate_amenity
+go to starbucks,locate_amenity
+go to supermarket,locate_amenity
+Go to Tacos,locate_amenity
+go to the airport,locate_amenity
+go to the be4ach?,locate_amenity
+go to the beach,locate_amenity
+go to the beach?,locate_amenity
+go to the cinema,locate_amenity
+go to the closest,locate_amenity
+go to the country,locate_amenity
+go to the department store,locate_amenity
+go to the garden,locate_amenity
+Go to the gas station,locate_amenity
+Go to the graveyeard,locate_amenity
+Go to the grocery store,locate_amenity
+Go to the hospital,locate_amenity
+go to the hospitol,locate_amenity
+go to the korea,locate_amenity
+Go to the mountains,locate_amenity
+go to the movie,locate_amenity
+Go to the movies,locate_amenity
+go to the park,locate_amenity
+go to the post office,locate_amenity
+go to the restorant,locate_amenity
+go to the school,locate_amenity
+go to the sea,locate_amenity
+Go to the shops,locate_amenity
+go to the store,locate_amenity
+go to the studium,locate_amenity
+go to the supermarket,locate_amenity
+go to the tacos,locate_amenity
+go to the third gas station,locate_amenity
+go to the zoo,locate_amenity
+go to Toronto,locate_amenity
+go to usa,locate_amenity
+go to vienna,locate_amenity
+go to Wakayama in JAPAN,locate_amenity
+go to walmart,locate_amenity
+Go to work,locate_amenity
+go to zoo,locate_amenity
+got to sleep,locate_amenity
+guide me to the convenience store.,locate_amenity
+hello gas,locate_amenity
+help me to arrive to my place,locate_amenity
+"hey, I'm almost out of gas.",locate_amenity
+Hi tell me please were I can find Amatriciana pasta around here,locate_amenity
+"Hi Watson, where is the restaurant:",locate_amenity
+hi where do i get dentist,locate_amenity
+i need a hotel,locate_amenity
+i need another gas station,locate_amenity
+I need a resturant in nairobi,locate_amenity
+I need a toilet,locate_amenity
+i need directions to your moms house,locate_amenity
+I need gas station,locate_amenity
+I need restrooms,locate_amenity
+i need some beer,locate_amenity
+i need some coffee,locate_amenity
+I need some lunch,locate_amenity
+I need some money,locate_amenity
+i need to buy flowers,locate_amenity
+i need to do some shopping,locate_amenity
+I need to eat,locate_amenity
+i need to eat rice,locate_amenity
+what are the nearest restaurants,locate_amenity
+What distance is the 5 gas station?,locate_amenity
+What is an amenity?,locate_amenity
+what is closeby,locate_amenity
+what is gasoline?,locate_amenity
+What is good to eat?,locate_amenity
+what is near,locate_amenity
+what is nearby,locate_amenity
+what is near me,locate_amenity
+what is that green area,locate_amenity
+What is the closests motel,locate_amenity
+what is the nearest movie theatre,locate_amenity
+what is the next gas station?,locate_amenity
+Whatis the way to Sachsenhausen?,locate_amenity
+What is your advice where to eat fish,locate_amenity
+what place is most popular?,locate_amenity
+what restaurant?,locate_amenity
+what are some places nearby,locate_amenity
+what are some chinese restaurant,locate_amenity
+What about a gas station?,locate_amenity
+were is the nearest bar,locate_amenity
+We need gas,locate_amenity
+well you certainly are at the restaurant,locate_amenity
+well the next restaurant,locate_amenity
+Watson I need gas station,locate_amenity
+washrooms nearby,locate_amenity
+want to go to the rest room!,locate_amenity
+want to go to car shop,locate_amenity
+turn on the lights and find a restaurant,locate_amenity
+TThe closest,locate_amenity
+Traduzir  qual o restaurante mais perto  which the restaurant closer,locate_amenity
+Trace route to Sao Paulo,locate_amenity
+to the shops,locate_amenity
+to the cheapest,locate_amenity
+To numbre 2,locate_amenity
+to nr 2,locate_amenity
+to Nevada,locate_amenity
+to lima,locate_amenity
+To gas station please!,locate_amenity
+to eat Chinese food,locate_amenity
+to another place,locate_amenity
+the second pasta restaurant,locate_amenity
+the closest restaruant,locate_amenity
+The closest please,locate_amenity
+The closest ones,locate_amenity
+The closest one,locate_amenity
+The closest gas station.,locate_amenity
+the closest gas station,locate_amenity
+the cheapest restaurant?,locate_amenity
+tell me restaurants in seattle,locate_amenity
+tell me how can I go to my mother's house,locate_amenity
+tell me fancy restaurant,locate_amenity
+tell me about restaurants,locate_amenity
+tell me about gas stations,locate_amenity
+"take to naples, Italy",locate_amenity
+Take me to your favorite reteraunt,locate_amenity
+take me to New york,locate_amenity
+take me to nearest police station,locate_amenity
+take me to,locate_amenity
+take me homw,locate_amenity
+Take a right,locate_amenity
+tacos restaurant,locate_amenity
+tacos nearby,locate_amenity
+stop near some resturnant,locate_amenity
+stop near a grocery store,locate_amenity
+Stop for food or coffee,locate_amenity
+stop at the restroom,locate_amenity
+stop at restroom 1,locate_amenity
+someting near for meal,locate_amenity
+some mexican food,locate_amenity
+so can you lead me to the fastest way without the jams?,locate_amenity
+show whats near by,locate_amenity
+show the way to the gas station,locate_amenity
+show my way to home,locate_amenity
+show me these resturants,locate_amenity
+Show me the road,locate_amenity
+show me the next restrooms,locate_amenity
+show me the next bar,locate_amenity
+Show me the nearest one,locate_amenity
+show me the nearest grocery,locate_amenity
+show me the nearest gas station,locate_amenity
+show me the hotel,locate_amenity
+show me the best path,locate_amenity
+show me the 5th,locate_amenity
+show me startbucks,locate_amenity
+show me our route,locate_amenity
+show me nearest gas station,locate_amenity
+show me mexican,locate_amenity
+show me maps,locate_amenity
+show me map,locate_amenity
+show me houses in sun city west az.,locate_amenity
+show me gasstations,locate_amenity
+show me gas station,locate_amenity
+show me direction,locate_amenity
+show me burgers,locate_amenity
+show directions,locate_amenity
+shome me the closest burger restarurant,locate_amenity
+shome me the closest american restarurant,locate_amenity
+see if there are any chinese restaurants nearby,locate_amenity
+Search for a supermarket,locate_amenity
+resturant nearby,locate_amenity
+restrooms show,locate_amenity
+restroom,locate_amenity
+restaurants tacos,locate_amenity
+restaurants serving tacos,locate_amenity
+restaurants,locate_amenity
+Restaurant around this area,locate_amenity
+restaurant,locate_amenity
+restarurants near,locate_amenity
+Recommend somewhere to visit,locate_amenity
+Please tell me the best places to visit in 11040,locate_amenity
+please tell me nice restrant near here,locate_amenity
+please steer to the right,locate_amenity
+please show me resturants,locate_amenity
+please navigate go to restrant.,locate_amenity
+please go to Tacobell,locate_amenity
+please give me to my house,locate_amenity
+please fin nearby gas station,locate_amenity
+Please find the next gas station,locate_amenity
+please find the gas station,locate_amenity
+please find that gas station,locate_amenity
+please  find hospital,locate_amenity
+Please drive me home.,locate_amenity
+Please drive me home,locate_amenity
+"pizza, please.",locate_amenity
+pizza,locate_amenity
+parks nearby...,locate_amenity
+or the restaurant,locate_amenity
+or in the restaurant,locate_amenity
+order a pizza,locate_amenity
+ok restroom would be nice,locate_amenity
+Ok ....please find a good resort for me,locate_amenity
+"OK, lets go to Tokyo!",locate_amenity
+ok...lets go for a long drive,locate_amenity
+OK. go to No.3,locate_amenity
+"Ok, get me spaghettis",locate_amenity
+OK. Gas station. How far is the nearest gas station is located?,locate_amenity
+navigate to dayabumi,locate_amenity
+navigate to 4th,locate_amenity
+Navigate me to the next lake,locate_amenity
+Navigate me to the next city,locate_amenity
+navigate me to the coffe shop,locate_amenity
+name the restaurant,locate_amenity
+"mmm, i don't want music, i prefer you find me a good restaurant",locate_amenity
+make a coffee,locate_amenity
+looking for a movie,locate_amenity
+looking for a gas station,locate_amenity
+look for any pizza nearby,locate_amenity
+look for a gas station,locate_amenity
+locate the gas station within 1 KM,locate_amenity
+locate starbucks,locate_amenity
+locate poznan,locate_amenity
+Locate McDonalds,locate_amenity
+Locate gas station,locate_amenity
+locate burgers,locate_amenity
+locate ammenity,locate_amenity
+locate amenity,locate_amenity
+list of 5 next gas stations,locate_amenity
+let you to another city,locate_amenity
+let's stop at gas station,locate_amenity
+"lets not go to work, suggest somewhere nice",locate_amenity
+Lets head up to number 2,locate_amenity
+Lets go to the store,locate_amenity
+lets go to the river,locate_amenity
+lets go to the resturant,locate_amenity
+lets go to the park,locate_amenity
+Lets go to the number 5,locate_amenity
+lets go to rest room,locate_amenity
+Let's go to NY,locate_amenity
+Lets go to NewYork,locate_amenity
+lets go to france,locate_amenity
+lets go to burger king,locate_amenity
+let's go for rock,locate_amenity
+let's go for jazz,locate_amenity
+lets go for drive,locate_amenity
+let's get some grub,locate_amenity
+let's get home,locate_amenity
+let'd go to school,locate_amenity
+just the cheapest restaurant please,locate_amenity
+I would like to learn how to drive from Brooklyn to New York City,locate_amenity
+I would like to hear some pop,locate_amenity
+I would like to go to surfside.,locate_amenity
+I would like go to a restaurante,locate_amenity
+I would like a coffee,locate_amenity
+i would go to the seafood,locate_amenity
+I will go to the mountains,locate_amenity
+I will go to th Alps,locate_amenity
+I want to view a film,locate_amenity
+I want to stop for some food,locate_amenity
+i want to stop,locate_amenity
+I want to see a scenic place,locate_amenity
+i want to see a movie,locate_amenity
+can you navigate to my home,navigation
+what is the best route to a gas station,navigation
+Hi Watson! Please enable the GPS.,navigation
+how do i get from here to there,navigation
+How long does it take to get the first gas station?,navigation
+let me out,negative_reaction
+You're asking me too much,negative_reaction
+You don't know anything,negative_reaction
+you are useless,negative_reaction
+You are rubbish,negative_reaction
+You are bad,negative_reaction
+when will you die,negative_reaction
+What good are you anyway?,negative_reaction
+put up with it,negative_reaction
+Let me out!,negative_reaction
+i want you to die,negative_reaction
+Its not that good,negative_reaction
+i dont want u to do anything,negative_reaction
+I didn't say anything about weather.,negative_reaction
+go **** yourself,negative_reaction
+go and fuck you off,negative_reaction
+Get out of my car!,negative_reaction
+die,negative_reaction
+can you understand me,negative_reaction
+bad,negative_reaction
+are you dead yet,negative_reaction
+anything,not_specified
+any one,not_specified
+Any of them.,not_specified
+any,not_specified
+any goddam one!!!!,not_specified
+any near,not_specified
+any of them,not_specified
+your favorite,not_specified
+you decide,not_specified
+you can go with your favorite,not_specified
+Whatever you like,not_specified
+whatever you feel like,not_specified
+Whatever is farthest,not_specified
+whatever,not_specified
+play whatever you want,not_specified
+play anything u like,not_specified
+Pick any,not_specified
+no preference,not_specified
+I don't see anything,not_specified
+I don't see any options,not_specified
+I don't see any,not_specified
+I doesn't matter to me.,not_specified
+i didn't see any options,not_specified
+I did not say turn in anything I entered,not_specified
+I am not identifying any thing here,not_specified
+doesn't matter,not_specified
+do anything,not_specified
+but it doesn't really,not_specified
+as a matter of,not_specified
+anything would do,not_specified
+anything is fine,not_specified
+what is the traction control,out_of_scope
+Where is the fuse box located,out_of_scope
+Where is the fuse box,out_of_scope
+where can i start air conditioning,out_of_scope
+where are the lights,out_of_scope
+where are fog lights,out_of_scope
+what type of oil do i need,out_of_scope
+what's the tires pressure,out_of_scope
+What PSI do I inflate the spare tire to,out_of_scope
+what kind of fuel should i use,out_of_scope
+what kind of fuel does the car require,out_of_scope
+what is the vehicle stability control,out_of_scope
+what is the pre collision system,out_of_scope
+what are the crash ratings,out_of_scope
+turn off traffic info,out_of_scope
+switch on fog light,out_of_scope
+show me how to change the light bulbs,out_of_scope
+refilling the engine coolant,out_of_scope
+parking brake,out_of_scope
+operating the radio,out_of_scope
+opening the windows,out_of_scope
+low coolant,out_of_scope
+light bulbs replacement,out_of_scope
+Is there a warning light for low washer fluid,out_of_scope
+Is there an automatic parallel park feature,out_of_scope
+Is there a lane change assist feature,out_of_scope
+how to turn on warning lights,out_of_scope
+how to switch on the fog lights,out_of_scope
+how to replace light bulbs,out_of_scope
+How to connect bluetooth,out_of_scope
+how to change the oil,out_of_scope
+how to change oil,out_of_scope
+how to change engine oil,out_of_scope
+how to adjust the vehicle to vehicle distance,out_of_scope
+how often should i change the oil,out_of_scope
+How frequently should I change the oil,out_of_scope
+how do i wash the car,out_of_scope
+how do i use the traction control,out_of_scope
+how do i use the pre collision system,out_of_scope
+how do i use the iPod,out_of_scope
+how do i use the electric power steering,out_of_scope
+how do i use the blind spot monitor,out_of_scope
+How do I use cruise control,out_of_scope
+how do i unlock the windows,out_of_scope
+how do i turn on windscreen washer,out_of_scope
+how do i turn on traffic info,out_of_scope
+how do i turn on the traction control,out_of_scope
+how do i turn on the pre collision system,out_of_scope
+How do I turn on the high-beams,out_of_scope
+how do i turn on the fog lamps,out_of_scope
+how do i turn on the cruise control,out_of_scope
+how do i turn on the alarm,out_of_scope
+how do i turn on high beams,out_of_scope
+how do i turn on headlamps,out_of_scope
+how do i turn on front seat heating,out_of_scope
+how do i turn on cruise control,out_of_scope
+how do i turn on ambient lights,out_of_scope
+how do i turn on adaptive cruise control,out_of_scope
+how do i turn off voice guidance,out_of_scope
+how do i turn off the traction control,out_of_scope
+how do i turn off the high beams,out_of_scope
+how do i turn off the cruise control,out_of_scope
+how do i turn off the alarm,out_of_scope
+how do i turn off ambient lights,out_of_scope
+how do i tune the radio,out_of_scope
+how do i switch on the cruise control,out_of_scope
+how do i set the vehicle speed,out_of_scope
+how do i set the cruise speed,out_of_scope
+how do i set the adaptive cruise control speed,out_of_scope
+how do i select the song on the iPod,out_of_scope
+how do i select a desired track on the iPod,out_of_scope
+how do i scroll the screen,out_of_scope
+how do i save the seat position,out_of_scope
+how do i save my favourite radio station,out_of_scope
+how do i resume the vehicle speed,out_of_scope
+how do i resume the cruise speed,out_of_scope
+how do i resume cruise control,out_of_scope
+how do i refill the engine oil,out_of_scope
+How do I program my radio stations,out_of_scope
+how do i play the track on the iPod,out_of_scope
+how do i play an iPod,out_of_scope
+how do i pause song in my iPod,out_of_scope
+How do I pair my iPhone to the radio,out_of_scope
+How do I pair my android phone to the radio,out_of_scope
+how do i open the window,out_of_scope
+how do i open the tank fuel,out_of_scope
+how do i open the side window,out_of_scope
+how do i open the rear window,out_of_scope
+how do i open the power windows,out_of_scope
+how do i open the fuel filler flap,out_of_scope
+how do i open the doors,out_of_scope
+how do i lock the windows to prevent children from opening,out_of_scope
+how do i lock the windows,out_of_scope
+how do i lock the window,out_of_scope
+how do i find the fuel consumption,out_of_scope
+how do i fill in the engine oil,out_of_scope
+how do i disable the vehicle stability control,out_of_scope
+how do i control a phone,out_of_scope
+how do i connect USB device,out_of_scope
+how do i connect my phone,out_of_scope
+how do i close the window,out_of_scope
+how do i clean the vehicle,out_of_scope
+how do i change the oil,out_of_scope
+how do i change the lights bulb,out_of_scope
+how do i change the headlight bulbs,out_of_scope
+how do i change oil,out_of_scope
+how do i cancel cruise control,out_of_scope
+how do i browse the tracks on the iPod,out_of_scope
+how do i arm the alarm,out_of_scope
+how do i adjust the vehicle distance,out_of_scope
+how do i adjust the rear view mirror,out_of_scope
+how do i adjust the mirror inside,out_of_scope
+how do i adjust the mirror,out_of_scope
+how do i adjust the cruise control speed,out_of_scope
+how do i adjust head restraint,out_of_scope
+how do i adjust exterior mirrors,out_of_scope
+how can i replace light bulb,out_of_scope
+how can i lock the car,out_of_scope
+how can i find current level of oil,out_of_scope
+how can i connect the phone,out_of_scope
+how can i change oil,out_of_scope
+"Hi, I cannot find the button for emergency lamp",out_of_scope
+"Hi, how can I check my tire pressure?",out_of_scope
+fuel tank flap,out_of_scope
+coolant level,out_of_scope
+checking the engine oil,out_of_scope
+changing the light bulb,out_of_scope
+changing gears,out_of_scope
+change bulb,out_of_scope
+Can I play music through bluetooth from my phone,out_of_scope
+bluetooth,out_of_scope
+What's your phone number,phone
+use the phone,phone
+text someone,phone
+text mum i'll be late,phone
+text mom,phone
+Text me,phone
+start my call,phone
+smartphone,phone
+send an sms,phone
+phone box,phone
+make a phone call,phone
+I would like to call someone on the phone,phone
+I want to text my father,phone
+I'd like to make a call,phone
+I'd like to call my mom,phone
+Hello could you call a taxi?,phone
+do you have a phone,phone
+dial num 111,phone
+dial Home,phone
+Can you call Eliza?,phone
+call on the telephone,phone
+call dad,phone
+answer the phone,phone
+Thanks!,positive_reaction
+you are funny,positive_reaction
+This is good,positive_reaction
+This is awesome,positive_reaction
+Thank you very much,positive_reaction
+Thank you,positive_reaction
+thanks you are  funy,positive_reaction
+Thanks Watson,positive_reaction
+Thanks verymuch,positive_reaction
+Thanks u,positive_reaction
+Thanks mate,positive_reaction
+Thanks man,positive_reaction
+"thanks, man!",positive_reaction
+thanks for your support,positive_reaction
+thanks for,positive_reaction
+thanks dude,positive_reaction
+thanks a truck,positive_reaction
+Thanks.,positive_reaction
+Thanks,positive_reaction
+thankfully so,positive_reaction
+OK thanks,positive_reaction
+"ok, thanks",positive_reaction
+nice. thanks.,positive_reaction
+great! thanks!,positive_reaction
+"great, thanks!",positive_reaction
+"great, thanks",positive_reaction
+"excellent, thanks",positive_reaction
+Alright. Thanks!,positive_reaction
+what exactly do you have?,selections
+what option do you have?,selections
+What options?,selections
+what options are there?,selections
+what options do you have?,selections
+what options do ypu have?,selections
+can i trust you,system_reliance
+are you trustworthy,system_reliance
+"hey, now it's raining, you said you didn't know anything about that. Are you a liar?",system_reliance
+do you tell the truth,system_reliance
+do you lie,system_reliance
+can you guess what it is ?,system_reliance
+so long that still not arrive the resturant,traffic_update
+Will you tell me when we get there?,traffic_update
+when will we reach the next city,traffic_update
+when will we be there?,traffic_update
+when will we be there,traffic_update
+when will we arrive to gas station,traffic_update
+when will we arrive,traffic_update
+When will I be there?,traffic_update
+when will I arrive to destination?,traffic_update
+when we will be there?,traffic_update
+when rain there is lot of trafic jams,traffic_update
+when do we arrive,traffic_update
+when do i get there?,traffic_update
+When are we home,traffic_update
+what time will we arrive,traffic_update
+what time do we arrive?,traffic_update
+whats the traffic like on 101,traffic_update
+what's the Estimated Time of Arrival,traffic_update
+whats my ETA,traffic_update
+what;s my eta?,traffic_update
+whats ahead,traffic_update
+what my ETA?,traffic_update
+what my eta ?,traffic_update
+what is traffic like?,traffic_update
+what is the traffic situation in sao paulo right now?,traffic_update
+what is the traffic ?,traffic_update
+what is the ETA?,traffic_update
+what is the ETA,traffic_update
+what is may eta,traffic_update
+What is ETA,traffic_update
+what eta,traffic_update
+what about traffic,traffic_update
+traffic conditions on 85,traffic_update
+traffic conditions,traffic_update
+"so, what's our eta?",traffic_update
+raining! it'll definitely jam!,traffic_update
+please tell me when we will arrive to our destination,traffic_update
+"My ETA was 5 minutes, 5 minutes ago. What happened?",traffic_update
+is there any accident,traffic_update
+is there an accident ahead,traffic_update
+is the highway busy,traffic_update
+in what time we should get there?,traffic_update
+hows traffic looking,traffic_update
+hows traffic,traffic_update
+how's traffic,traffic_update
+how's the traffic today,traffic_update
+How's the traffic,traffic_update
+How much time to get there ?,traffic_update
+How much more time till we get home?,traffic_update
+How many miles until my destination?,traffic_update
+how long will we ride?,traffic_update
+how long will it take to my destination?,traffic_update
+How long will it take to get there,traffic_update
+how long will it take me,traffic_update
+HOW LONG WILL IT TAKE,traffic_update
+How long will it take?,traffic_update
+How long will it be until I reach my destination?,traffic_update
+how long we were going to Iraq,traffic_update
+how long until next stop?,traffic_update
+how long until I arrive,traffic_update
+how long to my home,traffic_update
+how long it would take me get home,traffic_update
+how long dose it take from here to 1,traffic_update
+How long does it take to the office?,traffic_update
+how long does it take me to New York,traffic_update
+How long does it take?,traffic_update
+how long does first take?,traffic_update
+How long distance is until destination?,traffic_update
+how long de gas station?,traffic_update
+how is traffic looking this evening,traffic_update
+how far until we stop?,traffic_update
+how far the restaurant,traffic_update
+how far si the next gas station?,traffic_update
+how far from my home?,traffic_update
+how far does it take from here to 1?,traffic_update
+how far,traffic_update
+Hi. How much time now?,traffic_update
+"Hey, when we will arrive?",traffic_update
+great how far from the restaurant,traffic_update
+give me traffic updates,traffic_update
+find eta,traffic_update
+ETA,traffic_update
+estimated time of arrival,traffic_update
+Estimated time left,traffic_update
+do you know about traffic,traffic_update
+Are we there yet?,traffic_update
+are we there yet,traffic_update
+Are we there?,traffic_update
+are we nearly there yet?,traffic_update
+Are we almost there?,traffic_update
+Are there any jams,traffic_update
+are there any accidents ahead,traffic_update
+AC low,turn_down
+decrease the volume,turn_down
+Reduce the fan speed,turn_down
+reduce the sound,turn_down
+set the ac to low,turn_down
+turn this sound down,turn_down
+slow down the wiper please,turn_down
+slow down the wipers,turn_down
+Slow the wipers down,turn_down
+switch down the heating,turn_down
+switch the ac to low,turn_down
+the music needs to be turned down,turn_down
+turn down the heating,turn_down
+turn dow nthe wipers,turn_down
+turn it down,turn_down
+turn my volume down,turn_down
+turn the heating down,turn_down
+turn the wipers down for me,turn_down
+turn the wipers on low,turn_down
+Decrease volume,turn_down
+heat low,turn_down
+I need you to turn my music down,turn_down
+lessen the ac,turn_down
+low AC,turn_down
+lower ac,turn_down
+lower heat,turn_down
+lower temperature,turn_down
+lower the volume,turn_down
+low volume,turn_down
+make it quieter,turn_down
+music down,turn_down
+please turn the fan down,turn_down
+power down the cooling,turn_down
+put ac on low,turn_down
+set off lights,turn_off
+I don't actually need the heater,turn_off
+i don't need lights anymore,turn_off
+I don't need the lights anymore,turn_off
+I need my heater off,turn_off
+"it is no longer raining, please stop the wiper",turn_off
+I want the ac off,turn_off
+i want to turn off,turn_off
+I would like you to turn off the lights,turn_off
+Let the lights stay turned off,turn_off
+lights be off,turn_off
+Lights off,turn_off
+Lights off!,turn_off
+lights off now,turn_off
+lights off plz,turn_off
+music stop,turn_off
+navigation off,turn_off
+need my wipers switched off,turn_off
+need the ac switched off,turn_off
+no jazz no,turn_off
+no jazz please,turn_off
+no more music,turn_off
+now you have to turn off both light wipers,turn_off
+off,turn_off
+Off lights,turn_off
+off lights and wipers,turn_off
+off navigation,turn_off
+off radio rain ends,turn_off
+off the lights,turn_off
+ok can you stop music?,turn_off
+ok stop music.,turn_off
+please stop music,turn_off
+please stop the call,turn_off
+power off the radio,turn_off
+Put off the lights,turn_off
+radio stop,turn_off
+shut,turn_off
+shut off,turn_off
+shut of the headlights,turn_off
+shut the lighs,turn_off
+shut the wipers,turn_off
+shutt off lights,turn_off
+shut up AC,turn_off
+sitch off the rear lights,turn_off
+sop music,turn_off
+stop,turn_off
+stop believe music please,turn_off
+stop de radio,turn_off
+stop it now.,turn_off
+stop [lay music,turn_off
+stop lights,turn_off
+stop music?,turn_off
+Stop Music,turn_off
+stop music please,turn_off
+stop my lights,turn_off
+stop play,turn_off
+Stop playing music,turn_off
+STop playing the music,turn_off
+stop pop music,turn_off
+stop radio,turn_off
+stop rock music,turn_off
+stop the,turn_off
+stop the ac,turn_off
+stop the call,turn_off
+stop the damn music,turn_off
+stop the fucking music,turn_off
+stop the lights,turn_off
+Stop the music,turn_off
+stop the music for a while,turn_off
+stop the music now,turn_off
+Stop the radio,turn_off
+stop this fucking music,turn_off
+stop voice,turn_off
+stop wipers and lights,turn_off
+switch it off,turn_off
+switch off my lights please,turn_off
+switch off the heater,turn_off
+switch the wipers off,turn_off
+swithch off lights,turn_off
+swoitch off the lights,turn_off
+swtich off the lights,turn_off
+the wiper is no longer needed,turn_off
+to off my ac,turn_off
+torn off lights,turn_off
+Truning off the lights,turn_off
+tunr off lights,turn_off
+turn air conditioning off,turn_off
+Turning off the lights,turn_off
+turn off,turn_off
+turn off air conditioning,turn_off
+Turn off car lights,turn_off
+Turn off my ac,turn_off
+turn off my radio please,turn_off
+turn off one of the lights,turn_off
+turn off on off the music,turn_off
+Turn off the air conditioning,turn_off
+turn off the lights for me,turn_off
+turn off the wipers please,turn_off
+Turn off the wipers when it stops raining,turn_off
+turno off the lights,turn_off
+turn the heater off,turn_off
+"whatson, stop this fucking car now",turn_off
+which off the lights,turn_off
+will you turn my ac off please,turn_off
+cancel,turn_off
+can I turn off the wipers,turn_off
+can you please turn the light on off ?,turn_off
+close,turn_off
+close ac,turn_off
+Close all windowss,turn_off
+close music,turn_off
+close radio,turn_off
+close the left ac vent,turn_off
+dirt off the lights,turn_off
+get off the lights bastart,turn_off
+hi lights off,turn_off
+hi off,turn_off
+how do you turn off wipers?,turn_off
+music player,turn_on
+Play dat spicy mixtape,turn_on
+soft music,turn_on
+rurn on lights,turn_on
+rock music please,turn_on
+Rock music is my favorite,turn_on
+Rock Music,turn_on
+Rock music.,turn_on
+Rocking music,turn_on
+recent music,turn_on
+really music,turn_on
+Rap music,turn_on
+random music,turn_on
+Put the lights on,turn_on
+put the air con on,turn_on
+Put something to play,turn_on
+put music,turn_on
+Put left indicator on,turn_on
+put jazz music,turn_on
+power up the ac,turn_on
+power on the lights,turn_on
+power on the heater,turn_on
+power on,turn_on
+pouse music,turn_on
+Poppurer music,turn_on
+pop music please,turn_on
+pop music,turn_on
+pley som rok music,turn_on
+"Please, turn the lights on",turn_on
+can you play rock-n-roll?,turn_on
+can you play rock and jazz,turn_on
+can you play rap,turn_on
+can you play radio for me,turn_on
+can you play queen,turn_on
+can you play pop,turn_on
+can you play one especific rock band?,turn_on
+can you play my favorite song,turn_on
+can you play mi favorite playlist?,turn_on
+Can you play metallica,turn_on
+can you play Meatloaf?,turn_on
+can you play jazz?,turn_on
+can you play jazz,turn_on
+can you play Imagine dragons?,turn_on
+can you play blues,turn_on
+can you play a song of my choice?,turn_on
+can you play a song?,turn_on
+can you play a song,turn_on
+can you play a really long song?,turn_on
+Can you play a happy song,turn_on
+can you play ac dc,turn_on
+can the lights  be turned on,turn_on
+Can i turn on the lights,turn_on
+Can I hear music?,turn_on
+can I have the headlights,turn_on
+can i have some cooling,turn_on
+brazilian music,turn_on
+blues music,turn_on
+blue music please,turn_on
+bethoveen classical music,turn_on
+Basim music,turn_on
+baroque music please,turn_on
+are my lights on,turn_on
+arabic music,turn_on
+any jazz music?,turn_on
+and they hid lights on,turn_on
+and set on lights,turn_on
+also turn on the lights,turn_on
+Air on please.,turn_on
+air on,turn_on
+air condition on,turn_on
+Air conditioner on,turn_on
+activate the music,turn_on
+activate the jams,turn_on
+Ãƒâ€šÃ‚Â´play music,turn_on
+ÃƒÂ¯Ã‚Â¼Ã‚Â©'d liket to listen to the radio,turn_on
+80's music,turn_on
+play song musing,turn_on
+"Play Song, El pollito",turn_on
+Play song,turn_on
+play som rock,turn_on
+play som nusic,turn_on
+play som jazz,turn_on
+"play something, then",turn_on
+play something that sucks,turn_on
+Play somethings,turn_on
+Play something over the speakers,turn_on
+play something of roue choice,turn_on
+Play something mellow,turn_on
+Play something in car rdaio,turn_on
+play something groovy,turn_on
+Play something,turn_on
+play som emusic,turn_on
+play some lights,turn_on
+play soem jazz,turn_on
+play soccer,turn_on
+play soad,turn_on
+play smth,turn_on
+play smooth jazz,turn_on
+play smoe musics,turn_on
+"Play Sinatra, please.",turn_on
+play She will be loved,turn_on
+Play shakira,turn_on
+play samba,turn_on
+play salsa,turn_on
+play rolling stones,turn_on
+play rock song,turn_on
+play rock please,turn_on
+play rock musis,turn_on
+Play rock musik,turn_on
+play rock musich,turn_on
+play rock musi,turn_on
+Play rock dude,turn_on
+play rock and blues,turn_on
+PLay rock,turn_on
+play rock!,turn_on
+Play rihanna,turn_on
+play reggae,turn_on
+Play Rebecca's album,turn_on
+Play r & b,turn_on
+play R&B,turn_on
+play Raul,turn_on
+turno on the lights,turn_on
+turno on lights,turn_on
+Turn on your lights.,turn_on
+turn. On your lights,turn_on
+turn on wipers when it is raining,turn_on
+turn on wipers. Full speed,turn_on
+Turn on wipers and lights,turn_on
+turn on th lights,turn_on
+turn on the wipers how,turn_on
+turn on the wipers and the lights,turn_on
+play rata blanca,turn_on
+Play rap,turn_on
+play ramazzotti,turn_on
+Play rains of castamere,turn_on
+play radio 4,turn_on
+Play radio,turn_on
+Play punk,turn_on
+play psico killer,turn_on
+play pop,turn_on
+play pokemon go,turn_on
+play please,turn_on
+Play PIN radio,turn_on
+Play Pink Floyd.,turn_on
+Play Pink Floyd,turn_on
+Play pegboard nerds,turn_on
+play pandora,turn_on
+play other genre,turn_on
+play NPR,turn_on
+Play No3.,turn_on
+play nirvana,turn_on
+Play Nicki Minaj.,turn_on
+play next song,turn_on
+Play newsheadline for me,turn_on
+Play news channle.,turn_on
+Play my tongue favorite song,turn_on
+play my jams,turn_on
+play my favourite song,turn_on
+Play my favorite song,turn_on
+play my favorit,turn_on
+play my cd,turn_on
+play muzik,turn_on
+play musuic,turn_on
+play muskc,turn_on
+play musix,turn_on
+play musioc,turn_on
+play musik,turn_on
+Play music or find restaurants?,turn_on
+play musica,turn_on
+play music',turn_on
+play musi,turn_on
+play musci,turn_on
+play musc,turn_on
+Play mudic,turn_on
+play mucsic,turn_on
+Play mucisc,turn_on
+play mucis,turn_on
+play mozart,turn_on
+play movie,turn_on
+play mmusic,turn_on
+Play misic,turn_on
+Play Michael Jackson,turn_on
+play michael bublet,turn_on
+play metalica,turn_on
+Play Metal,turn_on
+play me some rock,turn_on
+Play Megaphonix,turn_on
+play marvin gaye,turn_on
+play marc anthony,turn_on
+play lynard skynard,turn_on
+Play linkin park,turn_on
+play limp bizkit,turn_on
+play light,turn_on
+Play Led Zepplin,turn_on
+play led zeppelin,turn_on
+play lady gaga,turn_on
+play kiss 95.5,turn_on
+play kimigayo,turn_on
+play karnatic,turn_on
+play justin bieber,turn_on
+Play John Lennon,turn_on
+Play john cougar,turn_on
+play joe satriani,turn_on
+play joe cocker,turn_on
+play jimy hendrix,turn_on
+play jet,turn_on
+play j cole,turn_on
+Play Jazz song,turn_on
+play jazz please,turn_on
+play jazz headlights,turn_on
+Play jazz again please,turn_on
+PLay jazz,turn_on
+Play jazz.,turn_on
+play jasz,turn_on
+play jass,turn_on
+Play jackson,turn_on
+play iut,turn_on
+play it then,turn_on
+Play it!,turn_on
+play it,turn_on
+playing music,turn_on
+play imagine dragons,turn_on
+play Imagine Dragon,turn_on
+play hotel california,turn_on
+play hockey,turn_on
+Play hip hop!,turn_on
+play hip-hop,turn_on
+play hip hop,turn_on
+play hindi song,turn_on
+play heavy metal,turn_on
+play headlights jazz,turn_on
+play hard rock please,turn_on
+play guns and rosses,turn_on
+play greenday,turn_on
+Play Garbage,turn_on
+play games,turn_on
+Play game,turn_on
+Play Future,turn_on
+play funking jazz,turn_on
+play funk,turn_on
+play football?,turn_on
+play football,turn_on
+Player music,turn_on
+play elvis,turn_on
+play electro,turn_on
+played the music swept one pilots,turn_on
+play edm,turn_on
+play easy listening,turn_on
+play dvd,turn_on
+yup music,turn_on
+you can play rock,turn_on
+"yes,Turn on the lights",turn_on
+yes turn on the lights,turn_on
+"Wow, can you play jazz?",turn_on
+which genre can you play,turn_on
+what type of music?,turn_on
+what music do we have?,turn_on
+what music can you play?,turn_on
+what can I turn on?,turn_on
+what about techno music,turn_on
+what about soft music?,turn_on
+What about music,turn_on
+We should probably turn our lights on too,turn_on
+"watson, turn on the lights",turn_on
+watson please turn my ac on,turn_on
+watson play a song,turn_on
+Watson plase turn on the lights,turn_on
+want the lights switched on,turn_on
+want the lights activated,turn_on
+urn on the lights,turn_on
+urn on my lights,turn_on
+urn on lights,turn_on
+tuTurn on the lights,turn_on
+tur on the lights,turn_on
+turon on the lights,turn_on
+Turon on my lights,turn_on
+turn the wipers off on,turn_on
+Turn the lights on please..,turn_on
+Turn the lights on please,turn_on
+"turn the lights on, please",turn_on
+TURN THE LIGHTS ON,turn_on
+Turn the lights on.,turn_on
+turn the info screen on,turn_on
+play dance,turn_on
+play country,turn_on
+play coldplay,turn_on
+play coffee,turn_on
+play clezmer,turn_on
+play classic rock,turn_on
+play classical now,turn_on
+Play classical,turn_on
+Play classic,turn_on
+play chopin,turn_on
+Play chess,turn_on
+play chainsmoker closer,turn_on
+play cd,turn_on
+play bosa nova,turn_on
+Play Bon Jovi,turn_on
+play bollywood song,turn_on
+play bohemian rhapsody,turn_on
+play black metal,turn_on
+Play Beethoven,turn_on
+Play beatles,turn_on
+play Bach,turn_on
+Play a video,turn_on
+play a tune with michael jackson,turn_on
+play a song for me,turn_on
+Play a song,turn_on
+Play a Sade for me.,turn_on
+Play artist Halsey,turn_on
+play a nice song,turn_on
+Play an episode of Knight Rider,turn_on
+play a musi,turn_on
+Play a movie,turn_on
+play aloud,turn_on
+play a jazz song,turn_on
+play a guitarr,turn_on
+Play a game,turn_on
+play a dvd,turn_on
+play a classic song,turn_on
+Play ACDC,turn_on
+play ac dc,turn_on
+play a CD,turn_on
+play ac,turn_on
+play abba,turn_on
+Play 97.1 FM,turn_on
+play 21,turn_on
+play,turn_on
+pla music,turn_on
+pla a music watson,turn_on
+pick music,turn_on
+paly music,turn_on
+open the music,turn_on
+open source jazz music,turn_on
+On the Lights,turn_on
+on now,turn_on
+on my lights,turn_on
+On Lights,turn_on
+on left light,turn_on
+on,turn_on
+ok turn on the lights,turn_on
+Ok. Turning on the lights.,turn_on
+"ok, tun the lights on",turn_on
+okthen turn on the lights,turn_on
+ok then play,turn_on
+"ok, rock music",turn_on
+"ok, please play rock.",turn_on
+"Ok, Play som emusic",turn_on
+"ok, play rock",turn_on
+ok play rock,turn_on
+"Ok, play jazz",turn_on
+ok play it,turn_on
+ok. play Bad Religion for me,turn_on
+ok play,turn_on
+"ok ok, just turn on the lights then",turn_on
+ok now play beethoven,turn_on
+"ok, i'll listen to something then",turn_on
+"Ok, fine. Then turn the lights on",turn_on
+ok can youplay some rock,turn_on
+okay turn the lights on,turn_on
+Okay. Turn on the lights.,turn_on
+okay sing music,turn_on
+okay maybe play contemporary jazz songs.,turn_on
+oh just start the car and drive to manhatten,turn_on
+now switch the lights on again!,turn_on
+now do music,turn_on
+"No, turn on the lights",turn_on
+"no, play rock now",turn_on
+nice music,turn_on
+need the lights on,turn_on
+Music would be great.,turn_on
+music reagge,turn_on
+music pls,turn_on
+Music please.,turn_on
+Music please,turn_on
+music plays a means that,turn_on
+play drake,turn_on
+Music onn,turn_on
+music on~,turn_on
+music ok?,turn_on
+Music Jazz,turn_on
+Music from Dire Straits,turn_on
+music electronic,turn_on
+music?,turn_on
+music!,turn_on
+minimal music,turn_on
+metal music,turn_on
+Medival music please,turn_on
+Make music,turn_on
+make lights on,turn_on
+load other music,turn_on
+live music,turn_on
+litsen music,turn_on
+listen to radio,turn_on
+listen to music,turn_on
+listen jazz,turn_on
+Lisa music,turn_on
+Lights turn on,turn_on
+lights turn lights please then turn on the music,turn_on
+lights on turn,turn_on
+lights on please,turn_on
+Lights on,turn_on
+lights on!,turn_on
+lights must be ON,turn_on
+lights,turn_on
+light rock music,turn_on
+let us Lee my music,turn_on
+lets play piano,turn_on
+Let's listen to some tunes.,turn_on
+let's hear some music,turn_on
+let's have some classic,turn_on
+les soul music,turn_on
+late rock music,turn_on
+"jazz, play really loud",turn_on
+jazz music please,turn_on
+Jazz music,turn_on
+jazz is fine lets play it,turn_on
+japanese music,turn_on
+I would like to turn on the radio.,turn_on
+i would like to start the car,turn_on
+I would like to listen to some fine mozart,turn_on
+I would like to listening some music,turn_on
+I would like to hear some music,turn_on
+i wouÃƒÂ¶d ike music,turn_on
+i will hear music,turn_on
+I was to listen brought,turn_on
+i want to turn on the radio,turn_on
+I want to listen to jazz,turn_on
+i want to have the latest news,turn_on
+i want the wiper on,turn_on
+i want some rock,turn_on
+I want some Michael jackson.,turn_on
+i wannna hear  music,turn_on
+I wanna listen jazz,turn_on
+I wanna listen blues,turn_on
+it's raining turn on the shield,turn_on
+"it's raining, turn on",turn_on
+"It's raining, shouldn't you turn the wipers on?",turn_on
+"it's raining, can you turn on the windshield wipers",turn_on
+It's raining again. turn on the light.,turn_on
+it's hot in here,turn_on
+it's cold in here,turn_on
+it is raining. turn on the wipers,turn_on
+it is raining. please turn the wipers on,turn_on
+I think jazz music,turn_on
+I prefer the latino music,turn_on
+I need music,turn_on
+indie music,turn_on
+indian music,turn_on
+Indian classical music,turn_on
+"if the headlights are off, can you turn them on?",turn_on
+I'd like to listen to musci,turn_on
+I'd like to hear rock music,turn_on
+how to switch on my car,turn_on
+How can i turn the wipers on?,turn_on
+how about some rock music?,turn_on
+how about some music?,turn_on
+how about some music,turn_on
+House music,turn_on
+"Hi Watson, can you please play a song?",turn_on
+hi turn lights on,turn_on
+hi tun on,turn_on
+hip hop music,turn_on
+hi i like to hear some music,turn_on
+Hey Watson.. Turn on the lights,turn_on
+hello Watson please turn the lights on,turn_on
+"hello, my music is rock",turn_on
+head lights turn on,turn_on
+Head lights ON,turn_on
+hard rock music,turn_on
+halt the music,turn_on
+great shorts turn on lights,turn_on
+good song music,turn_on
+Give me some sound.,turn_on
+get those lights on,turn_on
+get music,turn_on
+get latin music,turn_on
+Folk music,turn_on
+first of all turn on the lights,turn_on
+fine turn on lights,turn_on
+find some music,turn_on
+find some jazz music,turn_on
+Find me some music,turn_on
+find me a good station,turn_on
+English Music,turn_on
+eletronic music,turn_on
+electronic music,turn_on
+electronic dance music,turn_on
+do you have any rock music,turn_on
+Cuban music,turn_on
+crank up the music,turn_on
+Country music.,turn_on
+could you please turn on the old headlights as it is getting rather dark,turn_on
+could you please light on please?,turn_on
+could you play jazz?,turn_on
+Could play Metallica,turn_on
+classic music. please,turn_on
+classic music please,turn_on
+Classic Music,turn_on
+Classic music.,turn_on
+classical music please,turn_on
+Classical music,turn_on
+Chinese music,turn_on
+chinese  music,turn_on
+can you turn on wipers when it is raining?,turn_on
+can you turn on the wipers,turn_on
+can you please music,turn_on
+can you play the wiper washer,turn_on
+Turn the head lights on,turn_on
+turn th ehead lights on,turn_on
+turn the headlights n,turn_on
+turn the fan on,turn_on
+turns eh lights on,turn_on
+Turn on the wipers and lights,turn_on
+turn on the strobe lights,turn_on
+turn on the lights too,turn_on
+Turn on the lights please.,turn_on
+Turn on the lights please?,turn_on
+"turn on the lights, please",turn_on
+turn on the lights please,turn_on
+turn on the lights place,turn_on
+Turn on the lights --  it's too dark outside,turn_on
+turn on the lights bitch,turn_on
+turn on the lights and wipers please,turn_on
+Turn on the lights and ac,turn_on
+Turn on the lights..,turn_on
+Turn on the lights.,turn_on
+Turn on the lights?,turn_on
+Turn on the lights!,turn_on
+Turn on the  lights,turn_on
+Turn on the lights,turn_on
+turn on the light,turn_on
+turn on the interior lights,turn_on
+turn on the heater please,turn_on
+Turn ON the Head Lights,turn_on
+Turn on the fan,turn_on
+"Turn on the car's engine, and drive off!",turn_on
+turn on the bright lights,turn_on
+turn on the ass fucking lights,turn_on
+turn on rear lights,turn_on
+turn on my phone,turn_on
+turn on my lights,turn_on
+Turnon music,turn_on
+turn on mu lights,turn_on
+Turn on mmy lights,turn_on
+turn on lights pls,turn_on
+turn on lights  plesae,turn_on
+turn on lights brighter,turn_on
+turn on lights and wipers,turn_on
+TURN ON LIGHTS,turn_on
+turn on lights.,turn_on
+turn on lights?,turn_on
+tur n on lights,turn_on
+turn on kitchen lights,turn_on
+Turn on head lights,turn_on
+turn on hazard lights,turn_on
+Turn on emergency lights,turn_on
+turn on cabin lights,turn_on
+turn on bright lights,turn_on
+Turn on back lights,turn_on
+turn on,turn_on
+turn off headlights on,turn_on
+Turn no my light,turn_on
+turn my wipers on,turn_on
+turn my lights on for me,turn_on
+turnm on your lights,turn_on
+turn lights on,turn_on
+turn lights and ac on,turn_on
+turning on lights,turn_on
+turning lights on,turn_on
+turn head lights on,turn_on
+turne on my lights,turn_on
+turn de lights on,turn_on
+tunr on the lights,turn_on
+tunr on lights,turn_on
+tuno on the lights,turn_on
+Tun on my lights,turn_on
+tun on lights,turn_on
+tune music,turn_on
+tuen on the lights,turn_on
+tuen on te lights,turn_on
+TTurn on the lights,turn_on
+trun on the lights,turn_on
+trun on my lights,turn_on
+Trun on lights,turn_on
+trun no the wipers,turn_on
+traditional music,turn_on
+to turn on the lights,turn_on
+torn on the lights,turn_on
+torn on the air conditioner,turn_on
+they're on the lights,turn_on
+the turn the lights on,turn_on
+then the lights on,turn_on
+Then please. Play jazz.,turn_on
+Then play jaZz,turn_on
+then on my lights,turn_on
+the music,turn_on
+that's good. please play some Jazz.,turn_on
+tern on air conditioner,turn_on
+ten on the lights,turn_on
+tell me about music,turn_on
+ta bom . play the boss hoss,turn_on
+swith on the lights,turn_on
+swith on lights,turn_on
+swithc on lights,turn_on
+switch the lights on.,turn_on
+switch the lights on,turn_on
+switch on the the ac,turn_on
+"switch on the lights, please.",turn_on
+switch on the lights please,turn_on
+Switch on the lights,turn_on
+switch on the lights.,turn_on
+switch on the lights?,turn_on
+switch on thec lights,turn_on
+Switch on lights,turn_on
+switch on emergency lights,turn_on
+Switch on an air conditioner.,turn_on
+switch on,turn_on
+switch lights on,turn_on
+switched the lights on,turn_on
+swicht on the lights,turn_on
+swich on the lights,turn_on
+sure play that,turn_on
+struck music,turn_on
+stock music,turn_on
+start up,turn_on
+start to drive,turn_on
+Start the radio,turn_on
+start air conditionare,turn_on
+start,turn_on
+"so, what if I want to make some noice",turn_on
+so please turn on the lights,turn_on
+so play it,turn_on
+Please turn the lights on,turn_on
+please turn  the lights on,turn_on
+Please turn on the lights,turn_on
+"please, turn on the lights",turn_on
+Please turn on the head lights.,turn_on
+Please turn on the head lights,turn_on
+please switch the night lights on,turn_on
+please switch on the lights,turn_on
+PLease put pop music,turn_on
+please put jazz music,turn_on
+please play youth by troye sivan,turn_on
+please play the jazz you want to so bad,turn_on
+please play something,turn_on
+PLease play Rock,turn_on
+"please, play rock",turn_on
+Please play radio,turn_on
+"please, play jazz",turn_on
+please play jazz,turn_on
+Please play faded,turn_on
+"please, play Elvis",turn_on
+please play a song,turn_on
+please play,turn_on
+please place in music,turn_on
+please music,turn_on
+please lights on?,turn_on
+Please i would like to hear some music,turn_on
+play your jazz!,turn_on
+play with me,turn_on
+play with hot rocks',turn_on
+play wipers,turn_on
+play wiper,turn_on
+play wipe,turn_on
+play Waterloo,turn_on
+play violin,turn_on
+play video,turn_on
+play U2,turn_on
+play tv,turn_on
+play tunes,turn_on
+play trance,turn_on
+play toto,turn_on
+play top 40,turn_on
+play the song Until you,turn_on
+"play the radio, please",turn_on
+Play the funtastic song.,turn_on
+Play the first one,turn_on
+play the death,turn_on
+Play the Beatles.,turn_on
+Play the beatles,turn_on
+play tecno,turn_on
+play techno,turn_on
+play taylor switch,turn_on
+play swing,turn_on
+play sum muzic,turn_on
+plays the music,turn_on
+play spotify,turn_on
+play sound,turn_on
+play soud,turn_on
+play soome muusic,turn_on
+Play songs by Metallica,turn_on
+play songs,turn_on
+place up,turn_up
+a bit louder,turn_up
+AC crank it up!,turn_up
+AC on Hi mode,turn_up
+AC to change mode HI,turn_up
+a lil more pl,turn_up
+A little bit louder please,turn_up
+a little louder,turn_up
+amplify the music,turn_up
+boost the ac,turn_up
+can you bump volume up?,turn_up
+can you increase the volume,turn_up
+can you make it louder,turn_up
+can you make Radia louder,turn_up
+can you turn my up heat,turn_up
+can you turn the heat up,turn_up
+change the AC to high,turn_up
+crank it up!,turn_up
+enhance the music,turn_up
+global headlights up,turn_up
+heater on high,turn_up
+Heat up,turn_up
+increase ac and volume,turn_up
+Increase my music volume,turn_up
+increase radio volume,turn_up
+increase the ac,turn_up
+increase the lights for me,turn_up
+increase the volume of music,turn_up
+intensify the volume,turn_up
+I want more light,turn_up
+i want radio up,turn_up
+level up,turn_up
+Louder,turn_up
+Louder please,turn_up
+louder volume,turn_up
+magnify the sound,turn_up
+make heater high,turn_up
+make it colder,turn_up
+make it hotter,turn_up
+Make music louder,turn_up
+make the radio louder,turn_up
+more,turn_up
+more ac,turn_up
+more cold,turn_up
+more cooler.,turn_up
+more cooler ac,turn_up
+more heat,turn_up
+More heater,turn_up
+more loud,turn_up
+more power,turn_up
+more volume,turn_up
+Music all the way up,turn_up
+Music louder,turn_up
+my radio up,turn_up
+play the louder,turn_up
+please turn my up wipers,turn_up
+please turn the up music,turn_up
+please turn up the ac,turn_up
+pls raise up the radio volume pls,turn_up
+pls volume up,turn_up
+power up ac,turn_up
+pump up that volume,turn_up
+put ac on high,turn_up
+put the AC more heat,turn_up
+set LP the AC,turn_up
+Set the 20 C degress,turn_up
+Set the 20 degrees,turn_up
+set the temperature cooler,turn_up
+set wipers to high,turn_up
+slightly louder please,turn_up
+"sorry, volume up",turn_up
+speed up the wipers,turn_up
+start fast,turn_up
+step up the wipers,turn_up
+Switch AC to high level,turn_up
+tone up,turn_up
+turn ac more higher,turn_up
+turn lights on high,turn_up
+Turn music up,turn_up
+turn my music up,turn_up
+Turn op the AC,turn_up
+turns up volume,turn_up
+turn that music up,turn_up
+turn the ac,turn_up
+turn the ac at mac,turn_up
+turn the headligt,turn_up
+turn the heat,turn_up
+turn the heating up now,turn_up
+turn the lights up,turn_up
+turn up low beam headlights,turn_up
+Turn up music,turn_up
+turn up radio's volume,turn_up
+turn up the wipers,turn_up
+turn up this music,turn_up
+up again,turn_up
+up temperature,turn_up
+up the radio,turn_up
+up vol,turn_up
+vlume up,turn_up
+voice up,turn_up
+Volume up,turn_up
+volume up please,turn_up
+volume up the music,turn_up
+windows up,turn_up
+wipers up,turn_up
+check the wether,weather
+check the weather,weather
+Check the weater,weather
+Can you tell me what the weather looks like?,weather
+can you tell me what's the weather will be in one hour if we keep goint in this direction?,weather
+Can we go someplace where it's not raining?,weather
+do you think will rain?,weather
+when the rain stops?,weather
+when the rain of end,weather
+when the rail will end,weather
+when rain ends,weather
+when rain,weather
+when all the rain and,weather
+what would be the weather 50 km ahead?,weather
+What weather do you like?,weather
+what weather?,weather
+What us weather in 08854,weather
+what time will the weather change,weather
+what's the weather out would be to destination,weather
+whats the weather outside,weather
+whats the weather like right now,weather
+what's the weather,weather
+Whats the temperature outside?,weather
+What's the temperature outside?,weather
+whats the outside air temperature?,weather
+what is the weather like,weather
+What is the weather going to be like,weather
+what is the tempreture outside,weather
+What is the temperature outside?,weather
+What is the temperature outside,weather
+what is the rain?,weather
+what is the outside temperature?,weather
+what abt weather today?,weather
+what about weather today?,weather
+What about weather?,weather
+What about weather,weather
+weather is cool.,weather
+watson when this rain will over,weather
+the weather is important to me,weather
+The sun is out,weather
+tell me the weather,weather
+rain rain go away,weather
+raining now,weather
+oops... it's raining again,weather
+"oh, it started to rain",weather
+"Oh, it's a sunny day",weather
+make it stop raining,weather
+look up the weather in tel aviv,weather
+look up the weather,weather
+i want to  weather news.,weather
+I want to see weather forecasts,weather
+I want to know the weather,weather
+it's sunny now,weather
+"it's sunny, maybe we don't need the lights",weather
+It's rain today.,weather
+Its Raining now,weather
+its raining now ?,weather
+it's raining ...,weather
+its is raining,weather
+it's hot,weather
+it's getting cold,weather
+it's cold today,weather
+It's cold here,weather
+It's become sunny now,weather
+It's a rainy day,weather
+"it is raining, what can you do ?",weather
+it isn't raining anymore,weather
+It is going to rain,weather
+it is cloudy now,weather
+it is a sunny day,weather
+is raining today,weather
+is raining now,weather
+Is raining?,weather
+is raining,weather
+is it sunny out?,weather
+is it rainning right?,weather
+Is it rainning now?,weather
+is it raining,weather
+is it gonna be raining,weather
+is it going to rain when we arrive?,weather
+is it going to rain today?,weather
+is it going to rain later today,weather
+is it going to rain for the entire day?,weather
+Is it going to rain all day?,weather
+Is it going to rain?,weather
+is it going to rain,weather
+is it dark outside,weather
+is it a sunny day,weather
+is it a nice day today?,weather
+is it a clear day ?,weather
+how warm is it,weather
+how`s the wheather,weather
+how's the wether,weather
+how many degrees are outside?,weather
+how long will it rain,weather
+How long until the rain ends?,weather
+how long till it rains,weather
+how long the rain?,weather
+how is the weater?,weather
+How is the typooon,weather
+How is the climate?,weather
+how hot is it outside,weather
+how hot,weather
+how cold is it outside,weather
+how cold is it out,weather
+how cold,weather
+How about this rain,weather
+"hi, what is the temperature in milan",weather
+"Hi, please tell me something about weather",weather
+hey watson it's not raining,weather
+Harvard is it going to rain,weather
+"Good weather, ya?",weather
+when were you there when rain is starch,weather
+do I need a jacket,weather
+Does the weather get worse,weather
+Does It raining all day?,weather
+check weather,weather
+check the wheather,weather
+will it be warm today?,weather
+Why it is raining?,weather
+why it is raining,weather
+Why is it raining today?,weather
+Why is it raining again,weather
+Why is it raining?,weather
+Why is it raining,weather
+why is it raining ?,weather
+wow .. it is raining in front of my car,weather
+Whn will this rain stop?,weather
+when wil the rain end?,weather
+when will this rain end?,weather
+when will this rain end,weather
+when will the sun set?,weather
+when will the sun come out,weather
+when will the sun begin?,weather
+when will the sun appear?,weather
+When will the rain stop,weather
+when will the rain arrive,weather
+When will it be sunny?,weather
+When will it be sunny,weather
+when will be the rain end ?,weather
+do you know weather today,weather
+Will rain stop?,weather
+will rain end?,weather
+will it rain much longer?,weather
