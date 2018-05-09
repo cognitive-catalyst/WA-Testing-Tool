@@ -12,7 +12,7 @@ from utils import WCS_USERNAME_ITEM, WCS_PASSWORD_ITEM, WCS_CREDS_SECTION, \
                   WORKSPACE_ID_TAG
 
 
-class trainConversationTestCase(CommandLineTestCase):
+class TrainConversationTestCase(CommandLineTestCase):
     def setUp(self):
         self.script_path = TRAIN_CONVERSATION_PATH
 

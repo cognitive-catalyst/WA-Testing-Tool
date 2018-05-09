@@ -51,7 +51,7 @@ TEST_CONVERSATION_PATH = os.path.join(current_file_path,
 CREATE_PRECISION_CURVE_PATH = os.path.join(current_file_path,
                                            'createPrecisionCurve.py')
 
-FOLD_NUM_DEFAULT = '5'
+FOLD_NUM_DEFAULT = 5
 WCS_VERSION = '2018-02-16'
 WORKSPACE_ID_TAG = 'workspace_id'
 TIME_TO_WAIT = 600

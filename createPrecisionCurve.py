@@ -230,5 +230,5 @@ def create_parser():
 
 
 if __name__ == '__main__':
-    ARGS = create_parser.parse_args()
+    ARGS = create_parser().parse_args()
     func(ARGS)

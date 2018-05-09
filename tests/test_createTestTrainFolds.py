@@ -7,7 +7,7 @@ sys.path.insert(0, tool_base)
 import createTestTrainFolds
 
 
-class TestTrainTrainFoldsTestCase(CommandLineTestCase):
+class CreateTestTrainFoldsTestCase(CommandLineTestCase):
     def setUp(self):
         self.parser = createTestTrainFolds.create_parser()
 
@@ -29,7 +29,8 @@ class TestTrainTrainFoldsTestCase(CommandLineTestCase):
                  '-o', self.test_dir, '-k', '5'])
         try:
             createTestTrainFolds.func(args)
-        except Exception:
+        except Exception as e:
+            print(e)
             raised = True
         self.assertFalse(raised, 'Exception raised')
 
