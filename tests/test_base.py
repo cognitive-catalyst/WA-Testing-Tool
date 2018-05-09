@@ -12,4 +12,7 @@ class CommandLineTestCase(TestCase):
         cls.test_dir = \
             os.path.join(
                 os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                'data', 'test_{}'.format(time.strftime('%Y%m%d-%H%M%S')))
+                'data1', 'test_{}'.format(time.strftime('%Y%m%d-%H%M%S')))
+
+        if not os.path.exists(cls.test_dir):
+            os.makedirs(cls.test_dir)

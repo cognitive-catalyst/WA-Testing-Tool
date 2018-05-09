@@ -45,8 +45,6 @@ class TrainConversationTestCase(CommandLineTestCase):
                     intent_path, '-e', entity_path, '-u', username, '-p',
                     password]
 
-            if not os.path.exists(self.test_dir):
-                os.makedirs(self.test_dir)
             workspace_spec_json = os.path.join(self.test_dir, SPEC_FILENAME)
 
             print('Begin training')
