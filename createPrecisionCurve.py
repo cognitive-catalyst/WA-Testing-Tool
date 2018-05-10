@@ -51,8 +51,7 @@ def func(args):
 
     classifier_stat_list = []
     cf_frames = []
-    # intent_uttr_num_mappings = []
-    confidences_in_results = pd.Series()
+    confidences_list = []
     intents_in_results = pd.Series()
 
     classifier_num = len(args.classifiers_results)
@@ -78,12 +77,11 @@ def func(args):
         # Collect all intents from the classification results
         intents_in_results = pd.concat([intents_in_results,
                                         frame[PREDICTED_INTENT_COLUMN]])
-        confidences_in_results = pd.concat([confidences_in_results,
-                                            frame[CONFIDENCE_COLUMN]])
+        confidences_list.append(frame[CONFIDENCE_COLUMN]
+                                .drop_duplicates().sort_values().tolist())
 
     intents_in_results = intents_in_results.drop_duplicates()
-    all_confidences = confidences_in_results.drop_duplicates().sort_values() \
-                                                              .tolist()
+
     # Read weight
     weights_df = None
     weight_mode = args.weight.lower()
@@ -103,15 +101,15 @@ def func(args):
             weight_mode = POPULATION_WEIGHT_MODE  # default population mode
             print('Fall back to {} mode'.format(POPULATION_WEIGHT_MODE))
 
-    confidence_num = len(all_confidences)
     # Init the classifier_stat_list:
     for i in range(classifier_num):
         # array of zeros to hold precision values
-        classifier_stat_list.append(np.zeros([confidence_num, 3]))
+        classifier_stat_list.append(np.zeros([len(confidences_list[i]), 3]))
 
-    for i in range(confidence_num):  # add +1 to include full range
-        conf = all_confidences[i]
-        for j in range(classifier_num):
+    for j in range(classifier_num):
+        confidences = confidences_list[j]
+        for i in range(len(confidences)):
+            conf = confidences[i]
             cf_frame = cf_frames[j]
             precision = 0
             answered = \
