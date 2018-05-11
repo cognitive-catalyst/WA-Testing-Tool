@@ -28,7 +28,7 @@ from utils import UTF_8, CONFIDENCE_COLUMN, \
     UTTERANCE_COLUMN, PREDICTED_INTENT_COLUMN, \
     DETECTED_ENTITY_COLUMN, DIALOG_RESPONSE_COLUMN, \
     marshall_entity, save_dataframe_as_csv, INTENT_JUDGE_COLUMN, \
-    TEST_OUT_FILENAME
+    TEST_OUT_FILENAME, BOOL_MAP
 
 test_out_header = [PREDICTED_INTENT_COLUMN, CONFIDENCE_COLUMN,
                    DETECTED_ENTITY_COLUMN, DIALOG_RESPONSE_COLUMN]
@@ -50,7 +50,8 @@ async def fill_df(utterance, row_idx, out_df, workspace_id, wa_username,
             auth=aiohttp.BasicAuth(wa_username, wa_password)) as session:
         url = 'https://gateway.watsonplatform.net/assistant/api/v1/workspaces/{}/message?version=2018-02-16'.format(workspace_id)
 
-        resp = await post(session, {'input': {'text': utterance}}, url, sem)
+        resp = await post(session, {'input': {'text': utterance},
+                                    'alternate_intents': True}, url, sem)
         intents = resp['intents']
         if len(intents) != 0:
             out_df.loc[row_idx, PREDICTED_INTENT_COLUMN] = \
@@ -104,12 +105,13 @@ def func(args):
     # Applied coroutines
     sem = asyncio.Semaphore(args.rate_limit)
     loop = asyncio.get_event_loop()
-    tasks = [asyncio.ensure_future(fill_df(out_df.loc[row_idx, test_column],
-                                           row_idx, out_df, args.workspace_id,
-                                           args.username, args.password,
-                                           sem))
-             for row_idx in range(out_df.shape[0])]
-    loop.run_until_complete(asyncio.wait(tasks))
+
+    tasks = (fill_df(out_df.loc[row_idx, test_column],
+                     row_idx, out_df, args.workspace_id,
+                     args.username, args.password, sem)
+             for row_idx in range(out_df.shape[0]))
+    loop.run_until_complete(asyncio.gather(*tasks))
+
     loop.close()
 
     if args.golden_intent_column is not None:
@@ -118,10 +120,9 @@ def func(args):
             print("No golden intent column '{}' is found in input."
                   .format(golden_intent_column))
         else:  # Add INTENT_JUDGE_COLUMN based on golden_intent_column
-            bool_map = {True: 'yes', False: 'no'}
             out_df[INTENT_JUDGE_COLUMN] = \
                 (in_df[golden_intent_column]
-                    == out_df[PREDICTED_INTENT_COLUMN]).map(bool_map)
+                    == out_df[PREDICTED_INTENT_COLUMN]).map(BOOL_MAP)
 
     save_dataframe_as_csv(df=out_df, file=args.outfile)
 

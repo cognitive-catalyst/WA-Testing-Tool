@@ -41,6 +41,12 @@ out_figure_path= ./data/figure.png
 fold_num = 5
 ; Keep or delete the workspaces after testing. Use 'yes' or 'no'
 keep_workspace_after_test = no
+; POPULATION, EQUAL or WEIGHT_FILE
+weight_mode = population
+; Test request rate
+max_test_rate = 100
+; Threshold of confidence
+conf_thres = 0.2
 
 
 [ASSISTANT CREDENTIALS]
@@ -102,3 +108,6 @@ For standard test, the input must only have one column or error will be thrown:
 ## Architecture
 
 ![Script Flow](resources/script-architecture.png)
+
+## Caveats
+Due to different coverage among service plans, user may need to adjust `max_test_rate` accordingly to avoid network connection error.

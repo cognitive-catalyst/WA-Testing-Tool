@@ -22,10 +22,12 @@ import subprocess
 import json
 from argparse import ArgumentParser
 import csv
+import pandas as pd
 from watson_developer_cloud import AssistantV1
 from utils import TRAIN_FILENAME, TEST_FILENAME, UTTERANCE_COLUMN, \
                   GOLDEN_INTENT_COLUMN, TEST_OUT_FILENAME, WORKSPACE_ID_TAG, \
-                  WCS_VERSION, UTF_8, INTENT_JUDGE_COLUMN
+                  WCS_VERSION, UTF_8, INTENT_JUDGE_COLUMN, BOOL_MAP, \
+                  DEFAULT_TEST_RATE, POPULATION_WEIGHT_MODE, DEFAULT_CONF_THRES
 
 # SECTIONS
 DEFAULT_SECTION = 'DEFAULT'
@@ -42,6 +44,9 @@ FIGURE_PATH_ITEM = 'out_figure_path'
 FOLD_NUM_ITEM = 'fold_num'
 DO_KEEP_WORKSPACE_ITEM = 'keep_workspace_after_test'
 PREVIOUS_BLIND_OUT_ITEM = 'previous_blind_out'
+MAX_TEST_RATE_ITEM = 'max_test_rate'
+WEIGHT_MODE_ITEM = 'weight_mode'
+CONF_THRES_ITEM = 'conf_thres'
 
 WCS_USERNAME_ITEM = 'username'
 WCS_PASSWORD_ITEM = 'password'
@@ -51,7 +56,6 @@ KFOLD = 'kfold'
 BLIND_TEST = 'blind'
 STANDARD_TEST = 'test'
 
-bool_map = {True: 'yes', False: 'no'}
 SPEC_FILENAME = 'workspace.json'
 
 current_file_path = os.path.dirname(__file__)
@@ -64,6 +68,10 @@ TEST_CONVERSATION_PATH = os.path.join(current_file_path,
                                       'testConversation.py')
 CREATE_PRECISION_CURVE_PATH = os.path.join(current_file_path,
                                            'createPrecisionCurve.py')
+# Max test request rate
+MAX_TEST_RATE = DEFAULT_TEST_RATE
+
+KFOLD_UNION_FILE = 'kfold-test-out-union.csv'
 
 
 def validate_config(fields, section):
@@ -89,7 +97,8 @@ def delete_workspaces(username, password, workspace_ids):
 
 
 def kfold(fold_num, temp_dir, intent_train_file, entity_train_file,
-          figure_path, keep_workspace, username, password):
+          figure_path, keep_workspace, username, password, weight_mode,
+          conf_thres):
     FOLD_TRAIN = 'fold_train'
     FOLD_TEST = 'fold_test'
     WORKSPACE_SPEC = 'fold_workspace'
@@ -102,7 +111,9 @@ def kfold(fold_num, temp_dir, intent_train_file, entity_train_file,
     print('{}={}'.format(FIGURE_PATH_ITEM, figure_path))
     print('{}={}'.format(TEMP_DIR_ITEM, temp_dir))
     print('{}={}'.format(FOLD_NUM_ITEM, fold_num))
-    print('{}={}'.format(DO_KEEP_WORKSPACE_ITEM, bool_map[keep_workspace]))
+    print('{}={}'.format(DO_KEEP_WORKSPACE_ITEM, BOOL_MAP[keep_workspace]))
+    print('{}={}'.format(WEIGHT_MODE_ITEM, weight_mode))
+    print('{}={}'.format(CONF_THRES_ITEM, conf_thres))
     print('{}={}'.format(WCS_USERNAME_ITEM, username))
 
     working_dir = os.path.join(temp_dir, KFOLD)
@@ -143,68 +154,87 @@ def kfold(fold_num, temp_dir, intent_train_file, entity_train_file,
         train_processes_specs[
             subprocess.Popen(train_args, stdout=spec_file)] = spec_file
 
-    train_failure_idx_str = []
+    train_failure_idx = []
     for idx, (process, file) in enumerate(train_processes_specs.items()):
         if process.wait() == 0:
             file.close()
         else:
-            train_failure_idx_str.append(str(idx))
-    if len(train_failure_idx_str) != 0:
-        raise RuntimeError(
-            'Fail to train {} fold workspace'.format(','.join(
-                train_failure_idx_str)))
+            train_failure_idx.append(idx)
 
-    print('Trained {} workspaces'.format(str(fold_num)))
+    try:
+        if len(train_failure_idx) != 0:
+            raise RuntimeError(
+                'Fail to train {} fold workspace'.format(','.join(
+                    str(train_failure_idx))))
 
-    # Begin testing
-    test_processes = []
-    workspace_ids = []
-    for fold_param in fold_params:
-        workspace_id = None
-        with open(fold_param[WORKSPACE_SPEC]) as f:
-            workspace_id = json.load(f)[WORKSPACE_ID_TAG]
-            workspace_ids.append(workspace_id)
-        test_args = [sys.executable, TEST_CONVERSATION_PATH,
-                     '-i', fold_param[FOLD_TEST],
-                     '-o', fold_param[TEST_OUT],
-                     '-u', username, '-p', password,
-                     '-t', UTTERANCE_COLUMN, '-g', GOLDEN_INTENT_COLUMN,
-                     '-w', workspace_id]
-        test_processes.append(subprocess.Popen(test_args))
+        print('Trained {} workspaces'.format(str(fold_num)))
 
-    test_failure_idx_str = []
-    for idx, process in enumerate(test_processes):
-        if process.wait() != 0:
-            test_failure_idx_str.append(str(idx))
+        # Begin testing
+        test_processes = []
+        workspace_ids = []
+        FOLD_TEST_RATE = int(MAX_TEST_RATE / fold_num)
+        for fold_param in fold_params:
+            workspace_id = None
+            with open(fold_param[WORKSPACE_SPEC]) as f:
+                workspace_id = json.load(f)[WORKSPACE_ID_TAG]
+                workspace_ids.append(workspace_id)
+            test_args = [sys.executable, TEST_CONVERSATION_PATH,
+                         '-i', fold_param[FOLD_TEST],
+                         '-o', fold_param[TEST_OUT],
+                         '-u', username, '-p', password,
+                         '-t', UTTERANCE_COLUMN, '-g', GOLDEN_INTENT_COLUMN,
+                         '-w', workspace_id, '-r', str(FOLD_TEST_RATE),
+                         '-m']
+            test_processes.append(subprocess.Popen(test_args))
 
-    if len(test_failure_idx_str) != 0:
-        raise RuntimeError('Fail to test {} fold workspace'.format(
-            ','.join(test_failure_idx_str)))
+        test_failure_idx_str = []
+        for idx, process in enumerate(test_processes):
+            if process.wait() != 0:
+                test_failure_idx_str.append(str(idx))
 
-    print('Tested {} workspaces'.format(str(fold_num)))
+        if len(test_failure_idx_str) != 0:
+            raise RuntimeError('Fail to test {} fold workspace'.format(
+                ','.join(test_failure_idx_str)))
 
-    test_out_files = [fold_param[TEST_OUT] for fold_param in fold_params]
+        print('Tested {} workspaces'.format(str(fold_num)))
 
-    classfier_names = ['Fold {}'.format(idx) for idx in range(fold_num)]
+        test_out_files = [fold_param[TEST_OUT] for fold_param in fold_params]
 
-    plot_args = [sys.executable, CREATE_PRECISION_CURVE_PATH,
-                 '-t', '{} Fold Test'.format(str(fold_num)),
-                 '-o', figure_path, '-n'] + classfier_names + \
-                ['-i'] + test_out_files
+        # Union test out
+        pd.concat([pd.read_csv(file, quoting=csv.QUOTE_ALL, encoding=UTF_8,
+                               keep_default_na=False)
+                   for file in test_out_files]) \
+          .to_csv(os.path.join(working_dir, KFOLD_UNION_FILE),
+                  encoding='utf-8', quoting=csv.QUOTE_ALL, index=False)
 
-    if subprocess.run(plot_args).returncode == 0:
-        print('Generated precision curves for {} folds'.format(
-            str(fold_num)))
-    else:
-        raise RuntimeError('Failure in plotting curves')
+        classfier_names = ['Fold {}'.format(idx) for idx in range(fold_num)]
 
-    if not keep_workspace:
-        delete_workspaces(username, password, workspace_ids)
+        plot_args = [sys.executable, CREATE_PRECISION_CURVE_PATH,
+                     '-t', '{} Fold Test'.format(str(fold_num)),
+                     '-o', figure_path, '-w', weight_mode,
+                     '--tau', conf_thres, '-n'] + \
+            classfier_names + ['-i'] + test_out_files
+
+        if subprocess.run(plot_args).returncode == 0:
+            print('Generated precision curves for {} folds'.format(
+                str(fold_num)))
+        else:
+            raise RuntimeError('Failure in plotting curves')
+    finally:
+        if not keep_workspace:
+            workspace_ids = []
+            for idx in range(fold_num):
+                if idx not in train_failure_idx:
+                    with open(fold_params[idx][WORKSPACE_SPEC]) as f:
+                        workspace_id = json.load(f)[WORKSPACE_ID_TAG]
+                        workspace_ids.append(workspace_id)
+
+            delete_workspaces(username, password, workspace_ids)
 
 
 def blind(temp_dir, intent_train_file, entity_train_file, figure_path,
           test_out_path, test_input_file, previous_blind_out, keep_workspace,
-          username, password):
+          username, password, weight_mode, conf_thres):
     print('Begin {} with following details:'.format(BLIND_TEST.upper()))
     print('{}={}'.format(INTENT_FILE_ITEM, intent_train_file))
     print('{}={}'.format(ENTITY_FILE_ITEM, entity_train_file))
@@ -213,7 +243,9 @@ def blind(temp_dir, intent_train_file, entity_train_file, figure_path,
     print('{}={}'.format(FIGURE_PATH_ITEM, figure_path))
     print('{}={}'.format(TEST_OUT_PATH_ITEM, test_out_path))
     print('{}={}'.format(TEMP_DIR_ITEM, temp_dir))
-    print('{}={}'.format(DO_KEEP_WORKSPACE_ITEM, bool_map[keep_workspace]))
+    print('{}={}'.format(DO_KEEP_WORKSPACE_ITEM, BOOL_MAP[keep_workspace]))
+    print('{}={}'.format(WEIGHT_MODE_ITEM, weight_mode))
+    print('{}={}'.format(CONF_THRES_ITEM, conf_thres))
     print('{}={}'.format(WCS_USERNAME_ITEM, username))
 
     # Validate previous blind out format
@@ -250,27 +282,29 @@ def blind(temp_dir, intent_train_file, entity_train_file, figure_path,
     workspace_id = None
     with open(workspace_spec_json, 'r') as f:
         workspace_id = json.load(f)[WORKSPACE_ID_TAG]
+    try:
+        if subprocess.run([sys.executable, TEST_CONVERSATION_PATH,
+                           '-i', test_input_file,
+                           '-o', test_out_path, '-m',
+                           '-u', username, '-p', password,
+                           '-t', UTTERANCE_COLUMN, '-g', GOLDEN_INTENT_COLUMN,
+                           '-w', workspace_id,
+                           '-r', str(MAX_TEST_RATE)]).returncode == 0:
+            print('Tested blind workspace')
+        else:
+            raise RuntimeError('Failure in testing blind data')
 
-    if subprocess.run([sys.executable, TEST_CONVERSATION_PATH,
-                       '-i', test_input_file,
-                       '-o', test_out_path, '-m',
-                       '-u', username, '-p', password,
-                       '-t', UTTERANCE_COLUMN, '-g', GOLDEN_INTENT_COLUMN,
-                       '-w', workspace_id]).returncode == 0:
-        print('Tested blind workspace')
-    else:
-        raise RuntimeError('Failure in testing blind data')
-
-    if subprocess.run([sys.executable, CREATE_PRECISION_CURVE_PATH,
-                       '-t', 'Blind Test',
-                       '-o', figure_path, '-n'] + classfier_names +
-                      ['-i'] + test_out_files).returncode == 0:
-        print('Generated precision curves for blind set')
-    else:
-        raise RuntimeError('Failure in plotting curves')
-
-    if not keep_workspace:
-        delete_workspaces(username, password, [workspace_id])
+        if subprocess.run([sys.executable, CREATE_PRECISION_CURVE_PATH,
+                           '-t', 'Golden Test Set', '-w', weight_mode, '--tau',
+                           conf_thres, '-o', figure_path,
+                           '-n'] + classfier_names +
+                          ['-i'] + test_out_files).returncode == 0:
+            print('Generated precision curves for blind set')
+        else:
+            raise RuntimeError('Failure in plotting curves')
+    finally:
+        if not keep_workspace:
+            delete_workspaces(username, password, [workspace_id])
 
 
 def test(temp_dir, intent_train_file, entity_train_file, test_out_path,
@@ -281,7 +315,7 @@ def test(temp_dir, intent_train_file, entity_train_file, test_out_path,
     print('{}={}'.format(TEST_FILE_ITEM, test_input_file))
     print('{}={}'.format(TEST_OUT_PATH_ITEM, test_out_path))
     print('{}={}'.format(TEMP_DIR_ITEM, temp_dir))
-    print('{}={}'.format(DO_KEEP_WORKSPACE_ITEM, bool_map[keep_workspace]))
+    print('{}={}'.format(DO_KEEP_WORKSPACE_ITEM, BOOL_MAP[keep_workspace]))
     print('{}={}'.format(WCS_USERNAME_ITEM, username))
 
     # Validate test file
@@ -315,18 +349,20 @@ def test(temp_dir, intent_train_file, entity_train_file, test_out_path,
     workspace_id = None
     with open(workspace_spec_json, 'r') as f:
         workspace_id = json.load(f)[WORKSPACE_ID_TAG]
-
-    if subprocess.run([sys.executable, TEST_CONVERSATION_PATH,
-                       '-i', test_input_file,
-                       '-o', test_out_path, '-m',
-                       '-u', username, '-p', password,
-                       '-w', workspace_id] + extra_params).returncode == 0:
-        print('Tested workspace')
-    else:
-        raise RuntimeError('Failure in testing data')
-
-    if not keep_workspace:
-        delete_workspaces(username, password, [workspace_id])
+    try:
+        if subprocess.run([sys.executable, TEST_CONVERSATION_PATH,
+                           '-i', test_input_file,
+                           '-o', test_out_path, '-m',
+                           '-u', username, '-p', password,
+                           '-w', workspace_id,
+                           '-r', str(MAX_TEST_RATE)] + extra_params
+                          ).returncode == 0:
+            print('Tested workspace')
+        else:
+            raise RuntimeError('Failure in testing data')
+    finally:
+        if not keep_workspace:
+            delete_workspaces(username, password, [workspace_id])
 
 
 def func(args):
@@ -425,6 +461,23 @@ def func(args):
 
     mode = default_section[MODE_ITEM].lower()  # Ignore case
 
+    if MAX_TEST_RATE_ITEM in default_section:
+        user_test_rate = default_section[MAX_TEST_RATE_ITEM]
+        try:
+            global MAX_TEST_RATE
+            MAX_TEST_RATE = int(user_test_rate)
+        except ValueError as e:
+            print(e)
+    print('Maximum testing rate: {}/cycle'.format(MAX_TEST_RATE))
+
+    weight_mode = POPULATION_WEIGHT_MODE
+    if WEIGHT_MODE_ITEM in default_section:
+        weight_mode = default_section[WEIGHT_MODE_ITEM]
+
+    conf_thres_str = str(DEFAULT_CONF_THRES)
+    if CONF_THRES_ITEM in default_section:
+        conf_thres_str = default_section[CONF_THRES_ITEM]
+
     if KFOLD == mode:
         # Field validation for kfold
         validate_config([FOLD_NUM_ITEM, FIGURE_PATH_ITEM], default_section)
@@ -435,8 +488,8 @@ def func(args):
               entity_train_file=entity_train_file,
               figure_path=default_section[FIGURE_PATH_ITEM],
               keep_workspace=keep_workspace,
-              username=username,
-              password=password)
+              username=username, password=password,
+              weight_mode=weight_mode, conf_thres=conf_thres_str)
     else:
         validate_config([TEST_FILE_ITEM, TEST_OUT_PATH_ITEM], default_section)
 
@@ -451,8 +504,8 @@ def func(args):
                   test_out_path=default_section[TEST_OUT_PATH_ITEM],
                   previous_blind_out=previous_blind_out,
                   keep_workspace=keep_workspace,
-                  username=username,
-                  password=password)
+                  username=username, password=password,
+                  weight_mode=weight_mode, conf_thres=conf_thres_str)
         elif STANDARD_TEST == mode:
             test(temp_dir=default_section[TEMP_DIR_ITEM],
                  intent_train_file=default_section[INTENT_FILE_ITEM],
