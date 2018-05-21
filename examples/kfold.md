@@ -15,9 +15,7 @@ User's workspace must allow to create 5 more workspaces.
 ```
 [DEFAULT]
 mode = KFOLD
-intent_train_file = ./data/intent_train_file.csv
-; optional
-entity_train_file = ./data/entity_train_file.csv
+workspace_id = 01234567-9ABC-DEF0-1234-56789ABCDEF0
 temporary_file_directory = ./data
 out_figure_path= ./data/figure.png
 ; number of folds
@@ -30,10 +28,6 @@ keep_workspace_after_test = no
 username = <wa username>
 password = <wa password>
 ```
-
-`intent_train_file.csv` - Provided training set of intents.
-
-`entity_train_file.csv` - (Optional) Provided training set of entities.
 
 ## Sample output
 ![KFold curves](../resources/kfold-curves.png)

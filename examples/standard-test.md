@@ -11,9 +11,7 @@ The is one and only one column in `test_input_file.csv`, which is used for testi
 ```
 [DEFAULT]
 mode = TEST
-intent_train_file = ./data/intent_train_file.csv
-; optional
-entity_train_file = ./data/entity_train_file.csv
+workspace_id = 01234567-9ABC-DEF0-1234-56789ABCDEF0
 test_input_file = ./data/test.csv
 test_output_path = ./data/test-out.csv
 temporary_file_directory = ./data

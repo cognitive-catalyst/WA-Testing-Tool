@@ -3,7 +3,7 @@
 Given an training set of Assistant intents with optional entities set, the user wants to test its performance by using a blind set.
 
 ## Workflow
-Unlike k fold process, no seperate folds will be created. Only one workspace is going to be trained using all of the training set. After the testing, both the test output and the `previous_test_out` are feed into `createPrecisionCurve.py` for plotting curves.
+Unlike k fold process, no separate folds will be created. Only one workspace is going to be trained using all of the training set. After the testing, both the test output and the `previous_test_out` are feed into `createPrecisionCurve.py` for plotting curves.
 
 ## Input file
 `config.ini`
@@ -11,9 +11,7 @@ Unlike k fold process, no seperate folds will be created. Only one workspace is 
 ```
 [DEFAULT]
 mode = BLIND
-intent_train_file = ./data/intent_train_file.csv
-; optional
-entity_train_file = ./data/entity_train_file.csv
+workspace_id = 01234567-9ABC-DEF0-1234-56789ABCDEF0
 test_input_file = ./data/test.csv
 ; optional
 previous_blind_out = ./data/previous_blind_out.csv
@@ -31,11 +29,7 @@ password = <wa password>
 
 ```
 
-`intent_train_file.csv` - Provided training set of intents.
-
 `test_input_file` - Blind test set.
-
-`entity_train_file.csv` - (Optional) Provided training set of entities.
 
 `previous_blind_out` - (Optional) Test output from previous blind test result.
 

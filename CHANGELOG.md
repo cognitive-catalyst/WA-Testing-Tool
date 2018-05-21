@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## 2018-05-21
+### Added
+- Refactored training input to only use workspace ID
+
 ## 2018-05-09
 ### Added
 - Test cases for three modes and all sub-scripts are provided along with testing resources
