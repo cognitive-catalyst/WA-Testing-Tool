@@ -153,9 +153,9 @@ def create_parser():
     parser.add_argument('-w', '--workspace_id', type=str, required=True,
                         help='Workspace ID')
     parser.add_argument('-u', '--username', type=str, required=True,
-                        help='Conversation service username')
+                        help='Assistant service username')
     parser.add_argument('-p', '--password', type=str, required=True,
-                        help='Conversation service password')
+                        help='Assistant service password')
     parser.add_argument('-t', '--test_column', type=str,
                         help='Test column name in input file')
     parser.add_argument('-m', '--merge_input', action='store_true',

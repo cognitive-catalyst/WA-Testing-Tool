@@ -19,19 +19,33 @@ from test_base import CommandLineTestCase
 import sys
 import configparser
 import subprocess
+import json
 import os
 tool_base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, tool_base)
-from utils import FOLD_NUM_DEFAULT, KFOLD, BLIND_TEST, STANDARD_TEST
+from utils import FOLD_NUM_DEFAULT, KFOLD, BLIND_TEST, STANDARD_TEST, \
+                  TRAIN_CONVERSATION_PATH, WCS_CREDS_SECTION, \
+                  WCS_USERNAME_ITEM, WCS_PASSWORD_ITEM, \
+                  WORKSPACE_ID_TAG, SPEC_FILENAME, BOOL_MAP, delete_workspaces
+
+from run import WORKSPACE_ID_ITEM, MODE_ITEM, DEFAULT_SECTION, \
+                DO_KEEP_WORKSPACE_ITEM, TEMP_DIR_ITEM, FIGURE_PATH_ITEM, \
+                FOLD_NUM_ITEM, PREVIOUS_BLIND_OUT_ITEM, TEST_FILE_ITEM, \
+                TEST_OUT_PATH_ITEM
 
 
 class RunTestCase(CommandLineTestCase):
     def setUp(self):
         self.script_path = os.path.join(tool_base, 'run.py')
-        self.intent_path = os.path.join(tool_base, 'resources', 'sample',
-                                        'intents.csv')
-        self.entity_path = os.path.join(tool_base, 'resources', 'sample',
-                                        'entities.csv')
+        self.train_path = TRAIN_CONVERSATION_PATH
+
+        config_path = os.path.join(tool_base, 'config.ini')
+        config = configparser.ConfigParser()
+        config.read(config_path)
+
+        config[DEFAULT_SECTION][DO_KEEP_WORKSPACE_ITEM] = BOOL_MAP[False]
+
+        self.config = config
 
     def test_with_empty_args(self):
         """ User passes no args, should fail with SystemExit
@@ -50,29 +64,48 @@ class RunTestCase(CommandLineTestCase):
         if not os.path.exists(kfold_test_dir):
             os.makedirs(kfold_test_dir)
 
-        config_path = os.path.join(tool_base, 'config.ini')
-        config = configparser.ConfigParser()
-        config.read(config_path)
+        intent_path = os.path.join(tool_base, 'resources', 'sample',
+                                   'intents.csv')
+        entity_path = os.path.join(tool_base, 'resources', 'sample',
+                                   'entities.csv')
 
-        config['DEFAULT'] = {
-            'mode': KFOLD,
-            'intent_train_file': self.intent_path,
-            'entity_train_file': self.entity_path,
-            'temporary_file_directory': kfold_test_dir,
-            'out_figure_path': os.path.join(kfold_test_dir, 'figure.png'),
-            'fold_num': FOLD_NUM_DEFAULT,
-            'keep_workspace_after_test': 'no'
-        }
+        username = self.config[WCS_CREDS_SECTION][WCS_USERNAME_ITEM]
+        password = self.config[WCS_CREDS_SECTION][WCS_PASSWORD_ITEM]
+
+        args = [sys.executable, TRAIN_CONVERSATION_PATH, '-i', intent_path,
+                '-e', entity_path, '-u', username, '-p', password]
+
+        workspace_spec_json = os.path.join(self.test_dir, SPEC_FILENAME)
+        # Train a new instance in order to pull the workspace detail
+        print('Begin training for setting up environment')
+        with open(workspace_spec_json, 'w+') as f:
+            if subprocess.run(args, stdout=f).returncode != 0:
+                print('Training failed')
+                print(f.read())
+                raise Exception()
+
+        with open(workspace_spec_json, 'r') as f:
+            self.config[DEFAULT_SECTION][WORKSPACE_ID_ITEM] = \
+                json.load(f)[WORKSPACE_ID_TAG]
+
+        self.config[DEFAULT_SECTION][MODE_ITEM] = KFOLD
+        self.config[DEFAULT_SECTION][TEMP_DIR_ITEM] = kfold_test_dir
+        self.config[DEFAULT_SECTION][FIGURE_PATH_ITEM] = \
+            os.path.join(kfold_test_dir, 'figure.png')
+        self.config[DEFAULT_SECTION][FOLD_NUM_ITEM] = str(FOLD_NUM_DEFAULT)
 
         kfold_config_path = os.path.join(kfold_test_dir, 'config.ini')
 
         with open(kfold_config_path, 'w') as configfile:
-            config.write(configfile)
+            self.config.write(configfile)
 
         args = [sys.executable, self.script_path, '-c', kfold_config_path]
 
         if subprocess.run(args).returncode != 0:
             raised = True
+
+        delete_workspaces(username, password,
+                          [self.config[DEFAULT_SECTION][WORKSPACE_ID_ITEM]])
 
         self.assertFalse(raised, 'Exception raised')
 
@@ -85,13 +118,11 @@ class RunTestCase(CommandLineTestCase):
         if not os.path.exists(blind_test_dir):
             os.makedirs(blind_test_dir)
 
-        config_path = os.path.join(tool_base, 'config.ini')
-        config = configparser.ConfigParser()
-        config.read(config_path)
-
         # Use fold 0 training input as intent
         intent_path = os.path.join(tool_base, 'resources', 'sample', 'kfold',
                                    '0', 'train.csv')
+        entity_path = os.path.join(tool_base, 'resources', 'sample',
+                                   'entities.csv')
 
         test_input_path = os.path.join(tool_base, 'resources', 'sample',
                                        'kfold', '0', 'test.csv')
@@ -99,27 +130,48 @@ class RunTestCase(CommandLineTestCase):
         previous_blind_out_path = os.path.join(tool_base, 'resources',
                                                'sample', 'kfold', '1',
                                                'test-out.csv')
-        config['DEFAULT'] = {
-            'mode': BLIND_TEST,
-            'intent_train_file': intent_path,
-            'entity_train_file': self.entity_path,
-            'test_input_file': test_input_path,
-            'previous_blind_out': previous_blind_out_path,
-            'test_output_path': os.path.join(blind_test_dir, 'test-out.csv'),
-            'temporary_file_directory': blind_test_dir,
-            'out_figure_path': os.path.join(blind_test_dir, 'figure.png'),
-            'keep_workspace_after_test': 'no'
-        }
+
+        username = self.config[WCS_CREDS_SECTION][WCS_USERNAME_ITEM]
+        password = self.config[WCS_CREDS_SECTION][WCS_PASSWORD_ITEM]
+
+        args = [sys.executable, TRAIN_CONVERSATION_PATH, '-i', intent_path,
+                '-e', entity_path, '-u', username, '-p', password]
+
+        workspace_spec_json = os.path.join(self.test_dir, SPEC_FILENAME)
+        # Train a new instance in order to pull the workspace detail
+        print('Begin training for setting up environment')
+        with open(workspace_spec_json, 'w+') as f:
+            if subprocess.run(args, stdout=f).returncode != 0:
+                print('Training failed')
+                print(f.read())
+                raise Exception()
+
+        with open(workspace_spec_json, 'r') as f:
+            self.config[DEFAULT_SECTION][WORKSPACE_ID_ITEM] = \
+                json.load(f)[WORKSPACE_ID_TAG]
+
+        self.config[DEFAULT_SECTION][MODE_ITEM] = BLIND_TEST
+        self.config[DEFAULT_SECTION][TEMP_DIR_ITEM] = blind_test_dir
+        self.config[DEFAULT_SECTION][FIGURE_PATH_ITEM] = \
+            os.path.join(blind_test_dir, 'figure.png')
+        self.config[DEFAULT_SECTION][PREVIOUS_BLIND_OUT_ITEM] = \
+            previous_blind_out_path
+        self.config[DEFAULT_SECTION][TEST_FILE_ITEM] = test_input_path
+        self.config[DEFAULT_SECTION][TEST_OUT_PATH_ITEM] = \
+            os.path.join(blind_test_dir, 'test-out.csv')
 
         blind_config_path = os.path.join(blind_test_dir, 'config.ini')
 
         with open(blind_config_path, 'w') as configfile:
-            config.write(configfile)
+            self.config.write(configfile)
 
         args = [sys.executable, self.script_path, '-c', blind_config_path]
 
         if subprocess.run(args).returncode != 0:
             raised = True
+
+        delete_workspaces(username, password,
+                          [self.config[DEFAULT_SECTION][WORKSPACE_ID_ITEM]])
 
         self.assertFalse(raised, 'Exception raised')
 
@@ -132,36 +184,52 @@ class RunTestCase(CommandLineTestCase):
         if not os.path.exists(std_test_dir):
             os.makedirs(std_test_dir)
 
-        config_path = os.path.join(tool_base, 'config.ini')
-        config = configparser.ConfigParser()
-        config.read(config_path)
-
         # Use fold 0 training input as intent
         intent_path = os.path.join(tool_base, 'resources', 'sample', 'kfold',
                                    '0', 'train.csv')
+        entity_path = os.path.join(tool_base, 'resources', 'sample',
+                                   'entities.csv')
+
+        username = self.config[WCS_CREDS_SECTION][WCS_USERNAME_ITEM]
+        password = self.config[WCS_CREDS_SECTION][WCS_PASSWORD_ITEM]
+
+        args = [sys.executable, TRAIN_CONVERSATION_PATH, '-i', intent_path,
+                '-e', entity_path, '-u', username, '-p', password]
+
+        workspace_spec_json = os.path.join(self.test_dir, SPEC_FILENAME)
+        # Train a new instance in order to pull the workspace detail
+        print('Begin training for setting up environment')
+        with open(workspace_spec_json, 'w+') as f:
+            if subprocess.run(args, stdout=f).returncode != 0:
+                print('Training failed')
+                print(f.read())
+                raise Exception()
+
+        with open(workspace_spec_json, 'r') as f:
+            self.config[DEFAULT_SECTION][WORKSPACE_ID_ITEM] = \
+                json.load(f)[WORKSPACE_ID_TAG]
 
         test_input_path = os.path.join(tool_base, 'resources', 'sample',
                                        'kfold', '0', 'test.csv')
 
-        config['DEFAULT'] = {
-            'mode': STANDARD_TEST,
-            'intent_train_file': intent_path,
-            'entity_train_file': self.entity_path,
-            'test_input_file': test_input_path,
-            'test_output_path': os.path.join(std_test_dir, 'test-out.csv'),
-            'temporary_file_directory': std_test_dir,
-            'keep_workspace_after_test': 'no'
-        }
+        self.config[DEFAULT_SECTION][MODE_ITEM] = STANDARD_TEST
+        self.config[DEFAULT_SECTION][TEMP_DIR_ITEM] = std_test_dir
+        self.config[DEFAULT_SECTION][TEST_FILE_ITEM] = test_input_path
+        self.config[DEFAULT_SECTION][TEST_OUT_PATH_ITEM] = \
+            os.path.join(std_test_dir, 'test-out.csv')
 
         std_config_path = os.path.join(std_test_dir, 'config.ini')
 
         with open(std_config_path, 'w') as configfile:
-            config.write(configfile)
+            self.config.write(configfile)
 
         args = [sys.executable, self.script_path, '-c', std_config_path]
 
         if subprocess.run(args).returncode != 0:
             raised = True
+
+        delete_workspaces(username, password,
+                          [self.config[DEFAULT_SECTION][WORKSPACE_ID_ITEM]])
 
         self.assertFalse(raised, 'Exception raised')
 

@@ -23,6 +23,8 @@ UTF_8 = 'utf-8'
 TRAIN_FILENAME = 'train.csv'
 TEST_FILENAME = 'test.csv'
 TEST_OUT_FILENAME = 'test-out.csv'
+TRAIN_INTENT_FILENAME = 'intent-train.csv'
+TRAIN_ENTITY_FILENAME = 'entity-train.csv'
 
 # CSV column names
 INTENT_COLUMN = 'intent'
@@ -50,6 +52,9 @@ TEST_CONVERSATION_PATH = os.path.join(current_file_path,
                                       'testConversation.py')
 CREATE_PRECISION_CURVE_PATH = os.path.join(current_file_path,
                                            'createPrecisionCurve.py')
+WORKSPACE_PARSER_PATH = os.path.join(current_file_path,
+                                     'workspaceParser.py')
+
 
 # MODE
 KFOLD = 'kfold'

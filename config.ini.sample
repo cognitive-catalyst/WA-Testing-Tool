@@ -1,9 +1,7 @@
 [DEFAULT]
 ; KFOLD, BLIND or TEST
 mode = kfold
-workspace_json_dump = ./data/workspace-sample.json
-intent_train_file = ./data/intent-train.csv
-entity_train_file = ./data/entity-train.csv
+workspace_id = 01234567-9ABC-DEF0-1234-56789ABCDEF0
 ; Test input file for blind and standard test
 test_input_file = ./data/test.csv
 ; Previous blind test out
