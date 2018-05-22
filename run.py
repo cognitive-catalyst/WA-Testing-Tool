@@ -27,11 +27,15 @@ from watson_developer_cloud import AssistantV1
 from utils import TRAIN_FILENAME, TEST_FILENAME, UTTERANCE_COLUMN, \
                   GOLDEN_INTENT_COLUMN, TEST_OUT_FILENAME, WORKSPACE_ID_TAG, \
                   WCS_VERSION, UTF_8, INTENT_JUDGE_COLUMN, BOOL_MAP, \
-                  DEFAULT_TEST_RATE, POPULATION_WEIGHT_MODE, DEFAULT_CONF_THRES
+                  DEFAULT_TEST_RATE, POPULATION_WEIGHT_MODE, \
+                  DEFAULT_CONF_THRES, WCS_USERNAME_ITEM, WCS_PASSWORD_ITEM, \
+                  WCS_CREDS_SECTION, CREATE_TEST_TRAIN_FOLDS_PATH, \
+                  TRAIN_CONVERSATION_PATH, TEST_CONVERSATION_PATH, \
+                  CREATE_PRECISION_CURVE_PATH, SPEC_FILENAME, \
+                  delete_workspaces, KFOLD, BLIND_TEST, STANDARD_TEST
 
 # SECTIONS
 DEFAULT_SECTION = 'DEFAULT'
-WCS_CREDS_SECTION = 'ASSISTANT CREDENTIALS'
 
 MODE_ITEM = 'mode'
 WORKSPACE_DUMP_ITEM = 'workspace_json_dump'
@@ -48,26 +52,6 @@ MAX_TEST_RATE_ITEM = 'max_test_rate'
 WEIGHT_MODE_ITEM = 'weight_mode'
 CONF_THRES_ITEM = 'conf_thres'
 
-WCS_USERNAME_ITEM = 'username'
-WCS_PASSWORD_ITEM = 'password'
-
-# MODE
-KFOLD = 'kfold'
-BLIND_TEST = 'blind'
-STANDARD_TEST = 'test'
-
-SPEC_FILENAME = 'workspace.json'
-
-current_file_path = os.path.dirname(__file__)
-# Sub-script paths
-CREATE_TEST_TRAIN_FOLDS_PATH = os.path.join(current_file_path,
-                                            'createTestTrainFolds.py')
-TRAIN_CONVERSATION_PATH = os.path.join(current_file_path,
-                                       'trainConversation.py')
-TEST_CONVERSATION_PATH = os.path.join(current_file_path,
-                                      'testConversation.py')
-CREATE_PRECISION_CURVE_PATH = os.path.join(current_file_path,
-                                           'createPrecisionCurve.py')
 # Max test request rate
 MAX_TEST_RATE = DEFAULT_TEST_RATE
 
@@ -86,14 +70,6 @@ def list_workspaces(username, password):
     c = AssistantV1(username=username, password=password,
                     version=WCS_VERSION)
     return c.list_workspaces()
-
-
-def delete_workspaces(username, password, workspace_ids):
-    c = AssistantV1(username=username, password=password,
-                    version=WCS_VERSION)
-    for workspace_id in workspace_ids:
-        c.delete_workspace(workspace_id=workspace_id)
-    print('Cleaned up workspaces')
 
 
 def kfold(fold_num, temp_dir, intent_train_file, entity_train_file,
@@ -519,10 +495,14 @@ def func(args):
             raise ValueError("Unknown mode '{}'".format(mode))
 
 
-if __name__ == '__main__':
-    PARSER = ArgumentParser(
+def create_parser():
+    parser = ArgumentParser(
         description='Run assistant testing pipeline')
-    PARSER.add_argument('-c', '--config_file', type=str,
+    parser.add_argument('-c', '--config_file', type=str,
                         required=True, help='Intent file')
-    ARGS = PARSER.parse_args()
+    return parser
+
+
+if __name__ == '__main__':
+    ARGS = create_parser().parse_args()
     func(ARGS)

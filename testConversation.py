@@ -127,28 +127,32 @@ def func(args):
     save_dataframe_as_csv(df=out_df, file=args.outfile)
 
 
-if __name__ == '__main__':
-    PARSER = ArgumentParser(
+def create_parser():
+    parser = ArgumentParser(
         description='Test conversation instance using utterance')
-    PARSER.add_argument('-i', '--infile', type=str, required=True,
+    parser.add_argument('-i', '--infile', type=str, required=True,
                         help='File that contains test data')
-    PARSER.add_argument('-o', '--outfile', type=str,
+    parser.add_argument('-o', '--outfile', type=str,
                         help='Output file path',
                         default=os.path.join(os.getcwd(), TEST_OUT_FILENAME))
-    PARSER.add_argument('-w', '--workspace_id', type=str, required=True,
+    parser.add_argument('-w', '--workspace_id', type=str, required=True,
                         help='Workspace ID')
-    PARSER.add_argument('-u', '--username', type=str, required=True,
+    parser.add_argument('-u', '--username', type=str, required=True,
                         help='Conversation service username')
-    PARSER.add_argument('-p', '--password', type=str, required=True,
+    parser.add_argument('-p', '--password', type=str, required=True,
                         help='Conversation service password')
-    PARSER.add_argument('-t', '--test_column', type=str,
+    parser.add_argument('-t', '--test_column', type=str,
                         help='Test column name in input file')
-    PARSER.add_argument('-m', '--merge_input', action='store_true',
+    parser.add_argument('-m', '--merge_input', action='store_true',
                         default=False,
                         help='Merge input content into test out')
-    PARSER.add_argument('-g', '--golden_intent_column', type=str,
+    parser.add_argument('-g', '--golden_intent_column', type=str,
                         help='Golden column name in input file')
-    PARSER.add_argument('-r', '--rate_limit', type=int, default=1,
+    parser.add_argument('-r', '--rate_limit', type=int, default=1,
                         help='Maximum number of requests per second')
-    ARGS = PARSER.parse_args()
+    return parser
+
+
+if __name__ == '__main__':
+    ARGS = create_parser().parse_args()
     func(ARGS)
