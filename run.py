@@ -32,13 +32,14 @@ from utils import TRAIN_FILENAME, TEST_FILENAME, UTTERANCE_COLUMN, \
                   WCS_CREDS_SECTION, CREATE_TEST_TRAIN_FOLDS_PATH, \
                   TRAIN_CONVERSATION_PATH, TEST_CONVERSATION_PATH, \
                   CREATE_PRECISION_CURVE_PATH, SPEC_FILENAME, \
-                  delete_workspaces, KFOLD, BLIND_TEST, STANDARD_TEST
+                  delete_workspaces, KFOLD, BLIND_TEST, STANDARD_TEST, \
+                  WORKSPACE_PARSER_PATH
 
 # SECTIONS
 DEFAULT_SECTION = 'DEFAULT'
 
 MODE_ITEM = 'mode'
-WORKSPACE_DUMP_ITEM = 'workspace_json_dump'
+WORKSPACE_ID_ITEM = 'workspace_id'
 INTENT_FILE_ITEM = 'intent_train_file'
 ENTITY_FILE_ITEM = 'entity_train_file'
 TEST_FILE_ITEM = 'test_input_file'
@@ -368,58 +369,26 @@ def func(args):
     default_section = config[DEFAULT_SECTION]
 
     # Main params validation
-    validate_config([MODE_ITEM, TEMP_DIR_ITEM],
+    validate_config([MODE_ITEM, TEMP_DIR_ITEM, WORKSPACE_ID_ITEM],
                     default_section)
 
-    if WORKSPACE_DUMP_ITEM in default_section:
-        # Parse into entity train and intent train
-        # Overwrite the default intent train and entity train
-        temp_dir = default_section[TEMP_DIR_ITEM]
-        intent_train_file = os.path.join(temp_dir, 'intent-train.csv')
-        entity_train_file = os.path.join(temp_dir, 'entity-train.csv')
-        with open(default_section[WORKSPACE_DUMP_ITEM], 'r') as f:
-            workspace = json.load(f)
-            intent_exports = workspace['intents']
-            entity_exports = workspace['entities']
-            if len(intent_exports) == 0:
-                raise ValueError("No intent is found in workspace")
-            # Parse intents to file
-            example_num = 0
-            with open(intent_train_file, 'w') as csvfile:
-                intent_writer = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
-                for intent_export in workspace['intents']:
-                    intent = intent_export['intent']
-                    if len(intent_export['examples']) == 0:
-                        intent_writer.writerow(['', intent])
-                        example_num += 1
-                    else:
-                        for example in intent_export['examples']:
-                            intent_writer.writerow([example['text'], intent])
-                            example_num += 1
+    temp_dir = default_section[TEMP_DIR_ITEM]
 
-            default_section[INTENT_FILE_ITEM] = intent_train_file
+    # Prepare folds
+    if subprocess.run([sys.executable, WORKSPACE_PARSER_PATH,
+                       '-w', default_section[WORKSPACE_ID_ITEM],
+                       '-o', temp_dir,
+                       '-u', username, '-p', password],
+                      stdout=subprocess.PIPE).returncode == 0:
+        print('Parsed workspace')
+    else:
+        raise RuntimeError('Failure in parsing workspace')
 
-            if len(entity_exports) != 0:
-                # Parse entities to file
-                with open(entity_train_file, 'w') as csvfile:
-                    entity_writer = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
-                    for entity_export in workspace['entities']:
-                        entity = entity_export['entity']
-                        for value_export in entity_export['values']:
-                            row = [entity, value_export['value']]
-                            if 'synonyms' in value_export:
-                                row += value_export['synonyms']
-                            elif 'patterns' in value_export:
-                                row += ['/{}/'.format(pattern)
-                                        for pattern in value_export['patterns']
-                                        ]
-                            entity_writer.writerow(row)
+    intent_train_file = os.path.join(temp_dir, 'intent-train.csv')
+    entity_train_file = os.path.join(temp_dir, 'entity-train.csv')
 
-                default_section[ENTITY_FILE_ITEM] = entity_train_file
-
-    elif INTENT_FILE_ITEM not in default_section:
-        raise ValueError("Item '{}' or '{}' is missing in config file".
-                         format(INTENT_FILE_ITEM, WORKSPACE_DUMP_ITEM))
+    if not os.path.isfile(entity_train_file):
+        entity_train_file = None
 
     # Convert yes/no to boolean
     keep_workspace = False
@@ -430,10 +399,6 @@ def func(args):
             raise ValueError(
                 "Item '{}' is neither 'yes' nor 'no'".
                 format(DO_KEEP_WORKSPACE_ITEM))
-
-    entity_train_file = None
-    if ENTITY_FILE_ITEM in default_section:  # Optional entity file
-        entity_train_file = default_section[ENTITY_FILE_ITEM]
 
     mode = default_section[MODE_ITEM].lower()  # Ignore case
 
@@ -459,8 +424,8 @@ def func(args):
         validate_config([FOLD_NUM_ITEM, FIGURE_PATH_ITEM], default_section)
 
         kfold(fold_num=int(default_section[FOLD_NUM_ITEM]),
-              temp_dir=default_section[TEMP_DIR_ITEM],
-              intent_train_file=default_section[INTENT_FILE_ITEM],
+              temp_dir=temp_dir,
+              intent_train_file=intent_train_file,
               entity_train_file=entity_train_file,
               figure_path=default_section[FIGURE_PATH_ITEM],
               keep_workspace=keep_workspace,
@@ -472,8 +437,8 @@ def func(args):
         if BLIND_TEST == mode:
             previous_blind_out = default_section.get(
                 PREVIOUS_BLIND_OUT_ITEM, None)
-            blind(temp_dir=default_section[TEMP_DIR_ITEM],
-                  intent_train_file=default_section[INTENT_FILE_ITEM],
+            blind(temp_dir=temp_dir,
+                  intent_train_file=intent_train_file,
                   entity_train_file=entity_train_file,
                   test_input_file=default_section[TEST_FILE_ITEM],
                   figure_path=default_section[FIGURE_PATH_ITEM],
@@ -483,8 +448,8 @@ def func(args):
                   username=username, password=password,
                   weight_mode=weight_mode, conf_thres=conf_thres_str)
         elif STANDARD_TEST == mode:
-            test(temp_dir=default_section[TEMP_DIR_ITEM],
-                 intent_train_file=default_section[INTENT_FILE_ITEM],
+            test(temp_dir=temp_dir,
+                 intent_train_file=intent_train_file,
                  entity_train_file=entity_train_file,
                  test_input_file=default_section[TEST_FILE_ITEM],
                  test_out_path=default_section[TEST_OUT_PATH_ITEM],

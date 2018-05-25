@@ -22,11 +22,8 @@ Scripts that run against Watson Assistant for K fold validation on training set,
 [DEFAULT]
 ; KFOLD, BLIND or TEST
 mode = <one of the three options above>
-; Provide either workspace_json_dump or (intent_train_file and entity_train_file)
-workspace_json_dump = ./data/workspace-sample.json
-intent_train_file = ./data/intent_train_file.csv
-; Optional if you don't have entities to load into WCS
-entity_train_file = ./data/entity_train_file.csv
+; Workspace ID of target testing instance
+workspace_id = 01234567-9ABC-DEF0-1234-56789ABCDEF0
 ; Test input file for blind and standard test
 test_input_file = ./data/test.csv
 ; Previous blind test out
@@ -53,23 +50,6 @@ conf_thres = 0.2
 username = <wa username>
 password = <wa password>
 ```
-
-
-`intent_train_file.csv` - Training set of Assistant intents. Same as the format of WCS intents import.
-
-| utterance (implicit) | intent (implicit) |
-| -------------------- | ----------------- |
-| utterance 0          | intent 0          |
-| utterance 1          | intent 0          |
-| utterance 2          | intent 1          |
-
-`entity_train_file.csv` (optional) - Training set of Assistant entities. Same as the format of WCS entities import.
-
-| entity name (implicit) | value (implicit) | synonym/pattern 0 (implicit) | ... | synonym/pattern n (implicit) |
-| ---------------------- | ---------------- | ---------------------------- | --- | ---------------------------- |
-| entity 0               | value 0          | synonym                      | ... | synony                       |
-| entity 0               | value 1          | /pattern 0/                  | ... | /pattern n/                  |
-| entity 1               | value 2          | /patter  0/                  | ... | /patter  n/                  |
 
 `previous_blind_out.csv` (optional) - Test output from the previous classifier, which uses the same blind set as these in `test_input_file`.
 
@@ -105,9 +85,6 @@ For standard test, the input must only have one column or error will be thrown:
 
 [Run standard test without ground truth](examples/standard-test.md)
 
-## Architecture
-
-![Script Flow](resources/script-architecture.png)
 
 ## Caveats
 Due to different coverage among service plans, user may need to adjust `max_test_rate` accordingly to avoid network connection error.
