@@ -28,18 +28,33 @@ from utils import UTF_8, CONFIDENCE_COLUMN, \
     UTTERANCE_COLUMN, PREDICTED_INTENT_COLUMN, \
     DETECTED_ENTITY_COLUMN, DIALOG_RESPONSE_COLUMN, \
     marshall_entity, save_dataframe_as_csv, INTENT_JUDGE_COLUMN, \
-    TEST_OUT_FILENAME, BOOL_MAP
+    TEST_OUT_FILENAME, BOOL_MAP, WCS_VERSION
 
 test_out_header = [PREDICTED_INTENT_COLUMN, CONFIDENCE_COLUMN,
                    DETECTED_ENTITY_COLUMN, DIALOG_RESPONSE_COLUMN]
+
+MSG_ENDPOINT = 'https://gateway.watsonplatform.net' \
+    + '/assistant/api/v1/workspaces/{}/message?version={}'
+MAX_RETRY_LIMIT = 5
 
 
 async def post(session, json, url, sem):
     """ Single post restrained by semaphore
     """
+    counter = 0
     async with sem:
-        async with session.post(url, json=json) as response:
-            return await response.json()
+        while True:
+            async with session.post(url, json=json) as response:
+                try:
+                    res = await response.json()
+                    return res
+                except Exception as e:
+                    # Max retries reached, print out the response payload
+                    if counter == MAX_RETRY_LIMIT:
+                        print(response.status)
+                        print(response.text)
+                        raise e
+                    counter += 1
 
 
 async def fill_df(utterance, row_idx, out_df, workspace_id, wa_username,
@@ -48,7 +63,7 @@ async def fill_df(utterance, row_idx, out_df, workspace_id, wa_username,
     """
     async with aiohttp.ClientSession(
             auth=aiohttp.BasicAuth(wa_username, wa_password)) as session:
-        url = 'https://gateway.watsonplatform.net/assistant/api/v1/workspaces/{}/message?version=2018-02-16'.format(workspace_id)
+        url = MSG_ENDPOINT.format(workspace_id, WCS_VERSION)
 
         resp = await post(session, {'input': {'text': utterance},
                                     'alternate_intents': True}, url, sem)
