@@ -77,7 +77,8 @@ def func(args):
         # Collect all intents from the classification results
         intents_in_results = pd.concat([intents_in_results,
                                         frame[PREDICTED_INTENT_COLUMN]])
-        confidences_list.append(frame[CONFIDENCE_COLUMN]
+        # Convert nan to zero values to avoid use zero as divider
+        confidences_list.append(frame[CONFIDENCE_COLUMN].fillna(0)
                                 .drop_duplicates().sort_values().tolist())
 
     intents_in_results = intents_in_results.drop_duplicates()
