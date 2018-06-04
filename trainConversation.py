@@ -90,25 +90,51 @@ def to_entity_values(entity_group):
 
 
 def func(args):
-    entities = None
-    workspace_name = None
-    workspace_description = None
+    entities = []
+    workspace_name = ''
+    workspace_description = ''
+    intents = []
+    language = 'en'
+    dialog_nodes = []
+    counterexamples = []
+    metadata = {}
+    learning_opt_out = False
 
-    # First, group utterances by INTENT_COLUMN. In each intent group,
-    # construct the CreateIntent[] and return as a cell of the series.
-    # Convert the series into dataframe and restore the intent column
-    # from index to an explicit column.
-    intent_df = pd.read_csv(args.intentfile, quoting=csv.QUOTE_ALL,
-                            encoding=UTF_8, header=None,
-                            names=INTENT_CSV_HEADER, keep_default_na=False) \
-                  .groupby(by=[INTENT_COLUMN]).apply(to_examples) \
-                  .to_frame().reset_index(level=[INTENT_COLUMN]) \
-                  .rename(columns={0: EXAMPLES_COLUMN})
+    if args.workspace_base_json is not None:
+        with open(args.workspace_base_json, 'r') as f:
+            workspace_json = json.load(f)
+            if 'entities' in workspace_json:
+                entities = workspace_json['entities']
+            if 'intents' in workspace_json:
+                intents = workspace_json['intents']
+            if 'language' in workspace_json:
+                language = workspace_json['language']
+            if 'dialog_nodes' in workspace_json:
+                dialog_nodes = workspace_json['dialog_nodes']
+            if 'counterexamples' in workspace_json:
+                counterexamples = workspace_json['counterexamples']
+            if 'metadata' in workspace_json:
+                metadata = workspace_json['metadata']
+            if 'learning_opt_out' in workspace_json:
+                learning_opt_out = workspace_json['learning_opt_out']
 
-    # Construct the CreateIntent[]
-    intents = [{'intent': row[INTENT_COLUMN],
-                'examples': row[EXAMPLES_COLUMN]}
-               for _, row in intent_df.iterrows()]
+    if args.intentfile is not None:
+        # First, group utterances by INTENT_COLUMN. In each intent group,
+        # construct the CreateIntent[] and return as a cell of the series.
+        # Convert the series into dataframe and restore the intent column
+        # from index to an explicit column.
+        intent_df = pd.read_csv(args.intentfile, quoting=csv.QUOTE_ALL,
+                                encoding=UTF_8, header=None,
+                                names=INTENT_CSV_HEADER,
+                                keep_default_na=False) \
+                      .groupby(by=[INTENT_COLUMN]).apply(to_examples) \
+                      .to_frame().reset_index(level=[INTENT_COLUMN]) \
+                      .rename(columns={0: EXAMPLES_COLUMN})
+
+        # Construct the CreateIntent[]
+        intents = [{'intent': row[INTENT_COLUMN],
+                    'examples': row[EXAMPLES_COLUMN]}
+                   for _, row in intent_df.iterrows()]
 
     if args.entityfile is not None:
         # Read csv with unknown number of columns into dataframe
@@ -144,9 +170,13 @@ def func(args):
         workspace_description = args.workspace_description
 
     # Create workspace with provided content
-    resp = conv.create_workspace(name=workspace_name,
+    resp = conv.create_workspace(name=workspace_name, language=language,
                                  description=workspace_description,
-                                 intents=intents, entities=entities)
+                                 intents=intents, entities=entities,
+                                 dialog_nodes=dialog_nodes,
+                                 counterexamples=counterexamples,
+                                 metadata=metadata,
+                                 learning_opt_out=learning_opt_out)
 
     # Poke the training status every SLEEP_INCRE secs
     sleep_counter = 0
@@ -155,7 +185,7 @@ def func(args):
         if resp['status'] == 'Available':
             print(json.dumps(resp, indent=4))  # double quoted valid JSON
             return
-        sleep_counter += 10
+        sleep_counter += SLEEP_INCRE
         sleep(10)
 
     raise TrainTimeoutException('Assistant training is timeout')
@@ -164,9 +194,11 @@ def func(args):
 def create_parser():
     parser = ArgumentParser(
         description='Train assistant instance with intents and entities')
-    parser.add_argument('-i', '--intentfile', type=str, required=True,
+    parser.add_argument('-i', '--intentfile', type=str,
                         help='Intent file')
     parser.add_argument('-e', '--entityfile', type=str, help='Entity file')
+    parser.add_argument('-w', '--workspace_base_json', type=str,
+                        help='Workspace base JSON file')
     parser.add_argument('-n', '--workspace_name', type=str,
                         help='Workspace name')
     parser.add_argument('-d', '--workspace_description', type=str,

@@ -33,7 +33,7 @@ from utils import TRAIN_FILENAME, TEST_FILENAME, UTTERANCE_COLUMN, \
                   TRAIN_CONVERSATION_PATH, TEST_CONVERSATION_PATH, \
                   CREATE_PRECISION_CURVE_PATH, SPEC_FILENAME, \
                   delete_workspaces, KFOLD, BLIND_TEST, STANDARD_TEST, \
-                  WORKSPACE_PARSER_PATH
+                  WORKSPACE_PARSER_PATH, WORKSPACE_BASE_FILENAME
 
 # SECTIONS
 DEFAULT_SECTION = 'DEFAULT'
@@ -52,6 +52,7 @@ PREVIOUS_BLIND_OUT_ITEM = 'previous_blind_out'
 MAX_TEST_RATE_ITEM = 'max_test_rate'
 WEIGHT_MODE_ITEM = 'weight_mode'
 CONF_THRES_ITEM = 'conf_thres'
+WORKSPACE_BASE_ITEM = 'workspace_base'
 
 # Max test request rate
 MAX_TEST_RATE = DEFAULT_TEST_RATE
@@ -73,7 +74,7 @@ def list_workspaces(username, password):
     return c.list_workspaces()
 
 
-def kfold(fold_num, temp_dir, intent_train_file, entity_train_file,
+def kfold(fold_num, temp_dir, intent_train_file, workspace_base_file,
           figure_path, keep_workspace, username, password, weight_mode,
           conf_thres):
     FOLD_TRAIN = 'fold_train'
@@ -84,7 +85,7 @@ def kfold(fold_num, temp_dir, intent_train_file, entity_train_file,
 
     print('Begin {} with following details:'.format(KFOLD.upper()))
     print('{}={}'.format(INTENT_FILE_ITEM, intent_train_file))
-    print('{}={}'.format(ENTITY_FILE_ITEM, entity_train_file))
+    print('{}={}'.format(WORKSPACE_BASE_ITEM, workspace_base_file))
     print('{}={}'.format(FIGURE_PATH_ITEM, figure_path))
     print('{}={}'.format(TEMP_DIR_ITEM, temp_dir))
     print('{}={}'.format(FOLD_NUM_ITEM, fold_num))
@@ -125,9 +126,8 @@ def kfold(fold_num, temp_dir, intent_train_file, entity_train_file,
         train_args = [sys.executable, TRAIN_CONVERSATION_PATH,
                       '-i', fold_param[FOLD_TRAIN],
                       '-n', fold_param[WORKSPACE_NAME],
-                      '-u', username, '-p', password]
-        if entity_train_file is not None:
-            train_args += ['-e', entity_train_file]
+                      '-u', username, '-p', password,
+                      '-w', workspace_base_file]
         train_processes_specs[
             subprocess.Popen(train_args, stdout=spec_file)] = spec_file
 
@@ -209,12 +209,12 @@ def kfold(fold_num, temp_dir, intent_train_file, entity_train_file,
             delete_workspaces(username, password, workspace_ids)
 
 
-def blind(temp_dir, intent_train_file, entity_train_file, figure_path,
+def blind(temp_dir, intent_train_file, workspace_base_file, figure_path,
           test_out_path, test_input_file, previous_blind_out, keep_workspace,
           username, password, weight_mode, conf_thres):
     print('Begin {} with following details:'.format(BLIND_TEST.upper()))
     print('{}={}'.format(INTENT_FILE_ITEM, intent_train_file))
-    print('{}={}'.format(ENTITY_FILE_ITEM, entity_train_file))
+    print('{}={}'.format(WORKSPACE_BASE_ITEM, workspace_base_file))
     print('{}={}'.format(TEST_FILE_ITEM, test_input_file))
     print('{}={}'.format(PREVIOUS_BLIND_OUT_ITEM, previous_blind_out))
     print('{}={}'.format(FIGURE_PATH_ITEM, figure_path))
@@ -247,9 +247,8 @@ def blind(temp_dir, intent_train_file, entity_train_file, figure_path,
     workspace_spec_json = os.path.join(working_dir, SPEC_FILENAME)
     train_args = [sys.executable, TRAIN_CONVERSATION_PATH,
                   '-i', intent_train_file, '-n', 'blind test',
-                  '-u', username, '-p', password]
-    if entity_train_file is not None:
-        train_args += ['-e', entity_train_file]
+                  '-u', username, '-p', password,
+                  '-w', workspace_base_file]
     with open(workspace_spec_json, 'w') as f:
         if subprocess.run(train_args, stdout=f).returncode == 0:
             print('Trained blind workspace')
@@ -284,11 +283,11 @@ def blind(temp_dir, intent_train_file, entity_train_file, figure_path,
             delete_workspaces(username, password, [workspace_id])
 
 
-def test(temp_dir, intent_train_file, entity_train_file, test_out_path,
+def test(temp_dir, intent_train_file, workspace_base_file, test_out_path,
          test_input_file, keep_workspace, username, password):
     print('Begin {} with following details:'.format(STANDARD_TEST.upper()))
     print('{}={}'.format(INTENT_FILE_ITEM, intent_train_file))
-    print('{}={}'.format(ENTITY_FILE_ITEM, entity_train_file))
+    print('{}={}'.format(WORKSPACE_BASE_ITEM, workspace_base_file))
     print('{}={}'.format(TEST_FILE_ITEM, test_input_file))
     print('{}={}'.format(TEST_OUT_PATH_ITEM, test_out_path))
     print('{}={}'.format(TEMP_DIR_ITEM, temp_dir))
@@ -314,9 +313,8 @@ def test(temp_dir, intent_train_file, entity_train_file, test_out_path,
     train_args = [sys.executable, TRAIN_CONVERSATION_PATH,
                   '-i', intent_train_file,
                   '-n', 'standard test',
-                  '-u', username, '-p', password]
-    if entity_train_file is not None:
-        train_args += ['-e', entity_train_file]
+                  '-u', username, '-p', password,
+                  '-w', workspace_base_file]
     with open(workspace_spec_json, 'w') as f:
         if subprocess.run(train_args, stdout=f).returncode == 0:
             print('Trained standard test workspace')
@@ -385,10 +383,7 @@ def func(args):
         raise RuntimeError('Failure in parsing workspace')
 
     intent_train_file = os.path.join(temp_dir, 'intent-train.csv')
-    entity_train_file = os.path.join(temp_dir, 'entity-train.csv')
-
-    if not os.path.isfile(entity_train_file):
-        entity_train_file = None
+    workspace_base_file = os.path.join(temp_dir, WORKSPACE_BASE_FILENAME)
 
     # Convert yes/no to boolean
     keep_workspace = False
@@ -426,7 +421,7 @@ def func(args):
         kfold(fold_num=int(default_section[FOLD_NUM_ITEM]),
               temp_dir=temp_dir,
               intent_train_file=intent_train_file,
-              entity_train_file=entity_train_file,
+              workspace_base_file=workspace_base_file,
               figure_path=default_section[FIGURE_PATH_ITEM],
               keep_workspace=keep_workspace,
               username=username, password=password,
@@ -439,7 +434,7 @@ def func(args):
                 PREVIOUS_BLIND_OUT_ITEM, None)
             blind(temp_dir=temp_dir,
                   intent_train_file=intent_train_file,
-                  entity_train_file=entity_train_file,
+                  workspace_base_file=workspace_base_file,
                   test_input_file=default_section[TEST_FILE_ITEM],
                   figure_path=default_section[FIGURE_PATH_ITEM],
                   test_out_path=default_section[TEST_OUT_PATH_ITEM],
@@ -450,7 +445,7 @@ def func(args):
         elif STANDARD_TEST == mode:
             test(temp_dir=temp_dir,
                  intent_train_file=intent_train_file,
-                 entity_train_file=entity_train_file,
+                 workspace_base_file=workspace_base_file,
                  test_input_file=default_section[TEST_FILE_ITEM],
                  test_out_path=default_section[TEST_OUT_PATH_ITEM],
                  keep_workspace=keep_workspace,
