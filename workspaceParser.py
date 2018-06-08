@@ -18,9 +18,11 @@
 """
 import os
 import csv
+import json
 from argparse import ArgumentParser
 from watson_developer_cloud import AssistantV1
-from utils import WCS_VERSION, TRAIN_INTENT_FILENAME, TRAIN_ENTITY_FILENAME
+from utils import WCS_VERSION, TRAIN_INTENT_FILENAME, TRAIN_ENTITY_FILENAME, \
+                  WORKSPACE_BASE_FILENAME
 
 
 def func(args):
@@ -29,11 +31,16 @@ def func(args):
     workspace = conv.get_workspace(workspace_id=args.workspace_id, export=True)
     intent_train_file = os.path.join(args.outdir, TRAIN_INTENT_FILENAME)
     entity_train_file = os.path.join(args.outdir, TRAIN_ENTITY_FILENAME)
+    workspace_file = os.path.join(args.outdir, WORKSPACE_BASE_FILENAME)
 
     intent_exports = workspace['intents']
     entity_exports = workspace['entities']
     if len(intent_exports) == 0:
         raise ValueError("No intent is found in workspace")
+
+    # Save workspace json
+    with open(workspace_file, 'w+') as file:
+        json.dump(workspace, file)
 
     # Parse intents to file
     with open(intent_train_file, 'w+') as csvfile:

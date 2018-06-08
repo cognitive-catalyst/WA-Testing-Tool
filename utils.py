@@ -41,6 +41,7 @@ WCS_PASSWORD_ITEM = 'password'
 WCS_CREDS_SECTION = 'ASSISTANT CREDENTIALS'
 
 SPEC_FILENAME = 'workspace.json'
+WORKSPACE_BASE_FILENAME = 'workspace_base.json'
 
 current_file_path = os.path.dirname(__file__)
 # Sub-script paths
