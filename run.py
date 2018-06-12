@@ -230,12 +230,14 @@ def blind(temp_dir, intent_train_file, workspace_base_file, figure_path,
     classfier_names = ['New Classifier']
 
     if previous_blind_out is not None:
-        with open(previous_blind_out, 'r', encoding=UTF_8) as f:
-            header = next(csv.reader(f))
-            if INTENT_JUDGE_COLUMN not in header:
-                raise ValueError(
-                    "'{}' column doesn't exist in {}.".format(
-                        INTENT_JUDGE_COLUMN, previous_blind_out))
+        df = pd.read_csv(previous_blind_out, quoting=csv.QUOTE_ALL,
+                         encoding=UTF_8)
+        header = list(df.columns.values)
+
+        if INTENT_JUDGE_COLUMN not in header:
+            raise ValueError(
+                "'{}' column doesn't exist in {}.".format(
+                    INTENT_JUDGE_COLUMN, previous_blind_out))
 
         test_out_files.append(previous_blind_out)
         classfier_names.append('Old Classifier')
@@ -296,13 +298,14 @@ def test(temp_dir, intent_train_file, workspace_base_file, test_out_path,
 
     # Validate test file
     extra_params = []
-    with open(test_input_file, 'r', encoding=UTF_8) as test_input:
-        header = next(csv.reader(test_input))
-        if UTTERANCE_COLUMN in header:
-            extra_params += ['-t', UTTERANCE_COLUMN]
-        else:
-            if len(header) != 1:
-                raise ValueError('Test input has unknown utterance column')
+    test_input = pd.read_csv(test_input_file, quoting=csv.QUOTE_ALL,
+                             encoding=UTF_8)
+    header = list(test_input.columns.values)
+    if UTTERANCE_COLUMN in header:
+        extra_params += ['-t', UTTERANCE_COLUMN]
+    else:
+        if len(header) != 1:
+            raise ValueError('Test input has unknown utterance column')
 
     # Run standard test
     working_dir = os.path.join(temp_dir, STANDARD_TEST)
