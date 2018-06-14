@@ -73,6 +73,9 @@ DEFAULT_CONF_THRES = 0.2
 POPULATION_WEIGHT_MODE = 'population'
 EQUAL_WEIGHT_MODE = 'equal'
 
+# WA BASE_URL
+BASE_URL = 'https://gateway.watsonplatform.net/assistant/api'
+
 
 logger = logging.getLogger(__name__)
 
@@ -114,7 +117,7 @@ def delete_workspaces(username, password, workspace_ids):
     """ Delete workspaces
     """
     c = AssistantV1(username=username, password=password,
-                    version=WCS_VERSION)
+                    version=WCS_VERSION, url=BASE_URL)
     for workspace_id in workspace_ids:
         c.delete_workspace(workspace_id=workspace_id)
     print('Cleaned up workspaces')

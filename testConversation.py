@@ -28,13 +28,12 @@ from utils import UTF_8, CONFIDENCE_COLUMN, \
     UTTERANCE_COLUMN, PREDICTED_INTENT_COLUMN, \
     DETECTED_ENTITY_COLUMN, DIALOG_RESPONSE_COLUMN, \
     marshall_entity, save_dataframe_as_csv, INTENT_JUDGE_COLUMN, \
-    TEST_OUT_FILENAME, BOOL_MAP, WCS_VERSION
+    TEST_OUT_FILENAME, BOOL_MAP, WCS_VERSION, BASE_URL
 
 test_out_header = [PREDICTED_INTENT_COLUMN, CONFIDENCE_COLUMN,
                    DETECTED_ENTITY_COLUMN, DIALOG_RESPONSE_COLUMN]
 
-MSG_ENDPOINT = 'https://gateway.watsonplatform.net' \
-    + '/assistant/api/v1/workspaces/{}/message?version={}'
+MSG_ENDPOINT = BASE_URL + '/v1/workspaces/{}/message?version={}'
 MAX_RETRY_LIMIT = 5
 
 

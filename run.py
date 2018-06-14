@@ -33,7 +33,7 @@ from utils import TRAIN_FILENAME, TEST_FILENAME, UTTERANCE_COLUMN, \
                   TRAIN_CONVERSATION_PATH, TEST_CONVERSATION_PATH, \
                   CREATE_PRECISION_CURVE_PATH, SPEC_FILENAME, \
                   delete_workspaces, KFOLD, BLIND_TEST, STANDARD_TEST, \
-                  WORKSPACE_PARSER_PATH, WORKSPACE_BASE_FILENAME
+                  WORKSPACE_PARSER_PATH, WORKSPACE_BASE_FILENAME, BASE_URL
 
 # SECTIONS
 DEFAULT_SECTION = 'DEFAULT'
@@ -70,7 +70,7 @@ def validate_config(fields, section):
 
 def list_workspaces(username, password):
     c = AssistantV1(username=username, password=password,
-                    version=WCS_VERSION)
+                    version=WCS_VERSION, url=BASE_URL)
     return c.list_workspaces()
 
 
