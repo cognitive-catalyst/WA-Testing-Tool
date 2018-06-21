@@ -43,17 +43,16 @@ WCS_CREDS_SECTION = 'ASSISTANT CREDENTIALS'
 SPEC_FILENAME = 'workspace.json'
 WORKSPACE_BASE_FILENAME = 'workspace_base.json'
 
-current_file_path = os.path.dirname(__file__)
 # Sub-script paths
-CREATE_TEST_TRAIN_FOLDS_PATH = os.path.join(current_file_path,
+CREATE_TEST_TRAIN_FOLDS_PATH = os.path.join(os.pardir,
                                             'createTestTrainFolds.py')
-TRAIN_CONVERSATION_PATH = os.path.join(current_file_path,
+TRAIN_CONVERSATION_PATH = os.path.join(os.pardir,
                                        'trainConversation.py')
-TEST_CONVERSATION_PATH = os.path.join(current_file_path,
+TEST_CONVERSATION_PATH = os.path.join(os.pardir,
                                       'testConversation.py')
-CREATE_PRECISION_CURVE_PATH = os.path.join(current_file_path,
+CREATE_PRECISION_CURVE_PATH = os.path.join(os.pardir,
                                            'createPrecisionCurve.py')
-WORKSPACE_PARSER_PATH = os.path.join(current_file_path,
+WORKSPACE_PARSER_PATH = os.path.join(os.pardir,
                                      'workspaceParser.py')
 
 
