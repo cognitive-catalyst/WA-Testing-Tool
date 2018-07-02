@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## 2018-06-14
+### Added
+- Made service base URL configurable
+
 ## 2018-05-21
 ### Added
 - Refactored training input to only use workspace ID

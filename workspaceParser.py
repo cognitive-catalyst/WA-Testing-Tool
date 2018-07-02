@@ -22,12 +22,12 @@ import json
 from argparse import ArgumentParser
 from watson_developer_cloud import AssistantV1
 from utils import WCS_VERSION, TRAIN_INTENT_FILENAME, TRAIN_ENTITY_FILENAME, \
-                  WORKSPACE_BASE_FILENAME
+                  WORKSPACE_BASE_FILENAME, BASE_URL
 
 
 def func(args):
     conv = AssistantV1(username=args.username, password=args.password,
-                       version=WCS_VERSION)
+                       version=WCS_VERSION, url=BASE_URL)
     workspace = conv.get_workspace(workspace_id=args.workspace_id, export=True)
     intent_train_file = os.path.join(args.outdir, TRAIN_INTENT_FILENAME)
     entity_train_file = os.path.join(args.outdir, TRAIN_ENTITY_FILENAME)
