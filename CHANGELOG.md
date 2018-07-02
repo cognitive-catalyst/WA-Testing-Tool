@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## 2018-06-25
+### Added
+- Added intent metrics generation script
+
 ## 2018-06-14
 ### Added
 - Made service base URL configurable
