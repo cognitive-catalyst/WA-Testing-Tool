@@ -22,7 +22,7 @@ Scripts that run against Watson Assistant for K fold validation on training set,
 [DEFAULT]
 ; KFOLD, BLIND or TEST
 mode = <one of the three options above>
-; Workspace ID of target testing instance
+; workspace_id or workspace JSON of target testing instance
 workspace_id = 01234567-9ABC-DEF0-1234-56789ABCDEF0
 ; Test input file for blind and standard test
 test_input_file = ./data/test.csv

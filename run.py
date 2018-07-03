@@ -377,7 +377,7 @@ def func(args):
 
     # Prepare folds
     if subprocess.run([sys.executable, WORKSPACE_PARSER_PATH,
-                       '-w', default_section[WORKSPACE_ID_ITEM],
+                       '-i', default_section[WORKSPACE_ID_ITEM],
                        '-o', temp_dir,
                        '-u', username, '-p', password],
                       stdout=subprocess.PIPE).returncode == 0:
