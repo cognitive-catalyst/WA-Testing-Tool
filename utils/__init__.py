@@ -43,7 +43,7 @@ WCS_CREDS_SECTION = 'ASSISTANT CREDENTIALS'
 SPEC_FILENAME = 'workspace.json'
 WORKSPACE_BASE_FILENAME = 'workspace_base.json'
 
-root_path = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+root_path = os.path.abspath(os.path.dirname(__file__))
 # Sub-script paths
 CREATE_TEST_TRAIN_FOLDS_PATH = os.path.join(root_path,
                                             'createTestTrainFolds.py')

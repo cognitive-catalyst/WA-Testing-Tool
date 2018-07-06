@@ -26,7 +26,7 @@ from itertools import cycle
 import pandas as pd
 import csv
 
-from utils import INTENT_JUDGE_COLUMN, UTF_8, CONFIDENCE_COLUMN, \
+from __init__ import INTENT_JUDGE_COLUMN, UTF_8, CONFIDENCE_COLUMN, \
                   PREDICTED_INTENT_COLUMN, GOLDEN_INTENT_COLUMN, \
                   INTENT_COLUMN, POPULATION_WEIGHT_MODE, \
                   EQUAL_WEIGHT_MODE, DEFAULT_CONF_THRES

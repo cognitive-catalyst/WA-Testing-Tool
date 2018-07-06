@@ -24,7 +24,7 @@ import pandas as pd
 from argparse import ArgumentParser
 import aiohttp
 
-from utils import UTF_8, CONFIDENCE_COLUMN, \
+from __init__ import UTF_8, CONFIDENCE_COLUMN, \
     UTTERANCE_COLUMN, PREDICTED_INTENT_COLUMN, \
     DETECTED_ENTITY_COLUMN, DIALOG_RESPONSE_COLUMN, \
     marshall_entity, save_dataframe_as_csv, INTENT_JUDGE_COLUMN, \

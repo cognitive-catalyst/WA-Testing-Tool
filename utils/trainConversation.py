@@ -28,7 +28,7 @@ import pandas as pd
 from argparse import ArgumentParser
 from watson_developer_cloud import AssistantV1
 
-from utils import UTF_8, WCS_VERSION, \
+from __init__ import UTF_8, WCS_VERSION, \
                   UTTERANCE_COLUMN, INTENT_COLUMN, \
                   TIME_TO_WAIT, WORKSPACE_ID_TAG, BASE_URL
 

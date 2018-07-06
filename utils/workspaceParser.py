@@ -22,8 +22,8 @@ import json
 import os.path
 from argparse import ArgumentParser
 from watson_developer_cloud import AssistantV1
-from utils import WCS_VERSION, TRAIN_INTENT_FILENAME, TRAIN_ENTITY_FILENAME, \
-                  WORKSPACE_BASE_FILENAME, BASE_URL
+from __init__ import WCS_VERSION, TRAIN_INTENT_FILENAME, \
+                     TRAIN_ENTITY_FILENAME, WORKSPACE_BASE_FILENAME, BASE_URL
 
 
 def func(args):

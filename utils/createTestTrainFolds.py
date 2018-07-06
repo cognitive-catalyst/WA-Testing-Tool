@@ -22,7 +22,7 @@ import csv
 import pandas as pd
 from argparse import ArgumentParser
 from sklearn.model_selection import KFold
-from utils import FOLD_NUM_DEFAULT, UTF_8, GOLDEN_INTENT_COLUMN, \
+from __init__ import FOLD_NUM_DEFAULT, UTF_8, GOLDEN_INTENT_COLUMN, \
                   UTTERANCE_COLUMN, TRAIN_FILENAME, TEST_FILENAME
 
 
