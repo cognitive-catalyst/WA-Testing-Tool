@@ -28,10 +28,12 @@ from __init__ import UTF_8, CONFIDENCE_COLUMN, \
     UTTERANCE_COLUMN, PREDICTED_INTENT_COLUMN, \
     DETECTED_ENTITY_COLUMN, DIALOG_RESPONSE_COLUMN, \
     marshall_entity, save_dataframe_as_csv, INTENT_JUDGE_COLUMN, \
-    TEST_OUT_FILENAME, BOOL_MAP, WCS_VERSION, BASE_URL
+    TEST_OUT_FILENAME, BOOL_MAP, WCS_VERSION, BASE_URL, \
+    parse_partial_credit_table, SCORE_COLUMN
 
 test_out_header = [PREDICTED_INTENT_COLUMN, CONFIDENCE_COLUMN,
-                   DETECTED_ENTITY_COLUMN, DIALOG_RESPONSE_COLUMN]
+                   DETECTED_ENTITY_COLUMN, DIALOG_RESPONSE_COLUMN,
+                   SCORE_COLUMN]
 
 MSG_ENDPOINT = BASE_URL + '/v1/workspaces/{}/message?version={}'
 MAX_RETRY_LIMIT = 5
@@ -137,6 +139,20 @@ def func(args):
             out_df[INTENT_JUDGE_COLUMN] = \
                 (in_df[golden_intent_column]
                     == out_df[PREDICTED_INTENT_COLUMN]).map(BOOL_MAP)
+            out_df[SCORE_COLUMN] = \
+                out_df[INTENT_JUDGE_COLUMN].map({'yes': 1, 'no': 0})
+
+    if args.partial_credit_table is not None:
+        credit_tables = parse_partial_credit_table(args.partial_credit_table)
+        for row_idx in range(out_df.shape[0]):
+            golden_intent = out_df.loc[row_idx, args.golden_intent_column]
+            predict_intent = out_df.loc[row_idx, args.test_column]
+            if golden_intent not in credit_tables or \
+               predict_intent not in credit_tables[golden_intent]:
+                out_df.loc[row_idx, SCORE_COLUMN] = 0
+            else:
+                out_df.loc[row_idx, SCORE_COLUMN] = \
+                    credit_tables[golden_intent][predict_intent]
 
     save_dataframe_as_csv(df=out_df, file=args.outfile)
 
@@ -164,6 +180,8 @@ def create_parser():
                         help='Golden column name in input file')
     parser.add_argument('-r', '--rate_limit', type=int, default=1,
                         help='Maximum number of requests per second')
+    parser.add_argument('-p', '--partial_credit_table', type=str,
+                        help='Partial credit table')
     return parser
 
 

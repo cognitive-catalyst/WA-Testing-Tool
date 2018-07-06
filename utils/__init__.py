@@ -36,6 +36,7 @@ PREDICTED_INTENT_COLUMN = 'predicted intent'
 DETECTED_ENTITY_COLUMN = 'detected entity'
 DIALOG_RESPONSE_COLUMN = 'dialog response'
 GOLDEN_INTENT_COLUMN = 'golden intent'
+SCORE_COLUMN = 'score'
 
 WCS_USERNAME_ITEM = 'username'
 WCS_PASSWORD_ITEM = 'password'
