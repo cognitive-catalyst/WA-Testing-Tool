@@ -17,6 +17,7 @@
 import logging
 import csv
 import os
+import pandas as pd
 from watson_developer_cloud import AssistantV1
 
 UTF_8 = 'utf-8'
@@ -121,3 +122,18 @@ def delete_workspaces(username, password, workspace_ids):
     for workspace_id in workspace_ids:
         c.delete_workspace(workspace_id=workspace_id)
     print('Cleaned up workspaces')
+
+
+def parse_partial_credit_table(file):
+    df = pd.read_csv(file, quoting=csv.QUOTE_ALL,
+                     encoding=UTF_8, keep_default_na=False)
+    table = {}
+    for _, row in df.iterrows():
+        golden_intent = row['Golden Intent']
+        if golden_intent not in dict:
+            table[golden_intent] = {}
+        else:
+            table[golden_intent][row['Partial Credit Intent']] = \
+                float(row['Partial Credit Intent score'])
+
+    return table
