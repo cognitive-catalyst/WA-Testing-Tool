@@ -1,3 +1,4 @@
 .DS_Store
 config.ini
 data/
+__pycache__/
