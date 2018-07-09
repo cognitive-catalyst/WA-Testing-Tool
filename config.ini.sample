@@ -21,6 +21,8 @@ weight_mode = population
 max_test_rate = 100
 ; Threshold of confidence
 conf_thres = 0.2
+; Partial Credit Table
+partial_credit_table = ./data/partial-credit-table.csv
 
 
 [ASSISTANT CREDENTIALS]

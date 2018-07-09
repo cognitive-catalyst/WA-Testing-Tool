@@ -130,11 +130,10 @@ def parse_partial_credit_table(file):
                      encoding=UTF_8, keep_default_na=False)
     table = {}
     for _, row in df.iterrows():
-        golden_intent = row['Golden Intent']
-        if golden_intent not in dict:
+        golden_intent = row['Golden Intent'].strip()
+        if golden_intent not in table:
             table[golden_intent] = {}
-        else:
-            table[golden_intent][row['Partial Credit Intent']] = \
-                float(row['Partial Credit Intent score'])
+        table[golden_intent][row['Partial Credit Intent'].strip()] = \
+            float(row['Partial Credit Intent Score'])
 
     return table

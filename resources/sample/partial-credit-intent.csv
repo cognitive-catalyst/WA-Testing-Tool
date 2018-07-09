@@ -1,0 +1,26 @@
+Golden Intent,Partial Credit Intent,Partial Credit Intent Score
+about_VA,about_VA,1
+capabilities,capabilities,1
+compound_questions,compound_questions,1
+decision_replies,decision_replies,1
+goodbyes,goodbyes,1
+greetings,greetings,1
+improving_system,improving_system,1
+information_request,information_request,1
+interface_interactions,interface_interactions,1
+interface_issues,interface_issues,1
+locate_amenity,locate_amenity,1
+navigation,navigation,1
+negative_reaction,negative_reaction,1
+not_specified,not_specified,1
+out_of_scope,out_of_scope,1
+phone,phone,1
+positive_reaction,positive_reaction,1
+selections,selections,1
+system_reliance,system_reliance,1
+traffic_update,traffic_update,1
+turn_down,turn_down,1
+turn_off,turn_off,1
+turn_on,turn_on,1
+turn_up,turn_up,1
+weather,weather,1

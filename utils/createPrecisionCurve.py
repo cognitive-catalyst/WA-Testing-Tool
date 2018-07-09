@@ -29,7 +29,7 @@ import csv
 from __init__ import INTENT_JUDGE_COLUMN, UTF_8, CONFIDENCE_COLUMN, \
                   PREDICTED_INTENT_COLUMN, GOLDEN_INTENT_COLUMN, \
                   INTENT_COLUMN, POPULATION_WEIGHT_MODE, \
-                  EQUAL_WEIGHT_MODE, DEFAULT_CONF_THRES
+                  EQUAL_WEIGHT_MODE, DEFAULT_CONF_THRES, SCORE_COLUMN
 
 # total different number of line style len(line_styles) * len(line_color) = 12
 line_styles = ['-', '--', '-.', ':']
@@ -116,10 +116,10 @@ def func(args):
             answered = \
                 cf_frame[cf_frame[CONFIDENCE_COLUMN] >= conf].shape[0]
             if weight_mode == POPULATION_WEIGHT_MODE:
-                correct = \
-                    cf_frame[(cf_frame[INTENT_JUDGE_COLUMN] == 'yes')
-                             & (cf_frame[CONFIDENCE_COLUMN] >= conf)].shape[0]
+                correct = cf_frame[
+                    cf_frame[CONFIDENCE_COLUMN] >= conf][SCORE_COLUMN].sum()
                 precision = correct / answered
+                # print(precision)
             else:
                 intent_uttr_num_map = \
                   cf_frame[cf_frame[CONFIDENCE_COLUMN] >= conf] \
@@ -128,10 +128,9 @@ def func(args):
 
                 # Calulate precision use equal weights
                 uttr_correct_intent = \
-                    cf_frame[(cf_frame[INTENT_JUDGE_COLUMN] == 'yes')
-                             & (cf_frame[CONFIDENCE_COLUMN] >= conf)] \
-                    .groupby(GOLDEN_INTENT_COLUMN)[GOLDEN_INTENT_COLUMN] \
-                    .count()
+                    cf_frame[cf_frame[CONFIDENCE_COLUMN] >= conf] \
+                    .groupby(GOLDEN_INTENT_COLUMN)[SCORE_COLUMN] \
+                    .sum()
 
                 intent_weights = None
                 weight_coeff = 1 / len(intent_uttr_num_map)

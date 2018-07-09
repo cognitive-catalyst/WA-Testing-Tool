@@ -145,8 +145,8 @@ def func(args):
     if args.partial_credit_table is not None:
         credit_tables = parse_partial_credit_table(args.partial_credit_table)
         for row_idx in range(out_df.shape[0]):
-            golden_intent = out_df.loc[row_idx, args.golden_intent_column]
-            predict_intent = out_df.loc[row_idx, args.test_column]
+            golden_intent = out_df.loc[row_idx, args.golden_intent_column].strip()
+            predict_intent = out_df.loc[row_idx, PREDICTED_INTENT_COLUMN].strip()
             if golden_intent not in credit_tables or \
                predict_intent not in credit_tables[golden_intent]:
                 out_df.loc[row_idx, SCORE_COLUMN] = 0
@@ -180,7 +180,7 @@ def create_parser():
                         help='Golden column name in input file')
     parser.add_argument('-r', '--rate_limit', type=int, default=1,
                         help='Maximum number of requests per second')
-    parser.add_argument('-p', '--partial_credit_table', type=str,
+    parser.add_argument('-c', '--partial_credit_table', type=str,
                         help='Partial credit table')
     return parser
 
