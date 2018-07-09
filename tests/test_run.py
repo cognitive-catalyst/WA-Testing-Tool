@@ -96,7 +96,7 @@ class RunTestCase(CommandLineTestCase):
         self.config[DEFAULT_SECTION][FOLD_NUM_ITEM] = str(FOLD_NUM_DEFAULT)
         self.config[DEFAULT_SECTION][PARTIAL_CREDIT_TABLE_ITEM] = \
             os.path.join(tool_base, 'resources', 'sample',
-                         'partial-credit-intent.csv')
+                         'partial-credit-table.csv')
 
         kfold_config_path = os.path.join(kfold_test_dir, 'config.ini')
 
@@ -165,7 +165,7 @@ class RunTestCase(CommandLineTestCase):
             os.path.join(blind_test_dir, 'test-out.csv')
         self.config[DEFAULT_SECTION][PARTIAL_CREDIT_TABLE_ITEM] = \
             os.path.join(tool_base, 'resources', 'sample',
-                         'partial-credit-intent.csv')
+                         'partial-credit-table.csv')
 
         blind_config_path = os.path.join(blind_test_dir, 'config.ini')
 
