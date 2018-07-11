@@ -54,9 +54,7 @@ def func(args):
         intent_writer = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
         for intent_export in workspace['intents']:
             intent = intent_export['intent']
-            if len(intent_export['examples']) == 0:
-                intent_writer.writerow(['', intent])
-            else:
+            if len(intent_export['examples']) != 0:
                 for example in intent_export['examples']:
                     intent_writer.writerow([example['text'], intent])
 
