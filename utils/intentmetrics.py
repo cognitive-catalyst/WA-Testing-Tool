@@ -20,7 +20,7 @@ import csv
 import pandas as pd
 from argparse import ArgumentParser
 from sklearn.metrics import precision_recall_fscore_support
-from __init__ import parse_partial_credit_table, UTF_8
+from __init__ import UTF_8
 
 
 def func(args):
@@ -37,23 +37,15 @@ def func(args):
                                         y_pred=in_df[args.test_column],
                                         labels=labels)
 
-    if args.partial_credit_table is not None:
-        credit_tables = parse_partial_credit_table(args.partial_credit_table)
+    if args.partial_credit_on is not None:
         for idx, label in enumerate(labels):
-            retrieved_doc_num = len(in_df[in_df[args.test_column == label]])
-            relevant_doc_num = len(in_df[in_df[args.golden_column == label]])
+            retrieved_doc_indx = in_df[args.test_column] == label
+            relevant_doc_indx = in_df[args.golden_column] == label
+            retrieved_doc_num = len(in_df[retrieved_doc_indx])
+            relevant_doc_num  = len(in_df[relevant_doc_indx])
 
-            intent_credit_table = credit_tables[label]
-            precision = 0
-            recall = 0
-
-            for _, row in in_df.iterrows():
-                if row[args.golden_column] == label:
-                    predicted_intent = row[args.test_column]
-                    if predicted_intent in intent_credit_table:
-                        partial_credit = intent_credit_table[predicted_intent]
-                        precision += partial_credit / retrieved_doc_num
-                        recall += partial_credit / relevant_doc_num
+            precision = in_df[retrieved_doc_indx]['score'].sum() / retrieved_doc_num
+            recall = in_df[relevant_doc_indx]['score'].sum()/ relevant_doc_num
 
             precisions[idx] = precision
             recalls[idx] = recall
@@ -81,8 +73,8 @@ def create_parser():
     parser.add_argument('-g', '--golden_column', type=str,
                         default='golden intent',
                         help='Golden column name')
-    parser.add_argument('-p', '--partial_credit_table', type=str,
-                        help='Partial credit table')
+    parser.add_argument('-p', '--partial_credit_on', type=str,
+                        help='Use only if partial credit scoring ')
     return parser
 
 
