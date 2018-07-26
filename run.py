@@ -54,6 +54,7 @@ WEIGHT_MODE_ITEM = 'weight_mode'
 CONF_THRES_ITEM = 'conf_thres'
 WORKSPACE_BASE_ITEM = 'workspace_base'
 PARTIAL_CREDIT_TABLE_ITEM = 'partial_credit_table'
+BLIND_FIGURE_TITLE = 'blind_figure_title'
 
 # Max test request rate
 MAX_TEST_RATE = DEFAULT_TEST_RATE
@@ -215,7 +216,7 @@ def kfold(fold_num, temp_dir, intent_train_file, workspace_base_file,
 
 def blind(temp_dir, intent_train_file, workspace_base_file, figure_path,
           test_out_path, test_input_file, previous_blind_out, keep_workspace,
-          username, password, weight_mode, conf_thres, partial_credit_table):
+          username, password, weight_mode, conf_thres, partial_credit_table, figure_title):
     print('Begin {} with following details:'.format(BLIND_TEST.upper()))
     print('{}={}'.format(INTENT_FILE_ITEM, intent_train_file))
     print('{}={}'.format(WORKSPACE_BASE_ITEM, workspace_base_file))
@@ -281,7 +282,7 @@ def blind(temp_dir, intent_train_file, workspace_base_file, figure_path,
             raise RuntimeError('Failure in testing blind data')
 
         if subprocess.run([sys.executable, CREATE_PRECISION_CURVE_PATH,
-                           '-t', 'Golden Test Set', '-w', weight_mode, '--tau',
+                           '-t', figure_title, '-w', weight_mode, '--tau',
                            conf_thres, '-o', figure_path,
                            '-n'] + classfier_names +
                           ['-i'] + test_out_files).returncode == 0:
@@ -458,7 +459,8 @@ def func(args):
                   keep_workspace=keep_workspace,
                   username=username, password=password,
                   weight_mode=weight_mode, conf_thres=conf_thres_str,
-                  partial_credit_table=partial_credit_table)
+                  partial_credit_table=partial_credit_table,
+                  figure_title=default_section[BLIND_FIGURE_TITLE])
         elif STANDARD_TEST == mode:
             test(temp_dir=temp_dir,
                  intent_train_file=intent_train_file,
