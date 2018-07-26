@@ -147,7 +147,9 @@ def func(args):
         for row_idx in range(out_df.shape[0]):
             golden_intent = out_df.loc[row_idx, args.golden_intent_column].strip()
             predict_intent = out_df.loc[row_idx, PREDICTED_INTENT_COLUMN].strip()
-            if golden_intent not in credit_tables or \
+            if golden_intent == predict_intent:
+                out_df.loc[row_idx, SCORE_COLUMN] = 1.0
+            elif golden_intent not in credit_tables or \
                predict_intent not in credit_tables[golden_intent]:
                 out_df.loc[row_idx, SCORE_COLUMN] = 0
             else:
