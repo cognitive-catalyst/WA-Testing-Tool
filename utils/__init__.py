@@ -127,7 +127,8 @@ def delete_workspaces(username, password, workspace_ids):
 
 def parse_partial_credit_table(file):
     df = pd.read_csv(file, quoting=csv.QUOTE_ALL,
-                     encoding=UTF_8, keep_default_na=False)
+                     encoding=UTF_8)
+    df.fillna('0.0')
     table = {}
     for _, row in df.iterrows():
         golden_intent = row['Golden Intent'].strip()
