@@ -56,7 +56,8 @@ def func(args):
                                 'number of samples': support})
 
     out_df.to_csv(args.out_file, encoding='utf-8', quoting=csv.QUOTE_ALL,
-                  index=False)
+                  index=False, columns=['intent', 'number of samples', 'true positive rate',
+                  'positive predictive value'] )
 
 
 def create_parser():
