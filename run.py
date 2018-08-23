@@ -182,6 +182,14 @@ def kfold(fold_num, temp_dir, intent_train_file, workspace_base_file,
 
         test_out_files = [fold_param[TEST_OUT] for fold_param in fold_params]
 
+        # Add a column for the fold number
+        for idx, this_file in enumerate(test_out_files):
+            this_df = pd.read_csv(this_file, quoting=csv.QUOTE_ALL, encoding='utf-8', \
+                               keep_default_na=False)
+            this_df['Fold Index'] = idx
+            this_df.to_csv( this_file, encoding='utf-8', quoting=csv.QUOTE_ALL, index=False )
+        
+
         # Union test out
         pd.concat([pd.read_csv(file, quoting=csv.QUOTE_ALL, encoding=UTF_8,
                                keep_default_na=False)
