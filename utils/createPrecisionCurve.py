@@ -200,10 +200,13 @@ def func(args):
                              markersize=10,
                              label='tau = {}'.format(args.tau))
 
-    ax.legend(handles=lines + [tau_desc], loc='upper right', shadow=False,
+    ax.legend(handles=lines + [tau_desc], loc='lower left', shadow=False,
               prop={'size': LEGEND_AXIS_FONT_SIZE})
     ax.set_title(args.figure_title,
                  fontsize=TITLE_FONT_SIZE)
+
+    if args.ymin != 0.0:
+        plt.ylim(args.ymin, 1.0)
     # Save figure as file
     plt.savefig(args.outfile)
 
@@ -224,6 +227,8 @@ def create_parser():
                         help='Weight configuration for each intent')
     parser.add_argument('--tau', default=DEFAULT_CONF_THRES, type=float,
                         help='Confidence threshold for curve marker')
+    parser.add_argument('--ymin', default=0.0, type=float,
+                        help='Minimum for Y axis')
     return parser
 
 
