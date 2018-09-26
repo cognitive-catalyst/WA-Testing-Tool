@@ -28,7 +28,8 @@ from utils import WCS_VERSION, TRAIN_INTENT_FILENAME, TRAIN_ENTITY_FILENAME, \
 def func(args):
     conv = AssistantV1(username=args.username, password=args.password,
                        version=WCS_VERSION, url=BASE_URL)
-    workspace = conv.get_workspace(workspace_id=args.workspace_id, export=True)
+    workspace = conv.get_workspace(workspace_id=args.workspace_id,
+                                   export=True).get_result()
     intent_train_file = os.path.join(args.outdir, TRAIN_INTENT_FILENAME)
     entity_train_file = os.path.join(args.outdir, TRAIN_ENTITY_FILENAME)
     workspace_file = os.path.join(args.outdir, WORKSPACE_BASE_FILENAME)

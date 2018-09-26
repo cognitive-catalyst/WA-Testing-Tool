@@ -175,13 +175,14 @@ def func(args):
                                  intents=intents, entities=entities,
                                  dialog_nodes=dialog_nodes,
                                  counterexamples=counterexamples,
-                                 metadata=metadata,
-                                 learning_opt_out=learning_opt_out)
+                                 learning_opt_out=learning_opt_out,
+                                 metadata=metadata).get_result()
 
     # Poke the training status every SLEEP_INCRE secs
     sleep_counter = 0
     while sleep_counter < TIME_TO_WAIT:
-        resp = conv.get_workspace(workspace_id=resp[WORKSPACE_ID_TAG])
+        resp = conv.get_workspace(
+            workspace_id=resp[WORKSPACE_ID_TAG]).get_result()
         if resp['status'] == 'Available':
             print(json.dumps(resp, indent=4))  # double quoted valid JSON
             return
