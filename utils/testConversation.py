@@ -45,17 +45,19 @@ async def post(session, json, url, sem):
     counter = 0
     async with sem:
         while True:
-            async with session.post(url, json=json) as response:
-                try:
+            try:
+                async with session.post(url, json=json, raise_for_status=True) as response:
                     res = await response.json()
                     return res
-                except Exception as e:
-                    # Max retries reached, print out the response payload
-                    if counter == MAX_RETRY_LIMIT:
-                        print(response.status)
-                        print(response.text)
-                        raise e
-                    counter += 1
+            except Exception as e:
+                # Max retries reached, print out the response payload
+                if counter == MAX_RETRY_LIMIT:
+                    print(response.status)
+                    print(response.text)
+                    raise e
+                counter += 1
+                print("RETRY")
+                print(counter)
 
 
 async def fill_df(utterance, row_idx, out_df, workspace_id, wa_username,
