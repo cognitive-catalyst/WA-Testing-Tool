@@ -53,6 +53,8 @@ MAX_TEST_RATE_ITEM = 'max_test_rate'
 WEIGHT_MODE_ITEM = 'weight_mode'
 CONF_THRES_ITEM = 'conf_thres'
 WORKSPACE_BASE_ITEM = 'workspace_base'
+PARTIAL_CREDIT_TABLE_ITEM = 'partial_credit_table'
+BLIND_FIGURE_TITLE = 'blind_figure_title'
 
 # Max test request rate
 MAX_TEST_RATE = DEFAULT_TEST_RATE
@@ -76,7 +78,7 @@ def list_workspaces(username, password):
 
 def kfold(fold_num, temp_dir, intent_train_file, workspace_base_file,
           figure_path, keep_workspace, username, password, weight_mode,
-          conf_thres):
+          conf_thres, partial_credit_table):
     FOLD_TRAIN = 'fold_train'
     FOLD_TEST = 'fold_test'
     WORKSPACE_SPEC = 'fold_workspace'
@@ -93,6 +95,7 @@ def kfold(fold_num, temp_dir, intent_train_file, workspace_base_file,
     print('{}={}'.format(WEIGHT_MODE_ITEM, weight_mode))
     print('{}={}'.format(CONF_THRES_ITEM, conf_thres))
     print('{}={}'.format(WCS_USERNAME_ITEM, username))
+    print('{}={}'.format(PARTIAL_CREDIT_TABLE_ITEM, partial_credit_table))
 
     working_dir = os.path.join(temp_dir, KFOLD)
     if not os.path.exists(working_dir):
@@ -162,6 +165,8 @@ def kfold(fold_num, temp_dir, intent_train_file, workspace_base_file,
                          '-t', UTTERANCE_COLUMN, '-g', GOLDEN_INTENT_COLUMN,
                          '-w', workspace_id, '-r', str(FOLD_TEST_RATE),
                          '-m']
+            if partial_credit_table is not None:
+                test_args += ['--partial_credit_table', partial_credit_table]
             test_processes.append(subprocess.Popen(test_args))
 
         test_failure_idx_str = []
@@ -176,6 +181,14 @@ def kfold(fold_num, temp_dir, intent_train_file, workspace_base_file,
         print('Tested {} workspaces'.format(str(fold_num)))
 
         test_out_files = [fold_param[TEST_OUT] for fold_param in fold_params]
+
+        # Add a column for the fold number
+        for idx, this_file in enumerate(test_out_files):
+            this_df = pd.read_csv(this_file, quoting=csv.QUOTE_ALL, encoding='utf-8', \
+                               keep_default_na=False)
+            this_df['Fold Index'] = idx
+            this_df.to_csv( this_file, encoding='utf-8', quoting=csv.QUOTE_ALL, index=False )
+        
 
         # Union test out
         pd.concat([pd.read_csv(file, quoting=csv.QUOTE_ALL, encoding=UTF_8,
@@ -211,7 +224,7 @@ def kfold(fold_num, temp_dir, intent_train_file, workspace_base_file,
 
 def blind(temp_dir, intent_train_file, workspace_base_file, figure_path,
           test_out_path, test_input_file, previous_blind_out, keep_workspace,
-          username, password, weight_mode, conf_thres):
+          username, password, weight_mode, conf_thres, partial_credit_table, figure_title):
     print('Begin {} with following details:'.format(BLIND_TEST.upper()))
     print('{}={}'.format(INTENT_FILE_ITEM, intent_train_file))
     print('{}={}'.format(WORKSPACE_BASE_ITEM, workspace_base_file))
@@ -224,6 +237,7 @@ def blind(temp_dir, intent_train_file, workspace_base_file, figure_path,
     print('{}={}'.format(WEIGHT_MODE_ITEM, weight_mode))
     print('{}={}'.format(CONF_THRES_ITEM, conf_thres))
     print('{}={}'.format(WCS_USERNAME_ITEM, username))
+    print('{}={}'.format(PARTIAL_CREDIT_TABLE_ITEM, partial_credit_table))
 
     # Validate previous blind out format
     test_out_files = [test_out_path]
@@ -261,19 +275,22 @@ def blind(temp_dir, intent_train_file, workspace_base_file, figure_path,
     with open(workspace_spec_json, 'r') as f:
         workspace_id = json.load(f)[WORKSPACE_ID_TAG]
     try:
-        if subprocess.run([sys.executable, TEST_CONVERSATION_PATH,
-                           '-i', test_input_file,
-                           '-o', test_out_path, '-m',
-                           '-u', username, '-p', password,
-                           '-t', UTTERANCE_COLUMN, '-g', GOLDEN_INTENT_COLUMN,
-                           '-w', workspace_id,
-                           '-r', str(MAX_TEST_RATE)]).returncode == 0:
+        test_args = [sys.executable, TEST_CONVERSATION_PATH,
+                     '-i', test_input_file,
+                     '-o', test_out_path, '-m',
+                     '-u', username, '-p', password,
+                     '-t', UTTERANCE_COLUMN, '-g', GOLDEN_INTENT_COLUMN,
+                     '-w', workspace_id,
+                     '-r', str(MAX_TEST_RATE)]
+        if partial_credit_table is not None:
+            test_args += ['--partial_credit_table', partial_credit_table]
+        if subprocess.run(test_args).returncode == 0:
             print('Tested blind workspace')
         else:
             raise RuntimeError('Failure in testing blind data')
 
         if subprocess.run([sys.executable, CREATE_PRECISION_CURVE_PATH,
-                           '-t', 'Golden Test Set', '-w', weight_mode, '--tau',
+                           '-t', figure_title, '-w', weight_mode, '--tau',
                            conf_thres, '-o', figure_path,
                            '-n'] + classfier_names +
                           ['-i'] + test_out_files).returncode == 0:
@@ -377,7 +394,7 @@ def func(args):
 
     # Prepare folds
     if subprocess.run([sys.executable, WORKSPACE_PARSER_PATH,
-                       '-w', default_section[WORKSPACE_ID_ITEM],
+                       '-i', default_section[WORKSPACE_ID_ITEM],
                        '-o', temp_dir,
                        '-u', username, '-p', password],
                       stdout=subprocess.PIPE).returncode == 0:
@@ -417,6 +434,10 @@ def func(args):
     if CONF_THRES_ITEM in default_section:
         conf_thres_str = default_section[CONF_THRES_ITEM]
 
+    partial_credit_table = None
+    if PARTIAL_CREDIT_TABLE_ITEM in default_section:
+        partial_credit_table = default_section[PARTIAL_CREDIT_TABLE_ITEM]
+
     if KFOLD == mode:
         # Field validation for kfold
         validate_config([FOLD_NUM_ITEM, FIGURE_PATH_ITEM], default_section)
@@ -428,7 +449,8 @@ def func(args):
               figure_path=default_section[FIGURE_PATH_ITEM],
               keep_workspace=keep_workspace,
               username=username, password=password,
-              weight_mode=weight_mode, conf_thres=conf_thres_str)
+              weight_mode=weight_mode, conf_thres=conf_thres_str,
+              partial_credit_table=partial_credit_table)
     else:
         validate_config([TEST_FILE_ITEM, TEST_OUT_PATH_ITEM], default_section)
 
@@ -444,7 +466,9 @@ def func(args):
                   previous_blind_out=previous_blind_out,
                   keep_workspace=keep_workspace,
                   username=username, password=password,
-                  weight_mode=weight_mode, conf_thres=conf_thres_str)
+                  weight_mode=weight_mode, conf_thres=conf_thres_str,
+                  partial_credit_table=partial_credit_table,
+                  figure_title=default_section[BLIND_FIGURE_TITLE])
         elif STANDARD_TEST == mode:
             test(temp_dir=temp_dir,
                  intent_train_file=intent_train_file,

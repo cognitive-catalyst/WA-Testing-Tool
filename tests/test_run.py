@@ -26,12 +26,13 @@ sys.path.insert(0, tool_base)
 from utils import FOLD_NUM_DEFAULT, KFOLD, BLIND_TEST, STANDARD_TEST, \
                   TRAIN_CONVERSATION_PATH, WCS_CREDS_SECTION, \
                   WCS_USERNAME_ITEM, WCS_PASSWORD_ITEM, \
-                  WORKSPACE_ID_TAG, SPEC_FILENAME, BOOL_MAP, delete_workspaces
+                  WORKSPACE_ID_TAG, SPEC_FILENAME, BOOL_MAP, \
+                  delete_workspaces
 
 from run import WORKSPACE_ID_ITEM, MODE_ITEM, DEFAULT_SECTION, \
                 DO_KEEP_WORKSPACE_ITEM, TEMP_DIR_ITEM, FIGURE_PATH_ITEM, \
                 FOLD_NUM_ITEM, PREVIOUS_BLIND_OUT_ITEM, TEST_FILE_ITEM, \
-                TEST_OUT_PATH_ITEM
+                TEST_OUT_PATH_ITEM, PARTIAL_CREDIT_TABLE_ITEM
 
 
 class RunTestCase(CommandLineTestCase):
@@ -93,6 +94,9 @@ class RunTestCase(CommandLineTestCase):
         self.config[DEFAULT_SECTION][FIGURE_PATH_ITEM] = \
             os.path.join(kfold_test_dir, 'figure.png')
         self.config[DEFAULT_SECTION][FOLD_NUM_ITEM] = str(FOLD_NUM_DEFAULT)
+        self.config[DEFAULT_SECTION][PARTIAL_CREDIT_TABLE_ITEM] = \
+            os.path.join(tool_base, 'resources', 'sample',
+                         'partial-credit-table.csv')
 
         kfold_config_path = os.path.join(kfold_test_dir, 'config.ini')
 
@@ -159,6 +163,9 @@ class RunTestCase(CommandLineTestCase):
         self.config[DEFAULT_SECTION][TEST_FILE_ITEM] = test_input_path
         self.config[DEFAULT_SECTION][TEST_OUT_PATH_ITEM] = \
             os.path.join(blind_test_dir, 'test-out.csv')
+        self.config[DEFAULT_SECTION][PARTIAL_CREDIT_TABLE_ITEM] = \
+            os.path.join(tool_base, 'resources', 'sample',
+                         'partial-credit-table.csv')
 
         blind_config_path = os.path.join(blind_test_dir, 'config.ini')
 

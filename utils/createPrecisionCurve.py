@@ -26,10 +26,10 @@ from itertools import cycle
 import pandas as pd
 import csv
 
-from utils import INTENT_JUDGE_COLUMN, UTF_8, CONFIDENCE_COLUMN, \
+from __init__ import INTENT_JUDGE_COLUMN, UTF_8, CONFIDENCE_COLUMN, \
                   PREDICTED_INTENT_COLUMN, GOLDEN_INTENT_COLUMN, \
                   INTENT_COLUMN, POPULATION_WEIGHT_MODE, \
-                  EQUAL_WEIGHT_MODE, DEFAULT_CONF_THRES
+                  EQUAL_WEIGHT_MODE, DEFAULT_CONF_THRES, SCORE_COLUMN
 
 # total different number of line style len(line_styles) * len(line_color) = 12
 line_styles = ['-', '--', '-.', ':']
@@ -116,10 +116,10 @@ def func(args):
             answered = \
                 cf_frame[cf_frame[CONFIDENCE_COLUMN] >= conf].shape[0]
             if weight_mode == POPULATION_WEIGHT_MODE:
-                correct = \
-                    cf_frame[(cf_frame[INTENT_JUDGE_COLUMN] == 'yes')
-                             & (cf_frame[CONFIDENCE_COLUMN] >= conf)].shape[0]
+                correct = cf_frame[
+                    cf_frame[CONFIDENCE_COLUMN] >= conf][SCORE_COLUMN].sum()
                 precision = correct / answered
+                # print(precision)
             else:
                 intent_uttr_num_map = \
                   cf_frame[cf_frame[CONFIDENCE_COLUMN] >= conf] \
@@ -128,10 +128,9 @@ def func(args):
 
                 # Calulate precision use equal weights
                 uttr_correct_intent = \
-                    cf_frame[(cf_frame[INTENT_JUDGE_COLUMN] == 'yes')
-                             & (cf_frame[CONFIDENCE_COLUMN] >= conf)] \
-                    .groupby(GOLDEN_INTENT_COLUMN)[GOLDEN_INTENT_COLUMN] \
-                    .count()
+                    cf_frame[cf_frame[CONFIDENCE_COLUMN] >= conf] \
+                    .groupby(GOLDEN_INTENT_COLUMN)[SCORE_COLUMN] \
+                    .sum()
 
                 intent_weights = None
                 weight_coeff = 1 / len(intent_uttr_num_map)
@@ -201,10 +200,13 @@ def func(args):
                              markersize=10,
                              label='tau = {}'.format(args.tau))
 
-    ax.legend(handles=lines + [tau_desc], loc='upper right', shadow=False,
+    ax.legend(handles=lines + [tau_desc], loc='lower left', shadow=False,
               prop={'size': LEGEND_AXIS_FONT_SIZE})
     ax.set_title(args.figure_title,
                  fontsize=TITLE_FONT_SIZE)
+
+    if args.ymin != 0.0:
+        plt.ylim(args.ymin, 1.0)
     # Save figure as file
     plt.savefig(args.outfile)
 
@@ -225,6 +227,8 @@ def create_parser():
                         help='Weight configuration for each intent')
     parser.add_argument('--tau', default=DEFAULT_CONF_THRES, type=float,
                         help='Confidence threshold for curve marker')
+    parser.add_argument('--ymin', default=0.0, type=float,
+                        help='Minimum for Y axis')
     return parser
 
 

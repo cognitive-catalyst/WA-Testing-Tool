@@ -17,6 +17,7 @@
 import logging
 import csv
 import os
+import pandas as pd
 from watson_developer_cloud import AssistantV1
 
 UTF_8 = 'utf-8'
@@ -35,6 +36,7 @@ PREDICTED_INTENT_COLUMN = 'predicted intent'
 DETECTED_ENTITY_COLUMN = 'detected entity'
 DIALOG_RESPONSE_COLUMN = 'dialog response'
 GOLDEN_INTENT_COLUMN = 'golden intent'
+SCORE_COLUMN = 'score'
 
 WCS_USERNAME_ITEM = 'username'
 WCS_PASSWORD_ITEM = 'password'
@@ -43,7 +45,7 @@ WCS_CREDS_SECTION = 'ASSISTANT CREDENTIALS'
 SPEC_FILENAME = 'workspace.json'
 WORKSPACE_BASE_FILENAME = 'workspace_base.json'
 
-root_path = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
+root_path = os.path.abspath(os.path.dirname(__file__))
 # Sub-script paths
 CREATE_TEST_TRAIN_FOLDS_PATH = os.path.join(root_path,
                                             'createTestTrainFolds.py')
@@ -121,3 +123,18 @@ def delete_workspaces(username, password, workspace_ids):
     for workspace_id in workspace_ids:
         c.delete_workspace(workspace_id=workspace_id)
     print('Cleaned up workspaces')
+
+
+def parse_partial_credit_table(file):
+    df = pd.read_csv(file, quoting=csv.QUOTE_ALL,
+                     encoding=UTF_8)
+    df.fillna('0.0')
+    table = {}
+    for _, row in df.iterrows():
+        golden_intent = row['Golden Intent'].strip()
+        if golden_intent not in table:
+            table[golden_intent] = {}
+        table[golden_intent][row['Partial Credit Intent'].strip()] = \
+            float(row['Partial Credit Intent Score'])
+
+    return table

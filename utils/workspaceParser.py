@@ -19,16 +19,23 @@
 import os
 import csv
 import json
+import os.path
 from argparse import ArgumentParser
 from watson_developer_cloud import AssistantV1
-from utils import WCS_VERSION, TRAIN_INTENT_FILENAME, TRAIN_ENTITY_FILENAME, \
-                  WORKSPACE_BASE_FILENAME, BASE_URL
+from __init__ import WCS_VERSION, TRAIN_INTENT_FILENAME, \
+                     TRAIN_ENTITY_FILENAME, WORKSPACE_BASE_FILENAME, BASE_URL
 
 
 def func(args):
-    conv = AssistantV1(username=args.username, password=args.password,
-                       version=WCS_VERSION, url=BASE_URL)
-    workspace = conv.get_workspace(workspace_id=args.workspace_id, export=True)
+    workspace = None
+    if not os.path.isfile(args.input):
+        conv = AssistantV1(username=args.username, password=args.password,
+                           version=WCS_VERSION, url=BASE_URL)
+        workspace = conv.get_workspace(workspace_id=args.input, export=True)
+    else:
+        with open(args.input) as f:
+            workspace = json.load(f)
+
     intent_train_file = os.path.join(args.outdir, TRAIN_INTENT_FILENAME)
     entity_train_file = os.path.join(args.outdir, TRAIN_ENTITY_FILENAME)
     workspace_file = os.path.join(args.outdir, WORKSPACE_BASE_FILENAME)
@@ -47,9 +54,7 @@ def func(args):
         intent_writer = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
         for intent_export in workspace['intents']:
             intent = intent_export['intent']
-            if len(intent_export['examples']) == 0:
-                intent_writer.writerow(['', intent])
-            else:
+            if len(intent_export['examples']) != 0:
                 for example in intent_export['examples']:
                     intent_writer.writerow([example['text'], intent])
 
@@ -73,8 +78,8 @@ def func(args):
 def create_parser():
     parser = ArgumentParser(
         description="Parse workspace into artifacts for training")
-    parser.add_argument('-w', '--workspace_id', type=str, required=True,
-                        help='Workspace ID')
+    parser.add_argument('-i', '--input', type=str, required=True,
+                        help='Workspace ID or path of workspace JSON')
     parser.add_argument('-u', '--username', type=str, required=True,
                         help='Assistant service username')
     parser.add_argument('-p', '--password', type=str, required=True,

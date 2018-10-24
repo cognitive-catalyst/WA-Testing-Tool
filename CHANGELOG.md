@@ -1,6 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## 2018-07-09
+### Added
+- Support optional partial credit intent tables
+
+## 2018-07-03
+### Added
+- Support local workspace JSON as training input
+
 ## 2018-06-25
 ### Added
 - Added intent metrics generation script
