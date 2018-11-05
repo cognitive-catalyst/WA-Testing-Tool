@@ -29,9 +29,9 @@ from __init__ import WCS_VERSION, TRAIN_INTENT_FILENAME, \
 def func(args):
     workspace = None
     if not os.path.isfile(args.input):
-        conv = AssistantV1(username=args.username, password=args.password,
+        conv = AssistantV1(username=args.username, password=args.password, iam_apikey=args.iam_apikey,
                            version=WCS_VERSION, url=BASE_URL)
-        workspace = conv.get_workspace(workspace_id=args.input, export=True)
+        workspace = conv.get_workspace(workspace_id=args.input, export=True).get_result()
     else:
         with open(args.input) as f:
             workspace = json.load(f)
@@ -84,6 +84,8 @@ def create_parser():
                         help='Assistant service username')
     parser.add_argument('-p', '--password', type=str, required=True,
                         help='Assistant service password')
+    parser.add_argument('-a', '--iam_apikey', type=str, required=True,
+                        help='Assistant service iam api key')
     parser.add_argument('-o', '--outdir', type=str, help='Output directory',
                         default=os.getcwd())
     return parser
