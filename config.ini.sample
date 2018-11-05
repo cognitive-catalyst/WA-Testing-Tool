@@ -28,3 +28,5 @@ partial_credit_table = ./data/partial-credit-table.csv
 [ASSISTANT CREDENTIALS]
 username =
 password =
+; When using iam_apikey set the username value as: apikey
+iam_apikey =
