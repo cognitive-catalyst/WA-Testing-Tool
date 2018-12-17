@@ -1,15 +1,3 @@
-# *****************************************************************
-#
-# Licensed Materials - Property of IBM
-#
-# IBM Watson Conversation Test Suite
-# (C) Copyright IBM Corp. 2017. All Rights Reserved.
-#
-# US Government Users Restricted Rights - Use, duplication or
-# disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
-#
-# *****************************************************************
-
 from watson_developer_cloud import ConversationV1
 import pandas as pd
 import re
