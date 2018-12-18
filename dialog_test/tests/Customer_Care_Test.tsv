@@ -1,0 +1,4 @@
+	User Input	Match Output	Match Intent	Match Entity	Alternate Intents	Intents Object	Entities Object	Context Variables	System Object
+0		Hello							
+1	What are your hours?	hours are Monday							
+2	How do I get there from the Empire State Building?	To get to our business							
