@@ -46,14 +46,21 @@ async def post(session, json, url, sem):
     async with sem:
         while True:
             try:
+                # Include user_id in request body for Plus and Premium plans
+                json.update({
+                    'context': {
+                        'metadata': {
+                            'user_id': 'test'
+                        }
+                    }
+                })
                 async with session.post(url, json=json, raise_for_status=True) as response:
                     res = await response.json()
                     return res
             except Exception as e:
                 # Max retries reached, print out the response payload
                 if counter == MAX_RETRY_LIMIT:
-                    print(response.status)
-                    print(response.text)
+                    print(e)
                     raise e
                 counter += 1
                 print("RETRY")
@@ -68,6 +75,8 @@ async def fill_df(utterance, row_idx, out_df, workspace_id, wa_username,
             auth=aiohttp.BasicAuth(wa_username, wa_password)) as session:
         url = MSG_ENDPOINT.format(workspace_id, WCS_VERSION)
 
+        # Replace newline chars before sending to WA
+        utterance = utterance.replace('\n', ' ')
         resp = await post(session, {'input': {'text': utterance},
                                     'alternate_intents': True}, url, sem)
         intents = resp['intents']
