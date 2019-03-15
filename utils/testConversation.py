@@ -31,8 +31,10 @@ from __init__ import UTF_8, CONFIDENCE_COLUMN, \
     TEST_OUT_FILENAME, BOOL_MAP, WCS_VERSION, BASE_URL, \
     parse_partial_credit_table, SCORE_COLUMN
 
-test_out_header = [PREDICTED_INTENT_COLUMN, CONFIDENCE_COLUMN,
-                   DETECTED_ENTITY_COLUMN, DIALOG_RESPONSE_COLUMN,
+# test_out_header = [PREDICTED_INTENT_COLUMN, CONFIDENCE_COLUMN,
+#                    DETECTED_ENTITY_COLUMN, DIALOG_RESPONSE_COLUMN,
+#                    SCORE_COLUMN]
+test_out_header = [DETECTED_ENTITY_COLUMN, DIALOG_RESPONSE_COLUMN,
                    SCORE_COLUMN]
 
 MSG_ENDPOINT = BASE_URL + '/v1/workspaces/{}/message?version={}'
@@ -81,10 +83,16 @@ async def fill_df(utterance, row_idx, out_df, workspace_id, wa_username,
                                     'alternate_intents': True}, url, sem)
         intents = resp['intents']
         if len(intents) != 0:
-            out_df.loc[row_idx, PREDICTED_INTENT_COLUMN] = \
-                intents[0]['intent']
-            out_df.loc[row_idx, CONFIDENCE_COLUMN] = \
-                intents[0]['confidence']
+            num_intents = len(intents) if len(intents) <= 5 else 5
+            for i in range(num_intents):
+                intent_column_name = 'predicted_intent_{}'.format(i)
+                confidence_column_name = 'confidence_{}'.format(i)
+                out_df.loc[row_idx, intent_column_name] = intents[i]['intent']
+                out_df.loc[row_idx, confidence_column_name] = intents[i]['confidence']
+            # out_df.loc[row_idx, PREDICTED_INTENT_COLUMN] = \
+            #     intents[0]['intent']
+            # out_df.loc[row_idx, CONFIDENCE_COLUMN] = \
+            #     intents[0]['confidence']
 
         out_df.loc[row_idx, DETECTED_ENTITY_COLUMN] = \
             marshall_entity(resp['entities'])
