@@ -127,8 +127,12 @@ def validateRoute(dialogNode:DialogNode, valid_routes:list):
     if route not in valid_routes:
         print("WARN:\t{}\tHas invalid route '{}'".format(dialogNode.getId(), route))
 
+# Command definition at https://www.ibm.com/support/knowledgecenter/en/SS4U29/api.html
+# List as of Version 1.0.0.3, extracted from website on June 20 2019
+legalVoiceGatewayCommands = ['vgwActPlayText','vgwActPlayUrl','vgwActHangup','vgwActSendSMS','vgwActSetSTTConfig','vgwActSetTTSConfig','vgwActSetConversationConfig','vgwActSetWVAConfig','vgwActTransfer','vgwActSendSIPInfo','vgwActCollectDTMF','vgwActPauseDTMF','vgwActUnPauseDTMF','vgwActExcludeFromTTSCache','vgwActPauseSTT','vgwActUnPauseSTT','vgwActDisableSTTDuringPlayback','vgwActEnableSTTDuringPlayback','vgwActDisableSpeechBargeIn','vgwActEnableSpeechBargeIn','vgwActDisableDTMFBargeIn','vgwActEnableDTMFBargeIn','vgwActForceNoInputTurn','vgwActEnableTranscriptionReport','vgwActDisableTranscriptionReport','vgwActAddCustomCDRData','vgwActSetTenantType']
+
 ###
-# If a node plays text without doing a WA jump, it should use Voice Gateway commands
+# If a node plays text without doing a WA jump, it should use these Voice Gateway commands
 ###
 def validateVoiceGatewayCommands(dialogNode:DialogNode, expectedVoiceGatewayCommands:list):
     text = dialogNode.getText()
@@ -140,6 +144,9 @@ def validateVoiceGatewayCommands(dialogNode:DialogNode, expectedVoiceGatewayComm
             for expected_command in expectedVoiceGatewayCommands:
                 if expected_command not in vgwCommands:
                     print("WARN:\t{}\tDoes not contain command '{}'".format(dialogNode.getId(), expected_command))
+            for command in vgwCommands:
+                if command not in legalVoiceGatewayCommands:
+                    print("WARN:\t{}\tContains command '{}' which is not in known commands list".format(dialogNode.getId(), command))
 
 def validateSTTConfiguration(dialogNode:DialogNode):
     text = dialogNode.getText()
