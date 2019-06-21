@@ -31,7 +31,13 @@ def func(args):
     if not os.path.isfile(args.input):
         conv = AssistantV1(username=args.username, password=args.password, iam_apikey=args.iam_apikey,
                            version=WCS_VERSION, url=BASE_URL)
-        workspace = conv.get_workspace(workspace_id=args.input, export=True).get_result()
+        raw_workspace = conv.get_workspace(workspace_id=args.input, export=True)
+        try:
+           #V2 API syntax
+           workspace = raw_workspace.get_result()
+        except:
+           #V1 API syntax
+           workspace = raw_workspace
     else:
         with open(args.input) as f:
             workspace = json.load(f)
