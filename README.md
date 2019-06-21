@@ -49,8 +49,12 @@ partial_credit_table = ./data/partial-credit-table.csv
 
 
 [ASSISTANT CREDENTIALS]
-username = <wa username>
-password = <wa password>
+; If your WA environment provides username and password, configure them and leave iam_apikey empty
+; If your WA environment provides iam_apikey, set the username value as: apikey and password value as: <the value of your apikey>
+username = <wa username> | apikey
+password = <wa password> | <wa apikey>
+iam_apikey =             | <wa apikey>
+; You might need to configure the url of your WA environment if default does not work. This can be done in file utils/__init__.py (BASE_URL)
 ```
 
 `previous_blind_out.csv` (optional) - Test output from the previous classifier, which uses the same blind set as these in `test_input_file`.

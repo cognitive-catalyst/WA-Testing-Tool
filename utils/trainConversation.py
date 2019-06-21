@@ -161,7 +161,7 @@ def func(args):
                      'values': row[ENTITY_VALUES_ARR_COLUMN]}
                     for _, row in entity_df.iterrows()]
 
-    conv = AssistantV1(username=args.username, password=args.password,
+    conv = AssistantV1(iam_apikey=args.iam_apikey, username=args.username, password=args.password,
                        version=WCS_VERSION, url=BASE_URL)
 
     if args.workspace_name is not None:
@@ -176,12 +176,12 @@ def func(args):
                                  dialog_nodes=dialog_nodes,
                                  counterexamples=counterexamples,
                                  metadata=metadata,
-                                 learning_opt_out=learning_opt_out)
+                                 learning_opt_out=learning_opt_out).get_result()
 
     # Poke the training status every SLEEP_INCRE secs
     sleep_counter = 0
     while sleep_counter < TIME_TO_WAIT:
-        resp = conv.get_workspace(workspace_id=resp[WORKSPACE_ID_TAG])
+        resp = conv.get_workspace(workspace_id=resp[WORKSPACE_ID_TAG]).get_result()
         if resp['status'] == 'Available':
             print(json.dumps(resp, indent=4))  # double quoted valid JSON
             return
@@ -205,6 +205,8 @@ def create_parser():
                         help='Workspace description')
     parser.add_argument('-u', '--username', type=str, required=True,
                         help='Assistant service username')
+    parser.add_argument('-a', '--iam_apikey', type=str, required=True,
+                        help='Assistant service iam api key')
     parser.add_argument('-p', '--password', type=str, required=True,
                         help='Assistant service password')
 

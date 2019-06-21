@@ -40,6 +40,7 @@ SCORE_COLUMN = 'score'
 
 WCS_USERNAME_ITEM = 'username'
 WCS_PASSWORD_ITEM = 'password'
+WCS_IAM_APIKEY_ITEM = 'iam_apikey'
 WCS_CREDS_SECTION = 'ASSISTANT CREDENTIALS'
 
 SPEC_FILENAME = 'workspace.json'
@@ -65,7 +66,7 @@ BLIND_TEST = 'blind'
 STANDARD_TEST = 'test'
 
 FOLD_NUM_DEFAULT = 5
-WCS_VERSION = '2018-02-16'
+WCS_VERSION = '2018-07-10'
 WORKSPACE_ID_TAG = 'workspace_id'
 TIME_TO_WAIT = 600
 BOOL_MAP = {True: 'yes', False: 'no'}
@@ -115,10 +116,10 @@ def unmarshall_entity(entities_str):
     return entities
 
 
-def delete_workspaces(username, password, workspace_ids):
+def delete_workspaces(username, password, iam_apikey, workspace_ids):
     """ Delete workspaces
     """
-    c = AssistantV1(username=username, password=password,
+    c = AssistantV1(username=username, password=password, iam_apikey=iam_apikey,
                     version=WCS_VERSION, url=BASE_URL)
     for workspace_id in workspace_ids:
         c.delete_workspace(workspace_id=workspace_id)

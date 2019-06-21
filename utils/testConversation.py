@@ -79,23 +79,27 @@ async def fill_df(utterance, row_idx, out_df, workspace_id, wa_username,
         utterance = utterance.replace('\n', ' ')
         resp = await post(session, {'input': {'text': utterance},
                                     'alternate_intents': True}, url, sem)
-        intents = resp['intents']
-        if len(intents) != 0:
-            out_df.loc[row_idx, PREDICTED_INTENT_COLUMN] = \
-                intents[0]['intent']
-            out_df.loc[row_idx, CONFIDENCE_COLUMN] = \
-                intents[0]['confidence']
+        try:
+            intents = resp['intents']
 
-        out_df.loc[row_idx, DETECTED_ENTITY_COLUMN] = \
-            marshall_entity(resp['entities'])
+            if len(intents) != 0:
+                out_df.loc[row_idx, PREDICTED_INTENT_COLUMN] = \
+                    intents[0]['intent']
+                out_df.loc[row_idx, CONFIDENCE_COLUMN] = \
+                    intents[0]['confidence']
 
-        response_text = ''
-        response_text_list = resp['output']['text']
-        if len(response_text_list) != 0:
-            response_text = ' '.join(response_text_list)
+            out_df.loc[row_idx, DETECTED_ENTITY_COLUMN] = \
+                marshall_entity(resp['entities'])
 
-        out_df.loc[row_idx, DIALOG_RESPONSE_COLUMN] = response_text
+            response_text = ''
+            response_text_list = resp['output']['text']
+            if len(response_text_list) != 0:
+                response_text = ' '.join(response_text_list)
 
+            out_df.loc[row_idx, DIALOG_RESPONSE_COLUMN] = response_text
+
+        except KeyError:
+            print("intent key does not exist!")
 
 def func(args):
     in_df = None
@@ -184,6 +188,8 @@ def create_parser():
                         help='Assistant service username')
     parser.add_argument('-p', '--password', type=str, required=True,
                         help='Assistant service password')
+    parser.add_argument('-a', '--iam_apikey', type=str, required=True,
+                        help='Assistant service iam api key')
     parser.add_argument('-t', '--test_column', type=str,
                         help='Test column name in input file')
     parser.add_argument('-m', '--merge_input', action='store_true',
