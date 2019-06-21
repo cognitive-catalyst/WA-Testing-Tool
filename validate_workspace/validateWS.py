@@ -222,7 +222,7 @@ if __name__ == '__main__':
     parser.add_argument('--soe_routes', help='Comma-separated list of SOE action routes. Ex: "SOE,API,None"', default='SOE,API,None')
     parser.add_argument('-u', '--username', nargs=1, type=str, help='Username to Watson Assistant.')
     parser.add_argument('-p', '--password', nargs=1, type=str, help='Password to Watson Assistant.')
-    parser.add_argument('-r', '--url', nargs=1, type=str, help='URL to Watson Assistant. Ex: https://gateway-wdc.watsonplatform.net/assistant/api')
+    parser.add_argument('-l', '--url', nargs=1, type=str, help='URL to Watson Assistant. Ex: https://gateway-wdc.watsonplatform.net/assistant/api')
     parser.add_argument('-w', '--workspace_id', nargs=1, type=str, help='ID of the Watson Assistant workspace')
 
     args = parser.parse_args()
