@@ -32,4 +32,4 @@ conf_thres = 0.2
 username =
 password =
 iam_apikey =
-#url = https://gateway.watsonplatform.net/assistant/api
+url = https://gateway.watsonplatform.net/assistant/api
