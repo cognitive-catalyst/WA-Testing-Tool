@@ -41,6 +41,7 @@ SCORE_COLUMN = 'score'
 WCS_USERNAME_ITEM = 'username'
 WCS_PASSWORD_ITEM = 'password'
 WCS_IAM_APIKEY_ITEM = 'iam_apikey'
+WCS_BASEURL_ITEM = 'url'
 WCS_CREDS_SECTION = 'ASSISTANT CREDENTIALS'
 
 SPEC_FILENAME = 'workspace.json'
@@ -76,9 +77,8 @@ DEFAULT_CONF_THRES = 0.2
 POPULATION_WEIGHT_MODE = 'population'
 EQUAL_WEIGHT_MODE = 'equal'
 
-# WA BASE_URL
+# WA BASE_URL - default if no URL is passed
 BASE_URL = 'https://gateway.watsonplatform.net/assistant/api'
-
 
 logger = logging.getLogger(__name__)
 
@@ -116,11 +116,11 @@ def unmarshall_entity(entities_str):
     return entities
 
 
-def delete_workspaces(username, password, iam_apikey, workspace_ids):
+def delete_workspaces(username, password, iam_apikey, url, workspace_ids):
     """ Delete workspaces
     """
     c = AssistantV1(username=username, password=password, iam_apikey=iam_apikey,
-                    version=WCS_VERSION, url=BASE_URL)
+                    version=WCS_VERSION, url=url)
     for workspace_id in workspace_ids:
         c.delete_workspace(workspace_id=workspace_id)
     print('Cleaned up workspaces')

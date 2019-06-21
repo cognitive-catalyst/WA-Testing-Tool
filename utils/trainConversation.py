@@ -30,7 +30,7 @@ from watson_developer_cloud import AssistantV1
 
 from __init__ import UTF_8, WCS_VERSION, \
                   UTTERANCE_COLUMN, INTENT_COLUMN, \
-                  TIME_TO_WAIT, WORKSPACE_ID_TAG, BASE_URL
+                  TIME_TO_WAIT, WORKSPACE_ID_TAG
 
 ENTITY_COLUMN = 'entity'
 ENTITY_VALUE_COLUMN = 'value'
@@ -162,7 +162,7 @@ def func(args):
                     for _, row in entity_df.iterrows()]
 
     conv = AssistantV1(iam_apikey=args.iam_apikey, username=args.username, password=args.password,
-                       version=WCS_VERSION, url=BASE_URL)
+                       version=WCS_VERSION, url=args.url)
 
     if args.workspace_name is not None:
         workspace_name = args.workspace_name
@@ -221,6 +221,8 @@ def create_parser():
                         help='Assistant service iam api key')
     parser.add_argument('-p', '--password', type=str, required=True,
                         help='Assistant service password')
+    parser.add_argument('-l', '--url', type=str, default='https://gateway.watsonplatform.net/assistant/api',
+                        help='URL to Watson Assistant. Ex: https://gateway-wdc.watsonplatform.net/assistant/api')
 
     return parser
 

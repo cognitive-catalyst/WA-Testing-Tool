@@ -35,7 +35,6 @@ test_out_header = [PREDICTED_INTENT_COLUMN, CONFIDENCE_COLUMN,
                    DETECTED_ENTITY_COLUMN, DIALOG_RESPONSE_COLUMN,
                    SCORE_COLUMN]
 
-MSG_ENDPOINT = BASE_URL + '/v1/workspaces/{}/message?version={}'
 MAX_RETRY_LIMIT = 5
 
 
@@ -68,11 +67,12 @@ async def post(session, json, url, sem):
 
 
 async def fill_df(utterance, row_idx, out_df, workspace_id, wa_username,
-                  wa_password, sem):
+                  wa_password, sem, baseUrl):
     """ Send utterance to Assistant and save response to dataframe
     """
     async with aiohttp.ClientSession(
             auth=aiohttp.BasicAuth(wa_username, wa_password)) as session:
+        MSG_ENDPOINT = baseUrl + '/v1/workspaces/{}/message?version={}'
         url = MSG_ENDPOINT.format(workspace_id, WCS_VERSION)
 
         # Replace newline chars before sending to WA
@@ -139,7 +139,7 @@ def func(args):
 
     tasks = (fill_df(out_df.loc[row_idx, test_column],
                      row_idx, out_df, args.workspace_id,
-                     args.username, args.password, sem)
+                     args.username, args.password, sem, args.url)
              for row_idx in range(out_df.shape[0]))
     loop.run_until_complete(asyncio.gather(*tasks))
 
@@ -190,6 +190,8 @@ def create_parser():
                         help='Assistant service password')
     parser.add_argument('-a', '--iam_apikey', type=str, required=True,
                         help='Assistant service iam api key')
+    parser.add_argument('-l', '--url', type=str, default='https://gateway.watsonplatform.net/assistant/api',
+                        help='URL to Watson Assistant. Ex: https://gateway-wdc.watsonplatform.net/assistant/api')
     parser.add_argument('-t', '--test_column', type=str,
                         help='Test column name in input file')
     parser.add_argument('-m', '--merge_input', action='store_true',
