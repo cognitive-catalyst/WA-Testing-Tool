@@ -28,7 +28,8 @@ conf_thres = 0.2
 [ASSISTANT CREDENTIALS]
 ; If your WA environment provides username and password, configure them and leave iam_apikey empty
 ; If your WA environment provides iam_apikey, set the username value as: apikey and password value as: <the value of your apikey>
-; You might need to configure the url of your WA environment if default does not work. This can be done in file utils/__init__.py (BASE_URL)
+; Update the url for the WA API to match your specific WA region
 username =
 password =
 iam_apikey =
+#url = https://gateway.watsonplatform.net/assistant/api
