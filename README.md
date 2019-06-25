@@ -54,7 +54,8 @@ partial_credit_table = ./data/partial-credit-table.csv
 username = <wa username> | apikey
 password = <wa password> | <wa apikey>
 iam_apikey =             | <wa apikey>
-; You might need to configure the url of your WA environment if default does not work. This can be done in file utils/__init__.py (BASE_URL)
+; Set the base URL for your WA environment
+url = https://gateway.watsonplatform.net/assistant/api
 ```
 
 `previous_blind_out.csv` (optional) - Test output from the previous classifier, which uses the same blind set as these in `test_input_file`.
@@ -92,6 +93,8 @@ For standard test, the input must only have one column or error will be thrown:
 [Run standard test without ground truth](examples/standard-test.md)
 
 [Generate description for intents](examples/intent-description.md)
+
+[Generate precision/recall for classification test](examples/intent-metrics.md)
 
 ## Caveats
 Due to different coverage among service plans, user may need to adjust `max_test_rate` accordingly to avoid network connection error.
