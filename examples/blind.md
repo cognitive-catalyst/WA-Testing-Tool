@@ -13,6 +13,7 @@ Unlike k-fold process, no separate folds will be created. Only one workspace is 
 mode = BLIND
 workspace_id = 01234567-9ABC-DEF0-1234-56789ABCDEF0
 test_input_file = ./data/test.csv
+blind_figure_title = <figure name>
 ; optional
 previous_blind_out = ./data/previous_blind_out.csv
 test_output_path = ./data/test-out.csv
