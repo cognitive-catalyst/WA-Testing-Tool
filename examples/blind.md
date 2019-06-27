@@ -1,9 +1,9 @@
 # Blind Set Testing
 ## Story
-Given an training set of Assistant intents with optional entities set, the user wants to test its performance by using a blind set.
+Given a training set of Watson Assistant utterances mapped to intents with optional entities set, the user wants to test its performance by using a blind set.
 
 ## Workflow
-Unlike k fold process, no separate folds will be created. Only one workspace is going to be trained using all of the training set. After the testing, both the test output and the `previous_test_out` are feed into `createPrecisionCurve.py` for plotting curves.
+Unlike k-fold process, no separate folds will be created. Only one workspace is going to be trained using all of the training set. After the testing, both the test output and the `previous_test_out` are feed into `createPrecisionCurve.py` for plotting curves.
 
 ## Input file
 `config.ini`
@@ -13,6 +13,7 @@ Unlike k fold process, no separate folds will be created. Only one workspace is 
 mode = BLIND
 workspace_id = 01234567-9ABC-DEF0-1234-56789ABCDEF0
 test_input_file = ./data/test.csv
+blind_figure_title = <figure name>
 ; optional
 previous_blind_out = ./data/previous_blind_out.csv
 test_output_path = ./data/test-out.csv
@@ -24,8 +25,12 @@ keep_workspace_after_test = no
 
 
 [ASSISTANT CREDENTIALS]
+; If your WA environment provides username and password, configure them and leave iam_apikey empty
+; If your WA environment provides iam_apikey, set the username value as: apikey and password value as: <the value of your apikey>
 username = <wa username>
 password = <wa password>
+iam_apikey = <wa iam apikey>
+url = https://gateway-wdc.watsonplatform.net/assistant/api
 
 ```
 
