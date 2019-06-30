@@ -1,7 +1,7 @@
 # Intent classification summary metrics
 
 ## Story
-Given an existing set of intent testing results, the user wants to determine the performance of each intent, particularly the precision and recall.  From this performance the user can decide which intents need further training or revision.
+Given an existing set of intent testing results, the user wants to determine the performance of each intent, particularly the 'positive predictive value' (precision), 'true positive rate' (recall), and f-score.  From this performance the user can decide which intents need further training or revision.
 
 ## Workflow
 There are two starting possibilities:
@@ -36,6 +36,7 @@ Assuming input file at `data/golden_vs_predicted.csv` and writing to `data/golde
 "intent1","intent2"
 "intent1","intent2"
 "intent2","intent2"
+"intent2","intent2"
 ```
 
 Invoke via:
@@ -45,7 +46,7 @@ python utils/intentmetrics.py -i data/golden_vs_predicted.csv -o data/golden_vs_
 
 ## Sample output
 ```
-"intent","number of samples","true positive rate","positive predictive value"
-"intent1","1","1.0","0.3333333333333333"
-"intent2","3","0.3333333333333333","1.0"
+"intent","number of samples","true positive rate","positive predictive value","f-score"
+"intent1","1","1.0","0.3333333333333333","0.5"
+"intent2","3","0.3333333333333333","1.0","0.6666666666666666"
 ```
