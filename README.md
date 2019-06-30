@@ -96,5 +96,7 @@ For standard test, the input must only have one column or error will be thrown:
 
 [Generate precision/recall for classification test](examples/intent-metrics.md)
 
+[Generate confusion matrix for classification test](examples/confusion-matrix.md)
+
 ## Caveats
 Due to different coverage among service plans, user may need to adjust `max_test_rate` accordingly to avoid network connection error.
