@@ -3,3 +3,7 @@ config.ini
 data/
 __pycache__/
 .vscode
+
+#Keep config.ini.sample as modifiable.  Users will likely create config.ini as a main file or config.ini.set1 and config.ini.set2 to quickly toggle between configs.
+!config.ini.sample
+config.ini*
