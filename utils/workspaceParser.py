@@ -23,7 +23,7 @@ import os.path
 from argparse import ArgumentParser
 from watson_developer_cloud import AssistantV1
 from __init__ import WCS_VERSION, TRAIN_INTENT_FILENAME, \
-                     TRAIN_ENTITY_FILENAME, WORKSPACE_BASE_FILENAME
+                     TRAIN_ENTITY_FILENAME, WORKSPACE_BASE_FILENAME, UTF_8
 
 
 def func(args):
@@ -52,11 +52,11 @@ def func(args):
         raise ValueError("No intent is found in workspace")
 
     # Save workspace json
-    with open(workspace_file, 'w+') as file:
+    with open(workspace_file, 'w+', encoding=UTF_8) as file:
         json.dump(workspace, file)
 
     # Parse intents to file
-    with open(intent_train_file, 'w+') as csvfile:
+    with open(intent_train_file, 'w+', encoding=UTF_8) as csvfile:
         intent_writer = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
         for intent_export in workspace['intents']:
             intent = intent_export['intent']
@@ -66,7 +66,7 @@ def func(args):
 
     if len(entity_exports) != 0:
         # Parse entities to file
-        with open(entity_train_file, 'w+') as csvfile:
+        with open(entity_train_file, 'w+', encoding=UTF_8) as csvfile:
             entity_writer = csv.writer(csvfile, quoting=csv.QUOTE_ALL)
             for entity_export in workspace['entities']:
                 entity = entity_export['entity']
