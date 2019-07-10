@@ -32,7 +32,7 @@ def func(args):
 
     labels = in_df[args.golden_column].drop_duplicates().sort_values()
 
-    precisions, recalls, _, support = \
+    precisions, recalls, fscores, support = \
         precision_recall_fscore_support(y_true=in_df[args.golden_column],
                                         y_pred=in_df[args.test_column],
                                         labels=labels)
@@ -49,15 +49,17 @@ def func(args):
 
             precisions[idx] = precision
             recalls[idx] = recall
+            fscores[idx] = (2 * precision * recall) / (precision + recall)
 
     out_df = pd.DataFrame(data={'intent': labels,
                                 'true positive rate': recalls,
                                 'positive predictive value': precisions,
+                                'f-score': fscores,
                                 'number of samples': support})
 
     out_df.to_csv(args.out_file, encoding='utf-8', quoting=csv.QUOTE_ALL,
                   index=False, columns=['intent', 'number of samples', 'true positive rate',
-                  'positive predictive value'] )
+                  'positive predictive value', 'f-score'] )
 
 
 def create_parser():
