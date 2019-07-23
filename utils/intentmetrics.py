@@ -37,6 +37,12 @@ def func(args):
                                         y_pred=in_df[args.test_column],
                                         labels=labels)
 
+    #Raw accuracy as well
+    in_df['correct'] = (in_df[args.golden_column] == in_df[args.test_column])
+    samples = len(in_df['correct'])
+    num_correct = sum(in_df['correct'])
+    accuracy = format(num_correct/samples, '.2f')
+
     if args.partial_credit_on is not None:
         for idx, label in enumerate(labels):
             retrieved_doc_indx = in_df[args.test_column] == label
@@ -61,6 +67,7 @@ def func(args):
                   index=False, columns=['intent', 'number of samples', 'true positive rate',
                   'positive predictive value', 'f-score'] )
 
+    print ("Wrote intent metrics output to {}. Includes {} correct intents in {} tries for accuracy of {}.".format(args.out_file, num_correct, samples, accuracy))
 
 def create_parser():
     parser = ArgumentParser(
