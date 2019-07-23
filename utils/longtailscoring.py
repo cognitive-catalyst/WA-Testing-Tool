@@ -61,6 +61,7 @@ def func(args):
 
     #Invoke additional analyses
     base_out_file = args.out_file
+    args.in_file = base_out_file
 
     args.partial_credit_on = None
     args.out_file = base_out_file + ".metrics.csv"
