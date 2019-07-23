@@ -20,7 +20,8 @@ import csv
 import pandas as pd
 from argparse import ArgumentParser
 from __init__ import UTF_8
-
+from intentmetrics import func as intent_metrics_function
+from confusionmatrix import func as confusion_matrix_function
 
 def func(args):
     in_df = pd.read_csv(args.in_file, quoting=csv.QUOTE_ALL,
@@ -55,8 +56,18 @@ def func(args):
     out_df.to_csv(args.out_file, encoding='utf-8', quoting=csv.QUOTE_ALL,
                   index=False, columns=[args.golden_column, args.test_column])
 
-    print ("Wrote long-tail converted output to {}. Includes {} correct intents in {} tries for accuracy of {}".format(args.out_file, correct, idx, correct/idx))
+    accuracy = format(correct/idx, '.2f')
+    print ("Wrote long-tail converted output to {}. Includes {} correct intents in {} tries for accuracy of {}.".format(args.out_file, correct, idx, accuracy))
 
+    #Invoke additional analyses
+    base_out_file = args.out_file
+
+    args.partial_credit_on = None
+    args.out_file = base_out_file + ".metrics.csv"
+    intent_metrics_function(args)
+
+    args.out_file = base_out_file + ".confusion.csv"
+    confusion_matrix_function(args)
 
 def create_parser():
     parser = ArgumentParser(
