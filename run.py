@@ -33,6 +33,7 @@ from utils import TRAIN_FILENAME, TEST_FILENAME, UTTERANCE_COLUMN, \
                   TRAIN_CONVERSATION_PATH, TEST_CONVERSATION_PATH, \
                   CREATE_PRECISION_CURVE_PATH, SPEC_FILENAME, \
                   delete_workspaces, KFOLD, BLIND_TEST, STANDARD_TEST, \
+                  INTENT_METRICS_PATH, CONFUSION_MATRIX_PATH, \
                   WORKSPACE_PARSER_PATH, WORKSPACE_BASE_FILENAME, BASE_URL
 
 # SECTIONS
@@ -214,6 +215,25 @@ def kfold(fold_num, temp_dir, intent_train_file, workspace_base_file,
                 str(fold_num)))
         else:
             raise RuntimeError('Failure in plotting curves')
+
+        kfold_result_file = os.path.join(working_dir, KFOLD_UNION_FILE)
+        metrics_args = [sys.executable, INTENT_METRICS_PATH,
+                     '-i', kfold_result_file,
+                     '-o', kfold_result_file+".metrics.csv",
+                     '--partial_credit_on', str(partial_credit_table is not None)]
+        if subprocess.run(metrics_args).returncode == 0:
+            print('Generated intent metrics')
+        else:
+            raise RuntimeError('Failure in generating intent metrics')
+
+        confusion_args = [sys.executable, INTENT_METRICS_PATH,
+                          '-i', kfold_result_file,
+                          '-o', kfold_result_file+".confusion_args.csv"]
+        if subprocess.run(confusion_args).returncode == 0:
+            print('Generated confusion matrix')
+        else:
+            raise RuntimeError('Failure in generating confusion matrix')
+
     finally:
         if not keep_workspace:
             workspace_ids = []
@@ -304,6 +324,24 @@ def blind(temp_dir, intent_train_file, workspace_base_file, figure_path,
             print('Generated precision curves for blind set')
         else:
             raise RuntimeError('Failure in plotting curves')
+
+        blind_result_file = test_out_path
+        metrics_args = [sys.executable, INTENT_METRICS_PATH,
+                        '-i', blind_result_file,
+                        '-o', blind_result_file+".metrics.csv",
+                        '--partial_credit_on', str(partial_credit_table is not None)]
+        if subprocess.run(metrics_args).returncode == 0:
+            print('Generated intent metrics')
+        else:
+            raise RuntimeError('Failure in generating intent metrics')
+
+        confusion_args = [sys.executable, INTENT_METRICS_PATH,
+                          '-i', blind_result_file,
+                          '-o', blind_result_file+".confusion_args.csv"]
+        if subprocess.run(confusion_args).returncode == 0:
+            print('Generated confusion matrix')
+        else:
+            raise RuntimeError('Failure in generating confusion matrix')
     finally:
         if not keep_workspace:
             delete_workspaces(username, password, iam_apikey, url, [workspace_id])
