@@ -326,9 +326,10 @@ def blind(temp_dir, intent_train_file, workspace_base_file, figure_path,
             raise RuntimeError('Failure in plotting curves')
 
         blind_result_file = test_out_path
+        blind_result_file_base = blind_result_file[:-4]
         metrics_args = [sys.executable, INTENT_METRICS_PATH,
                         '-i', blind_result_file,
-                        '-o', blind_result_file+".metrics.csv",
+                        '-o', blind_result_file_base+"_metrics.csv",
                         '--partial_credit_on', str(partial_credit_table is not None)]
         if subprocess.run(metrics_args).returncode == 0:
             print('Generated intent metrics')
@@ -337,7 +338,7 @@ def blind(temp_dir, intent_train_file, workspace_base_file, figure_path,
 
         confusion_args = [sys.executable, CONFUSION_MATRIX_PATH,
                           '-i', blind_result_file,
-                          '-o', blind_result_file+".confusion_args.csv"]
+                          '-o', blind_result_file_base+"_confusion.csv"]
         if subprocess.run(confusion_args).returncode == 0:
             print('Generated confusion matrix')
         else:
