@@ -47,6 +47,8 @@ def func(args):
 
     out_df.to_csv(args.out_file, encoding='utf-8', quoting=csv.QUOTE_ALL, index=index_labels, columns=column_labels)
 
+    print ("Wrote confusion matrix output to {}.".format(args.out_file))
+
 def create_parser():
     parser = ArgumentParser(
         description='Generate confusion matrix')
