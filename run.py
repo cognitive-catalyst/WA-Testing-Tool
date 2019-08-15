@@ -217,18 +217,19 @@ def kfold(fold_num, temp_dir, intent_train_file, workspace_base_file,
             raise RuntimeError('Failure in plotting curves')
 
         kfold_result_file = os.path.join(working_dir, KFOLD_UNION_FILE)
+        kfold_result_file_base = kfold_result_file[:-4]
         metrics_args = [sys.executable, INTENT_METRICS_PATH,
                      '-i', kfold_result_file,
-                     '-o', kfold_result_file+".metrics.csv",
+                     '-o', kfold_result_file_base+".metrics.csv",
                      '--partial_credit_on', str(partial_credit_table is not None)]
         if subprocess.run(metrics_args).returncode == 0:
             print('Generated intent metrics')
         else:
             raise RuntimeError('Failure in generating intent metrics')
 
-        confusion_args = [sys.executable, INTENT_METRICS_PATH,
+        confusion_args = [sys.executable, CONFUSION_MATRIX_PATH, 
                           '-i', kfold_result_file,
-                          '-o', kfold_result_file+".confusion_args.csv"]
+                          '-o', kfold_result_file_base+".confusion_args.csv"]
         if subprocess.run(confusion_args).returncode == 0:
             print('Generated confusion matrix')
         else:
