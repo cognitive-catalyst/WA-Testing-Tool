@@ -335,7 +335,7 @@ def blind(temp_dir, intent_train_file, workspace_base_file, figure_path,
         else:
             raise RuntimeError('Failure in generating intent metrics')
 
-        confusion_args = [sys.executable, INTENT_METRICS_PATH,
+        confusion_args = [sys.executable, CONFUSION_MATRIX_PATH,
                           '-i', blind_result_file,
                           '-o', blind_result_file+".confusion_args.csv"]
         if subprocess.run(confusion_args).returncode == 0:
