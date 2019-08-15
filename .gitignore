@@ -1,6 +1,7 @@
 .DS_Store
 config.ini
-data/
+data/*
+!data/workspace_base.json.sample
 __pycache__/
 .vscode
 
