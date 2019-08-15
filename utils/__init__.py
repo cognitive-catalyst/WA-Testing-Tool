@@ -59,7 +59,8 @@ CREATE_PRECISION_CURVE_PATH = os.path.join(root_path,
                                            'createPrecisionCurve.py')
 WORKSPACE_PARSER_PATH = os.path.join(root_path,
                                      'workspaceParser.py')
-
+INTENT_METRICS_PATH = os.path.join(root_path, 'intentmetrics.py')
+CONFUSION_MATRIX_PATH = os.path.join(root_path, 'confusionmatrix.py')
 
 # MODE
 KFOLD = 'kfold'
