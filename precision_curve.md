@@ -16,11 +16,11 @@ visible in the precision graph as a negative slope.
 
 The precise definition of precision for a given data set at a given confidence threshold, _t_ (or also reffered to as  _tau_), is:
 
-![precision](../resources/precsion.jpg)
+![precision](./resources/precsion.jpg)
 
 And, the number of questions attempted is the formula:
 
-![questionsattempted](../resources/questions_attempted.jpg)
+![questionsattempted](./resources/questions_attempted.jpg)
 
 Every value of _t_ will produce exactly one point on the precision curve.
 
@@ -30,7 +30,7 @@ a Watson Assistant that only answer questions, but the analysis for a generic Wa
 
 Let's look at an example:
 
-![p_curve](../resources/p_curve.jpg)
+![p_curve](./resources/p_curve.jpg)
 
 Now, let us use the Precision Curve above to answer our three questions from above:
 
