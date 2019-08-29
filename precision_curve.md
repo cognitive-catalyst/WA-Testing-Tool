@@ -16,7 +16,7 @@ visible in the precision graph as a negative slope.
 
 The precise definition of precision for a given data set at a given confidence threshold, _t_ (or also reffered to as  _tau_), is:
 
-![precision](./resources/precsion.jpg)
+![precision](./resources/precision.jpg)
 
 And, the number of questions attempted is the formula:
 
