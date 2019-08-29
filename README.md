@@ -1,5 +1,12 @@
 # WA-Testing-Tool
-Scripts that run against Watson Assistant for K fold validation on training set, testing on blind test, and draw precision curves for comparison.
+Scripts that run against Watson Assistant for 
+  - `KFOLD` K fold cross validation on training set,
+  - `BLIND` Evaluating a blind test, and
+  - `TEST` Testing the WA against a list of utterances.
+
+In the case of a k-fold cross validation, or a blind set, the tool will output
+a [precision curve](precision_curve.md), in addition to per-intent true positive
+and positive predictive value rates, and a confustion matrix.
 
 ## Features
 - Easy to setup in one configuration file.
@@ -42,7 +49,7 @@ keep_workspace_after_test = no
 weight_mode = population
 ; Test request rate
 max_test_rate = 100
-; Threshold of confidence
+; Threshold of confidence used for plotting the precision curve
 conf_thres = 0.2
 ; Partial Credit Table
 partial_credit_table = ./data/partial-credit-table.csv
