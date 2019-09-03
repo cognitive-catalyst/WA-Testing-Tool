@@ -138,7 +138,7 @@ def validateVoiceGatewayCommands(dialogNode:DialogNode, expectedVoiceGatewayComm
     text = dialogNode.getText()
     if text != "" and 'jump_to' != dialogNode.getNextStep():
         vgwCommands = dialogNode.getVoiceGatewayCommands()
-        if vgwCommands == None:
+        if vgwCommands == None or len(vgwCommands) == 0:
             print("WARN:\t{}\tDoes not contain any Voice Gateway commands".format(dialogNode.getId()))
         else:
             for expected_command in expectedVoiceGatewayCommands:
