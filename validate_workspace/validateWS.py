@@ -87,6 +87,9 @@ class DialogNode:
             #second way to get text
             if 'generic' in output_node:
                 for generic in output_node['generic']:
+                    if 'title' in generic:
+                       text = text + cleanValue(generic['title'])
+                       textSource = "output generic title"
                     if 'values' in generic:
                         for value in generic['values']:
                             text = text + cleanValue(value['text'])
@@ -119,6 +122,8 @@ class Workspace:
         for dialog_node in dialog_node_list:
             if dialog_node.get('disabled') == True or dialog_node.get('disabled') == 'true':
                 continue
+            if 'type' not in dialog_node or dialog_node.get('type') != 'standard':
+                continue
             enabled_node_list.append(DialogNode(dialog_node))
         return enabled_node_list
 
@@ -136,7 +141,7 @@ legalVoiceGatewayCommands = ['vgwActPlayText','vgwActPlayUrl','vgwActHangup','vg
 ###
 def validateVoiceGatewayCommands(dialogNode:DialogNode, expectedVoiceGatewayCommands:list):
     text = dialogNode.getText()
-    if text != "" and 'jump_to' != dialogNode.getNextStep():
+    if text != "" and 'jump_to' != dialogNode.getNextStep() and 'skip_user_input' != dialogNode.getNextStep():
         vgwCommands = dialogNode.getVoiceGatewayCommands()
         if vgwCommands == None:
             print("WARN:\t{}\tDoes not contain any Voice Gateway commands".format(dialogNode.getId()))
@@ -150,7 +155,7 @@ def validateVoiceGatewayCommands(dialogNode:DialogNode, expectedVoiceGatewayComm
 
 def validateSTTConfiguration(dialogNode:DialogNode):
     text = dialogNode.getText()
-    if text != "" and 'jump_to' != dialogNode.getNextStep():
+    if text != "" and 'jump_to' != dialogNode.getNextStep() and 'skip_user_input' != dialogNode.getNextStep():
         #There are different ways to provide the STT customization variables, but there should be a vgwActSetSTTConfig action
         if 'output' in dialogNode.data and 'vgwActionSequence' in dialogNode.data['output']:
           vgwActionNodes = dialogNode.data['output']['vgwActionSequence']
@@ -185,6 +190,17 @@ def validateSTTConfiguration(dialogNode:DialogNode):
         #             print("WARN:\t{}\tIs missing STT acoustic model customization ID".format(self.getId()))
         #     except:
         #         print("ERROR:\t{}\tHas invalid STT_CONFIG section".format(self.getId()))
+
+###
+# If a node does not play text it should send a context action or a jump
+# TODO: Check for webhooks also
+###
+def verifyNoDeadEnd(dialogNode:DialogNode):
+    text = dialogNode.getText()
+    if len(text) == 0 and 'jump_to' != dialogNode.getNextStep() and 'skip_user_input' != dialogNode.getNextStep():
+        context = dialogNode.getContext()
+        if context == None or 'action' not in context:
+           print("WARN:\t{}\tDoes not play text, set an action, or perform a jump.  It may be a dead end node.".format(dialogNode.getId()))
 
 def getWorkspaceJson(args):
   if args.file and args.file[0]:
@@ -245,3 +261,5 @@ if __name__ == '__main__':
             validateSTTConfiguration(dialog)
         if(soeValidation):
             validateRoute(dialog, validSOERoutes)
+        #Standard tests
+        verifyNoDeadEnd(dialog)
