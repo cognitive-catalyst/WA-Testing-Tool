@@ -109,6 +109,11 @@ class DialogNode:
                                 textSource = "vgwActPlayText"
         return text
 
+    def getDigressionType(self):
+        if 'digress_in' in self.data:
+            return self.data['digress_in']
+        return None
+
 class Workspace:
     def __init__(self, jsonData):
         self.data = jsonData
@@ -193,14 +198,49 @@ def validateSTTConfiguration(dialogNode:DialogNode):
 
 ###
 # If a node does not play text it should send a context action or a jump
-# TODO: Check for webhooks also
+# Webhooks and other integrations are checked in the context.action
 ###
 def verifyNoDeadEnd(dialogNode:DialogNode):
     text = dialogNode.getText()
-    if len(text) == 0 and 'jump_to' != dialogNode.getNextStep() and 'skip_user_input' != dialogNode.getNextStep():
+    if len(text) == 0 and 'jump_to' != dialogNode.getNextStep() and 'skip_user_input' != dialogNode.getNextStep() and 'returns' != dialogNode.getDigressionType():
         context = dialogNode.getContext()
         if context == None or 'action' not in context:
            print("WARN:\t{}\tDoes not play text, set an action, or perform a jump.  It may be a dead end node.".format(dialogNode.getId()))
+
+def buildJumpReport(workspace, jumpReportFile, jumpLabel):
+   getTargetTitles = (jumpLabel == 'Both' or jumpLabel == 'Title')
+   idToTitleDict = {}
+   jumps = []
+   for dialogNode in workspace.getDialogNodes():
+       if(getTargetTitles):
+          idToTitleDict[dialogNode.getId()] = dialogNode.getTitle() 
+       if 'jump_to' == dialogNode.getNextStep():
+           behavior = dialogNode.data['next_step']
+           type = behavior['selector'] #'body' or 'condition'
+
+           #By ID first
+           source = dialogNode.getId()
+           target = behavior['dialog_node']
+           jump = {'source':source, 'type':type, 'target':target}
+           jumps.append(jump)
+
+   outFile = open(jumpReportFile, 'w')
+   header = 'Source\tType\tTarget'
+   outFile.write(header+'\n')
+   for jump in jumps:
+       source = jump['source']
+       target = jump['target']
+       if('Title' == jumpLabel):
+          source = idToTitleDict[source]
+          target = idToTitleDict[target]
+       if('Both' == jumpLabel):
+          source = source + ":" + idToTitleDict[source]
+          target = target + ":" + idToTitleDict[target]
+
+       line = '{}\t{}\t{}'.format(source, jump['type'], target)
+       outFile.write(line+'\n') 
+   outFile.close()
+   print('Wrote jump report file to {}'.format(jumpReportFile))
 
 def getWorkspaceJson(args):
   if args.file and args.file[0]:
@@ -236,6 +276,8 @@ if __name__ == '__main__':
     parser.add_argument('-s', '--soe', action='store_true', help='Enables SOE response validation')
     parser.add_argument('--voice_gateway_commands', help='Comma-separated list of Voice Gateway commands expected on each text response node. Ex: "vgwActSetSTTConfig,vgwActPlayText"', default='vgwActSetSTTConfig,vgwActPlayText')
     parser.add_argument('--soe_routes', help='Comma-separated list of SOE action routes. Ex: "SOE,API,None"', default='SOE,API,None')
+    parser.add_argument('--jump_report', help='Filename to print a report of all jumps in the workspace')
+    parser.add_argument('--jump_labels', help='When building jump report, label the nodes by `ID|Title|Both`', default='Both')
     parser.add_argument('-u', '--username', nargs=1, type=str, help='Username to Watson Assistant.')
     parser.add_argument('-p', '--password', nargs=1, type=str, help='Password to Watson Assistant.')
     parser.add_argument('-l', '--url', nargs=1, type=str, help='URL to Watson Assistant. Ex: https://gateway-wdc.watsonplatform.net/assistant/api')
@@ -251,6 +293,8 @@ if __name__ == '__main__':
     if 'None' in validSOERoutes:
       validSOERoutes.remove('None')
       validSOERoutes.append(None)
+    jumpReportFile = args.jump_report
+    jumpLabel = args.jump_labels
 
     workspace = Workspace(jsonData)
     print('Input workspace is called "{}" and contains {} dialog nodes'.format(workspace.getTitle(), len(workspace.getDialogNodes())))
@@ -263,3 +307,6 @@ if __name__ == '__main__':
             validateRoute(dialog, validSOERoutes)
         #Standard tests
         verifyNoDeadEnd(dialog)
+
+    if(jumpReportFile is not None):
+        buildJumpReport(workspace, jumpReportFile, jumpLabel)
