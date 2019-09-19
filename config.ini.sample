@@ -4,8 +4,10 @@ mode = kfold
 workspace_id = <workspace_id or workspace JSON>
 ; Test input file for blind and standard test
 test_input_file = ./data/test.csv
-; Title for blind testing output figure
-blind_figure_title = <figure name>
+; (Optional for blind) Previous blind test out
+; previous_blind_out = ./data/prev-test-out.csv
+; (Required for blind) Title for blind testing output figure
+blind_figure_title = 'Blind Test Results'
 ; Test output path for blind and test
 test_output_path = ./data/test-out.csv
 ; All temporary files will be stored here
