@@ -1,42 +1,57 @@
 [DEFAULT]
-; (Required) Mode to run tool in.  This setting affects which other variables are required in the rest of the DEFAULT section.
-; Value values: KFOLD, BLIND or TEST
-mode = kfold
-
 ; (Required) One of:
 ; Workspace ID (can be found on Watson Assistant UI - navigate to Skills tab and click three dots for View API Details)
 ; Path to JSON file representing the locally saved workspace
 workspace_id = <workspace_id or workspace JSON>
 
-; (Required for blind/test) Test input file. blind mode requires two columns, test mode requires one column
-test_input_file = ./data/test.csv
-; (Optional for blind) Previous blind test out
-; previous_blind_out = ./data/prev-test-out.csv
-; (Required for blind) Title for blind testing output figure
-blind_figure_title = 'Blind Test Results'
-; (Required for blind/test) Test output path
-test_output_path = ./data/test-out.csv
-; (Required) All temporary files will be stored here
-temporary_file_directory = ./data
-; (Required for kfold and blind) Output figure path
-out_figure_path= ./data/figure.png
-; (Required for kfold) Number of folds.  If on LITE plan use 3.  Each fold creates a workspace.
-fold_num = 5
-; (Required) yes/no on whether to keep(yes) or delete(no) workspaces created by this tool after the testing phase
-keep_workspace_after_test = no
-; (Optional for kfold/blind) Weighting scheme for result scoring.
-; Valid values: POPULATION (default), EQUAL or WEIGHT_FILE (path to a weights CSV file)
-weight_mode = population
 ; (Required) Test request rate (maximum number of API calls per second)
 max_test_rate = 100
-; (Optional for kfold and blind) Threshold of confidence for classification, below which an answer is automatically wrong
+
+; (Required) All temporary files will be stored here
+temporary_file_directory = ./data
+
+; (Required) yes/no on whether to keep(yes) or delete(no) workspaces created by this tool after the testing phase
+keep_workspace_after_test = no
+
+; (Required) Mode to run tool in.  This setting affects which other variables are required in the rest of the DEFAULT section.
+; Value values: KFOLD, BLIND or TEST
+mode = kfold
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; The remaining parameters in DEFAULT section depend upon the MODE above
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+; (Required for blind and test) Test input file. blind mode requires two columns, test mode requires one column
+test_input_file = ./data/test.csv
+
+; (Required for blind and test) Test output path
+test_output_path = ./data/test-out.csv
+
+; (Required for blind and kfold) Output figure path
+out_figure_path= ./data/figure.png
+
+; (Required for kfold) Number of folds.  If on LITE plan use 3.  Each fold creates a workspace.
+fold_num = 5
+
+; (Required for blind) Title for blind testing output figure
+blind_figure_title = 'Blind Test Results'
+
+; (Optional for blind and kfold) Threshold of confidence for classification, below which an answer is automatically wrong
 ; Default value is 0.2 if not specified. (Watson Assistant automatically classifies as "#Irrelevant" below 0.2)
 conf_thres = 0.2
-; (Optional for kfold and blind) Path to Partial Credit Table
+
+; (Optional for blind and kfold) Path to Partial Credit Table
 ; partial_credit_table = ./data/partial-credit-table.csv
 
+; (Optional for blind and kfold) Weighting scheme for result scoring.
+; Valid values: POPULATION (default), EQUAL or WEIGHT_FILE (path to a weights CSV file)
+weight_mode = population
+
+; (Optional for blind) Previous blind test output file, for comparing consecutive blind tests
+; previous_blind_out = ./data/prev-test-out.csv
 
 [ASSISTANT CREDENTIALS]
+; Regardless of mode you must specify a WA environment to test the classification against.
 ; If your WA environment provides username and password, configure them and leave iam_apikey empty
 ; If your WA environment provides iam_apikey, set the username value as: apikey and password value as: <the value of your apikey>
 ; Update the url for the WA API to match your specific WA region
