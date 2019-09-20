@@ -1,29 +1,38 @@
 [DEFAULT]
-; KFOLD, BLIND or TEST
+; (Required) Mode to run tool in.  This setting affects which other variables are required in the rest of the DEFAULT section.
+; Value values: KFOLD, BLIND or TEST
 mode = kfold
+
+; (Required) One of:
+; Workspace ID (can be found on Watson Assistant UI - navigate to Skills tab and click three dots for View API Details)
+; Path to JSON file representing the locally saved workspace
 workspace_id = <workspace_id or workspace JSON>
-; Test input file for blind and standard test
+
+; (Required for blind/test) Test input file. blind mode requires two columns, test mode requires one column
 test_input_file = ./data/test.csv
 ; (Optional for blind) Previous blind test out
 ; previous_blind_out = ./data/prev-test-out.csv
 ; (Required for blind) Title for blind testing output figure
 blind_figure_title = 'Blind Test Results'
-; Test output path for blind and test
+; (Required for blind/test) Test output path
 test_output_path = ./data/test-out.csv
-; All temporary files will be stored here
+; (Required) All temporary files will be stored here
 temporary_file_directory = ./data
-; Figure path for kfold and blind
+; (Required for kfold and blind) Output figure path
 out_figure_path= ./data/figure.png
+; (Required for kfold) Number of folds.  If on LITE plan use 3.  Each fold creates a workspace.
 fold_num = 5
-; yes/no
+; (Required) yes/no on whether to keep(yes) or delete(no) workspaces created by this tool after the testing phase
 keep_workspace_after_test = no
-; POPULATION, EQUAL or WEIGHT_FILE
+; (Optional for kfold/blind) Weighting scheme for result scoring.
+; Valid values: POPULATION (default), EQUAL or WEIGHT_FILE (path to a weights CSV file)
 weight_mode = population
-; Test request rate
+; (Required) Test request rate (maximum number of API calls per second)
 max_test_rate = 100
-; Threshold of confidence
+; (Optional for kfold and blind) Threshold of confidence for classification, below which an answer is automatically wrong
+; Default value is 0.2 if not specified. (Watson Assistant automatically classifies as "#Irrelevant" below 0.2)
 conf_thres = 0.2
-; Partial Credit Table
+; (Optional for kfold and blind) Path to Partial Credit Table
 ; partial_credit_table = ./data/partial-credit-table.csv
 
 
