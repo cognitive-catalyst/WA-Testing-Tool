@@ -22,6 +22,8 @@ mode = kfold
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ; (Required for blind and test) Test input file. blind mode requires two columns, test mode requires one column
+; In blind mode column headers are 'utterance' and 'golden intent'
+; In test mode column headers are not required as they are all assumed 'utterance'
 test_input_file = ./data/test.csv
 
 ; (Required for blind and test) Test output path
@@ -30,7 +32,8 @@ test_output_path = ./data/test-out.csv
 ; (Required for blind and kfold) Output figure path
 out_figure_path= ./data/figure.png
 
-; (Required for kfold) Number of folds.  If on LITE plan use 3.  Each fold creates a workspace.
+; (Required for kfold) Number of folds.  If on LITE plan use 3.
+; Each fold creates a workspace (make sure you have enough workspaces available, LITE plans are restricted to 5)
 fold_num = 5
 
 ; (Required for blind) Title for blind testing output figure
@@ -48,6 +51,7 @@ conf_thres = 0.2
 weight_mode = population
 
 ; (Optional for blind) Previous blind test output file, for comparing consecutive blind tests
+; For simplicity use a file created by this tool on a previous run
 ; previous_blind_out = ./data/prev-test-out.csv
 
 [ASSISTANT CREDENTIALS]
