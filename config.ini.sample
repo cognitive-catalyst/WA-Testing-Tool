@@ -23,7 +23,7 @@ mode = kfold
 
 ; (Required for blind and test) Test input file. blind mode requires two columns, test mode requires one column
 ; In blind mode column headers are 'utterance' and 'golden intent'
-; In test mode column headers are not required as they are all assumed 'utterance'
+; In test mode column header is 'utterance'
 test_input_file = ./data/test.csv
 
 ; (Required for blind and test) Test output path
