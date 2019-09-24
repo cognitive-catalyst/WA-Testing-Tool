@@ -33,8 +33,11 @@ def outputLogs(logs, output_columns, output_file):
 
     for log in logs:
        utterance  = log['request' ]['input']['text']
-       intent     = log['response']['intents'][0]['intent']
-       confidence = log['response']['intents'][0]['confidence']
+       intent     = 'unknown'
+       confidence = 0.0
+       if 'response' in log and 'intents' in log['response'] and len(log['response']['intents'])>0:
+          intent     = log['response']['intents'][0]['intent']
+          confidence = log['response']['intents'][0]['confidence']
 
        if 'all' == output_columns:
           output_line = '{}\t{}\t{}'.format(utterance, intent, confidence)
