@@ -22,6 +22,11 @@ from argparse import ArgumentParser
 from sklearn.metrics import precision_recall_fscore_support
 from __init__ import UTF_8
 
+# For treemap
+import matplotlib
+import matplotlib.pyplot as plt
+from  matplotlib.colors import LinearSegmentedColormap
+import squarify
 
 def func(args):
     in_df = pd.read_csv(args.in_file, quoting=csv.QUOTE_ALL,
@@ -68,6 +73,49 @@ def func(args):
                   'positive predictive value', 'f-score'] )
 
     print ("Wrote intent metrics output to {}. Includes {} correct intents in {} tries for accuracy of {}.".format(args.out_file, num_correct, samples, accuracy))
+    generateTreemap(args.out_file, out_df)
+
+def generateTreemap(base_out_file, out_df):
+
+    # Organize the values for a more readable map.
+    # Sort by 'f-score' puts the worst performing intents in top-right and best in lower-left
+    # Sort by 'number of samples' puts the intents with least samples in top-right and most-samples in lower-left
+    out_df = out_df.sort_values(by=['f-score'], ascending=False)
+
+    # Color should never be the only differentiating factor.
+    # If you prefer sorting by 'number of samples' you should use the one-color scale as you otherwise have no visual color-less dimension
+    #    to see 'f-score'
+    #One-color alternative
+    #cmap = matplotlib.cm.Greens
+    #Two-color from red-to-green requires sorting by f-score for accessibility. Else you would sort by 'number of samples'
+    cmap=LinearSegmentedColormap.from_list('rg',["r", "w", "g"], N=256)
+
+    colors = [cmap(value) for value in out_df['f-score']]
+    treemap = squarify.plot(sizes=out_df['number of samples'],
+                            label=out_df['intent'],
+                            color=colors, alpha=.8,
+                            text_kwargs={'fontsize':3},
+                            bar_kwargs={'linewidth':0.5, 'edgecolor':'#000000'} )
+    plt.axis('off')
+    plt.title("Metrics summary per intent\n(Box size from number of samples)")
+
+    patches_array = [
+        matplotlib.patches.Patch(edgecolor='black',facecolor=cmap(0.0), linewidth=0.25, label='0%'),
+        matplotlib.patches.Patch(edgecolor='black',facecolor=cmap(.25), linewidth=0.25, label='25%'),
+        matplotlib.patches.Patch(edgecolor='black',facecolor=cmap(.50), linewidth=0.25, label='50%'),
+        matplotlib.patches.Patch(edgecolor='black',facecolor=cmap(.75), linewidth=0.25, label='75%'),
+        matplotlib.patches.Patch(edgecolor='black',facecolor=cmap(1.0), linewidth=0.25, label='100%')
+    ]
+
+    plt.legend(title="f-score",
+               handles=patches_array,
+               bbox_to_anchor=(1.05, 1),
+               loc='upper left',
+               borderaxespad=0.)
+
+    metrics_file = base_out_file[:-4] + ".png"
+    plt.savefig(metrics_file,bbox_inches='tight',dpi=400)
+    print ("Wrote intent metrics tree map image to {}.".format(metrics_file))
 
 def create_parser():
     parser = ArgumentParser(
