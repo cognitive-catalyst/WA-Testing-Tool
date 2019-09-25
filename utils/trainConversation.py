@@ -27,6 +27,8 @@ import csv
 import pandas as pd
 from argparse import ArgumentParser
 from watson_developer_cloud import AssistantV1
+import sys
+import traceback
 
 from __init__ import UTF_8, WCS_VERSION, \
                   UTTERANCE_COLUMN, INTENT_COLUMN, \
@@ -43,6 +45,12 @@ ENTITY_CSV_HEADER = [ENTITY_COLUMN, ENTITY_VALUE_COLUMN]
 
 class TrainTimeoutException(Exception):
     """ To be thrown if training is timeout
+    """
+    def __init__(self, message):
+        self.message = message
+
+class TrainWorkspaceCountException(Exception):
+    """ To be thrown if too many workspaces are in use
     """
     def __init__(self, message):
         self.message = message
@@ -229,4 +237,18 @@ def create_parser():
 
 if __name__ == '__main__':
     ARGS = create_parser().parse_args()
-    func(ARGS)
+    try:
+        func(ARGS)
+    except:
+        exc_type, exc_value, exc_traceback = sys.exc_info()
+        traceback.print_tb(exc_traceback, limit=1, file=sys.stdout)
+        as_string = repr(traceback.format_exception(exc_type, exc_value, exc_traceback))
+        if "workspaces limit" in as_string:
+            message = "\n"
+            message = message + "******************************************************************************************************\n"
+            message = message + "Too many workspaces in use.\n"
+            message = message + "Delete extra workspaces and/or reduce `fold_num` in your configuration file (ex: `fold_num=3`)\n"
+            message = message + "******************************************************************************************************\n"
+            raise TrainWorkspaceCountException(message)
+        else:
+            raise
