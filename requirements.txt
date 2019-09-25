@@ -6,3 +6,4 @@ scipy>=1.0.0
 matplotlib>=2.1.2
 aiohttp>=3.4
 configparser
+squarify>=0.3.0
