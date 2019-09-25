@@ -5,6 +5,8 @@ Given a training set of Watson Assistant utterances mapped to intents with optio
 ## Workflow
 Unlike k-fold process, no separate folds will be created. Only one workspace is going to be trained using all of the training set. After the testing, both the test output and the `previous_test_out` are feed into `createPrecisionCurve.py` for plotting curves.
 
+Further, reports are generated for an [intent metrics summary](intent-metrics.md) and a [confusion matrix](confusion-matrix.md).  These include additional summaries and visualizations that help determine the strength and weaknesses of the training set.
+
 ## Input file
 `config.ini`
 
