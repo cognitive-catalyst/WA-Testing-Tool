@@ -26,8 +26,8 @@ import pandas as pd
 from watson_developer_cloud import AssistantV1
 from utils import TRAIN_FILENAME, TEST_FILENAME, UTTERANCE_COLUMN, \
                   GOLDEN_INTENT_COLUMN, TEST_OUT_FILENAME, WORKSPACE_ID_TAG, \
-                  WCS_VERSION, UTF_8, INTENT_JUDGE_COLUMN, BOOL_MAP, \
-                  DEFAULT_TEST_RATE, POPULATION_WEIGHT_MODE, \
+                  WA_API_VERSION_ITEM, DEFAULT_WA_VERSION, UTF_8, INTENT_JUDGE_COLUMN, BOOL_MAP, \
+                  DEFAULT_TEST_RATE, POPULATION_WEIGHT_MODE, DEFAULT_TEMP_DIR, FOLD_NUM_DEFAULT, \
                   DEFAULT_CONF_THRES, WCS_USERNAME_ITEM, WCS_PASSWORD_ITEM, WCS_IAM_APIKEY_ITEM, WCS_BASEURL_ITEM, \
                   WCS_CREDS_SECTION, CREATE_TEST_TRAIN_FOLDS_PATH, \
                   TRAIN_CONVERSATION_PATH, TEST_CONVERSATION_PATH, \
@@ -46,6 +46,7 @@ ENTITY_FILE_ITEM = 'entity_train_file'
 TEST_FILE_ITEM = 'test_input_file'
 TEST_OUT_PATH_ITEM = 'test_output_path'
 TEMP_DIR_ITEM = 'temporary_file_directory'
+OUT_DIR_ITEM = 'output_directory'
 FIGURE_PATH_ITEM = 'out_figure_path'
 FOLD_NUM_ITEM = 'fold_num'
 DO_KEEP_WORKSPACE_ITEM = 'keep_workspace_after_test'
@@ -62,7 +63,6 @@ MAX_TEST_RATE = DEFAULT_TEST_RATE
 
 KFOLD_UNION_FILE = 'kfold-test-out-union.csv'
 
-
 def validate_config(fields, section):
     for field in fields:
         if field not in section:
@@ -71,14 +71,14 @@ def validate_config(fields, section):
                 format(field))
 
 
-def list_workspaces(username, password, iam_apikey, url):
+def list_workspaces(username, password, iam_apikey, version, url):
     c = AssistantV1(username=username, password=password, iam_apikey=iam_apikey,
-                    version=WCS_VERSION, url=url)
+                    version=version, url=url)
     return c.list_workspaces()
 
 
-def kfold(fold_num, temp_dir, intent_train_file, workspace_base_file,
-          figure_path, keep_workspace, username, password, iam_apikey, url, weight_mode,
+def kfold(fold_num, out_dir, intent_train_file, workspace_base_file,
+          figure_path, keep_workspace, username, password, iam_apikey, url, version, weight_mode,
           conf_thres, partial_credit_table):
     FOLD_TRAIN = 'fold_train'
     FOLD_TEST = 'fold_test'
@@ -90,16 +90,17 @@ def kfold(fold_num, temp_dir, intent_train_file, workspace_base_file,
     print('{}={}'.format(INTENT_FILE_ITEM, intent_train_file))
     print('{}={}'.format(WORKSPACE_BASE_ITEM, workspace_base_file))
     print('{}={}'.format(FIGURE_PATH_ITEM, figure_path))
-    print('{}={}'.format(TEMP_DIR_ITEM, temp_dir))
+    print('{}={}'.format(OUT_DIR_ITEM, out_dir))
     print('{}={}'.format(FOLD_NUM_ITEM, fold_num))
     print('{}={}'.format(DO_KEEP_WORKSPACE_ITEM, BOOL_MAP[keep_workspace]))
     print('{}={}'.format(WEIGHT_MODE_ITEM, weight_mode))
     print('{}={}'.format(CONF_THRES_ITEM, conf_thres))
     print('{}={}'.format(WCS_USERNAME_ITEM, username))
     print('{}={}'.format(WCS_BASEURL_ITEM, url))
+    print('{}={}'.format(WA_API_VERSION_ITEM, version))
     print('{}={}'.format(PARTIAL_CREDIT_TABLE_ITEM, partial_credit_table))
 
-    working_dir = os.path.join(temp_dir, KFOLD)
+    working_dir = os.path.join(out_dir, KFOLD)
     if not os.path.exists(working_dir):
         os.makedirs(working_dir)
 
@@ -133,7 +134,7 @@ def kfold(fold_num, temp_dir, intent_train_file, workspace_base_file,
                       '-n', fold_param[WORKSPACE_NAME],
                       '-u', username, '-p', password,
                       '-a', iam_apikey,
-                      '-l', url,
+                      '-l', url, '-v', version,
                       '-w', workspace_base_file]
         train_processes_specs[
             subprocess.Popen(train_args, stdout=spec_file)] = spec_file
@@ -166,7 +167,7 @@ def kfold(fold_num, temp_dir, intent_train_file, workspace_base_file,
                          '-i', fold_param[FOLD_TEST],
                          '-o', fold_param[TEST_OUT],
                          '-u', username, '-p', password,
-                         '-a', iam_apikey, '-l', url,
+                         '-a', iam_apikey, '-l', url, '-v', version,
                          '-t', UTTERANCE_COLUMN, '-g', GOLDEN_INTENT_COLUMN,
                          '-w', workspace_id, '-r', str(FOLD_TEST_RATE),
                          '-m']
@@ -196,11 +197,13 @@ def kfold(fold_num, temp_dir, intent_train_file, workspace_base_file,
 
 
         # Union test out
+        kfold_result_file = os.path.join(out_dir, KFOLD_UNION_FILE)
         pd.concat([pd.read_csv(file, quoting=csv.QUOTE_ALL, encoding=UTF_8,
                                keep_default_na=False)
                    for file in test_out_files]) \
-          .to_csv(os.path.join(working_dir, KFOLD_UNION_FILE),
+          .to_csv(kfold_result_file,
                   encoding='utf-8', quoting=csv.QUOTE_ALL, index=False)
+        print("Wrote k-fold result file to {}".format(kfold_result_file))
 
         classfier_names = ['Fold {}'.format(idx) for idx in range(fold_num)]
 
@@ -210,29 +213,21 @@ def kfold(fold_num, temp_dir, intent_train_file, workspace_base_file,
                      '--tau', conf_thres, '-n'] + \
             classfier_names + ['-i'] + test_out_files
 
-        if subprocess.run(plot_args).returncode == 0:
-            print('Generated precision curves for {} folds'.format(
-                str(fold_num)))
-        else:
+        if subprocess.run(plot_args).returncode != 0:
             raise RuntimeError('Failure in plotting curves')
 
-        kfold_result_file = os.path.join(working_dir, KFOLD_UNION_FILE)
         kfold_result_file_base = kfold_result_file[:-4]
         metrics_args = [sys.executable, INTENT_METRICS_PATH,
                      '-i', kfold_result_file,
                      '-o', kfold_result_file_base+".metrics.csv",
                      '--partial_credit_on', str(partial_credit_table is not None)]
-        if subprocess.run(metrics_args).returncode == 0:
-            print('Generated intent metrics')
-        else:
+        if subprocess.run(metrics_args).returncode != 0:
             raise RuntimeError('Failure in generating intent metrics')
 
-        confusion_args = [sys.executable, CONFUSION_MATRIX_PATH, 
+        confusion_args = [sys.executable, CONFUSION_MATRIX_PATH,
                           '-i', kfold_result_file,
                           '-o', kfold_result_file_base+".confusion_args.csv"]
-        if subprocess.run(confusion_args).returncode == 0:
-            print('Generated confusion matrix')
-        else:
+        if subprocess.run(confusion_args).returncode != 0:
             raise RuntimeError('Failure in generating confusion matrix')
 
     finally:
@@ -244,12 +239,12 @@ def kfold(fold_num, temp_dir, intent_train_file, workspace_base_file,
                         workspace_id = json.load(f)[WORKSPACE_ID_TAG]
                         workspace_ids.append(workspace_id)
 
-            delete_workspaces(username, password, iam_apikey, url, workspace_ids)
+            delete_workspaces(username, password, iam_apikey, url, version, workspace_ids)
 
 
-def blind(temp_dir, intent_train_file, workspace_base_file, figure_path,
+def blind(out_dir, intent_train_file, workspace_base_file, figure_path,
           test_out_path, test_input_file, previous_blind_out, keep_workspace,
-          username, password, iam_apikey, url, weight_mode, conf_thres, partial_credit_table, figure_title):
+          username, password, iam_apikey, url, version, weight_mode, conf_thres, partial_credit_table, figure_title):
     print('Begin {} with following details:'.format(BLIND_TEST.upper()))
     print('{}={}'.format(INTENT_FILE_ITEM, intent_train_file))
     print('{}={}'.format(WORKSPACE_BASE_ITEM, workspace_base_file))
@@ -257,12 +252,13 @@ def blind(temp_dir, intent_train_file, workspace_base_file, figure_path,
     print('{}={}'.format(PREVIOUS_BLIND_OUT_ITEM, previous_blind_out))
     print('{}={}'.format(FIGURE_PATH_ITEM, figure_path))
     print('{}={}'.format(TEST_OUT_PATH_ITEM, test_out_path))
-    print('{}={}'.format(TEMP_DIR_ITEM, temp_dir))
+    print('{}={}'.format(OUT_DIR_ITEM, out_dir))
     print('{}={}'.format(DO_KEEP_WORKSPACE_ITEM, BOOL_MAP[keep_workspace]))
     print('{}={}'.format(WEIGHT_MODE_ITEM, weight_mode))
     print('{}={}'.format(CONF_THRES_ITEM, conf_thres))
     print('{}={}'.format(WCS_USERNAME_ITEM, username))
     print('{}={}'.format(WCS_BASEURL_ITEM, url))
+    print('{}={}'.format(WA_API_VERSION_ITEM, version))
     print('{}={}'.format(PARTIAL_CREDIT_TABLE_ITEM, partial_credit_table))
 
     # Validate previous blind out format
@@ -282,7 +278,7 @@ def blind(temp_dir, intent_train_file, workspace_base_file, figure_path,
         test_out_files.append(previous_blind_out)
         classfier_names.append('Old Classifier')
 
-    working_dir = os.path.join(temp_dir, BLIND_TEST)
+    working_dir = os.path.join(out_dir, BLIND_TEST)
     if not os.path.exists(working_dir):
         os.makedirs(working_dir)
 
@@ -291,7 +287,7 @@ def blind(temp_dir, intent_train_file, workspace_base_file, figure_path,
                   '-i', intent_train_file, '-n', 'blind test',
                   '-u', username, '-p', password,
                   '-a', iam_apikey,
-                  '-l', url,
+                  '-l', url, '-v', version,
                   '-w', workspace_base_file]
     with open(workspace_spec_json, 'w') as f:
         if subprocess.run(train_args, stdout=f).returncode == 0:
@@ -308,7 +304,7 @@ def blind(temp_dir, intent_train_file, workspace_base_file, figure_path,
                      '-o', test_out_path, '-m',
                      '-u', username, '-p', password, '-a', iam_apikey, '-l', url,
                      '-t', UTTERANCE_COLUMN, '-g', GOLDEN_INTENT_COLUMN,
-                     '-w', workspace_id,
+                     '-w', workspace_id, '-v', version,
                      '-r', str(MAX_TEST_RATE)]
         if partial_credit_table is not None:
             test_args += ['--partial_credit_table', partial_credit_table]
@@ -321,9 +317,7 @@ def blind(temp_dir, intent_train_file, workspace_base_file, figure_path,
                            '-t', figure_title, '-w', weight_mode, '--tau',
                            conf_thres, '-o', figure_path,
                            '-n'] + classfier_names +
-                          ['-i'] + test_out_files).returncode == 0:
-            print('Generated precision curves for blind set')
-        else:
+                          ['-i'] + test_out_files).returncode != 0:
             raise RuntimeError('Failure in plotting curves')
 
         blind_result_file = test_out_path
@@ -332,34 +326,31 @@ def blind(temp_dir, intent_train_file, workspace_base_file, figure_path,
                         '-i', blind_result_file,
                         '-o', blind_result_file_base+"_metrics.csv",
                         '--partial_credit_on', str(partial_credit_table is not None)]
-        if subprocess.run(metrics_args).returncode == 0:
-            print('Generated intent metrics')
-        else:
+        if subprocess.run(metrics_args).returncode != 0:
             raise RuntimeError('Failure in generating intent metrics')
 
         confusion_args = [sys.executable, CONFUSION_MATRIX_PATH,
                           '-i', blind_result_file,
                           '-o', blind_result_file_base+"_confusion.csv"]
-        if subprocess.run(confusion_args).returncode == 0:
-            print('Generated confusion matrix')
-        else:
+        if subprocess.run(confusion_args).returncode != 0:
             raise RuntimeError('Failure in generating confusion matrix')
     finally:
         if not keep_workspace:
-            delete_workspaces(username, password, iam_apikey, url, [workspace_id])
+            delete_workspaces(username, password, iam_apikey, url, version, [workspace_id])
 
 
-def test(temp_dir, intent_train_file, workspace_base_file, test_out_path,
-         test_input_file, keep_workspace, username, password, iam_apikey, url):
+def test(out_dir, intent_train_file, workspace_base_file, test_out_path,
+         test_input_file, keep_workspace, username, password, iam_apikey, version, url):
     print('Begin {} with following details:'.format(STANDARD_TEST.upper()))
     print('{}={}'.format(INTENT_FILE_ITEM, intent_train_file))
     print('{}={}'.format(WORKSPACE_BASE_ITEM, workspace_base_file))
     print('{}={}'.format(TEST_FILE_ITEM, test_input_file))
     print('{}={}'.format(TEST_OUT_PATH_ITEM, test_out_path))
-    print('{}={}'.format(TEMP_DIR_ITEM, temp_dir))
+    print('{}={}'.format(OUT_DIR_ITEM, out_dir))
     print('{}={}'.format(DO_KEEP_WORKSPACE_ITEM, BOOL_MAP[keep_workspace]))
     print('{}={}'.format(WCS_USERNAME_ITEM, username))
     print('{}={}'.format(WCS_BASEURL_ITEM, url))
+    print('{}={}'.format(WA_API_VERSION_ITEM, version))
 
     # Validate test file
     extra_params = []
@@ -373,14 +364,14 @@ def test(temp_dir, intent_train_file, workspace_base_file, test_out_path,
             raise ValueError('Test input has unknown utterance column')
 
     # Run standard test
-    working_dir = os.path.join(temp_dir, STANDARD_TEST)
+    working_dir = os.path.join(out_dir, STANDARD_TEST)
     if not os.path.exists(working_dir):
         os.makedirs(working_dir)
 
     workspace_spec_json = os.path.join(working_dir, SPEC_FILENAME)
     train_args = [sys.executable, TRAIN_CONVERSATION_PATH,
                   '-i', intent_train_file,
-                  '-n', 'standard test',
+                  '-n', 'standard test', '-v', version,
                   '-u', username, '-p', password, '-a', iam_apikey, '-l', url,
                   '-w', workspace_base_file]
     with open(workspace_spec_json, 'w') as f:
@@ -395,7 +386,7 @@ def test(temp_dir, intent_train_file, workspace_base_file, test_out_path,
     try:
         if subprocess.run([sys.executable, TEST_CONVERSATION_PATH,
                            '-i', test_input_file,
-                           '-o', test_out_path, '-m',
+                           '-o', test_out_path, '-m', '-v', version,
                            '-u', username, '-p', password, '-a', iam_apikey, '-l', url,
                            '-w', workspace_id,
                            '-r', str(MAX_TEST_RATE)] + extra_params
@@ -405,7 +396,7 @@ def test(temp_dir, intent_train_file, workspace_base_file, test_out_path,
             raise RuntimeError('Failure in testing data')
     finally:
         if not keep_workspace:
-            delete_workspaces(username, password, iam_apikey, url, [workspace_id])
+            delete_workspaces(username, password, iam_apikey, url, version, [workspace_id])
 
 
 def func(args):
@@ -432,33 +423,35 @@ def func(args):
     if url is None or url == "" or len(url) == 0:
       print("Using default url: {}".format(BASE_URL))
       url = BASE_URL
+    version = config[WCS_CREDS_SECTION].get(WA_API_VERSION_ITEM, DEFAULT_WA_VERSION)
 
     # List workspaces to see whether the creds is valid.
     # SDK has no method for validation purpose
-    list_workspaces(username, password, iam_apikey, url)
+    list_workspaces(username, password, iam_apikey, version, url)
 
     print('Credentials are correct')
 
     default_section = config[DEFAULT_SECTION]
 
-    # Main params validation
-    validate_config([MODE_ITEM, TEMP_DIR_ITEM, WORKSPACE_ID_ITEM],
-                    default_section)
+    # Main params validation - make sure required parameters are passed
+    validate_config([MODE_ITEM, WORKSPACE_ID_ITEM], default_section)
 
-    temp_dir = default_section[TEMP_DIR_ITEM]
+    #TEMP_DIR_ITEM is legacy configuration variable, subsumed by OUT_DIR_ITEM
+    temp_dir = default_section.get(TEMP_DIR_ITEM, DEFAULT_TEMP_DIR)
+    out_dir  = default_section.get(OUT_DIR_ITEM, temp_dir)
 
     # Prepare folds
     if subprocess.run([sys.executable, WORKSPACE_PARSER_PATH,
                        '-i', default_section[WORKSPACE_ID_ITEM],
-                       '-o', temp_dir,
+                       '-o', out_dir, '-v', version,
                        '-u', username, '-p', password, '-a', iam_apikey, '-l', url],
                       stdout=subprocess.PIPE).returncode == 0:
         print('Parsed workspace')
     else:
         raise RuntimeError('Failure in parsing workspace')
 
-    intent_train_file = os.path.join(temp_dir, 'intent-train.csv')
-    workspace_base_file = os.path.join(temp_dir, WORKSPACE_BASE_FILENAME)
+    intent_train_file = os.path.join(out_dir, 'intent-train.csv')
+    workspace_base_file = os.path.join(out_dir, WORKSPACE_BASE_FILENAME)
 
     # Convert yes/no to boolean
     keep_workspace = False
@@ -481,59 +474,55 @@ def func(args):
             print(e)
     print('Maximum testing rate: {}/cycle'.format(MAX_TEST_RATE))
 
-    weight_mode = POPULATION_WEIGHT_MODE
-    if WEIGHT_MODE_ITEM in default_section:
-        weight_mode = default_section[WEIGHT_MODE_ITEM]
-
-    conf_thres_str = str(DEFAULT_CONF_THRES)
-    if CONF_THRES_ITEM in default_section:
-        conf_thres_str = default_section[CONF_THRES_ITEM]
-
-    partial_credit_table = None
-    if PARTIAL_CREDIT_TABLE_ITEM in default_section:
-        partial_credit_table = default_section[PARTIAL_CREDIT_TABLE_ITEM]
+    weight_mode          = default_section.get(WEIGHT_MODE_ITEM, POPULATION_WEIGHT_MODE).lower()
+    conf_thres_str       = default_section.get(CONF_THRES_ITEM, str(DEFAULT_CONF_THRES))
+    partial_credit_table = default_section.get(PARTIAL_CREDIT_TABLE_ITEM, None)
+    figure_path          = default_section.get(FIGURE_PATH_ITEM, out_dir + "/" + mode + ".jpg")
 
     if KFOLD == mode:
-        # Field validation for kfold
-        validate_config([FOLD_NUM_ITEM, FIGURE_PATH_ITEM], default_section)
+        fold_num = default_section.get(FOLD_NUM_ITEM, FOLD_NUM_DEFAULT)
 
-        kfold(fold_num=int(default_section[FOLD_NUM_ITEM]),
-              temp_dir=temp_dir,
+        kfold(fold_num=int(fold_num),
+              out_dir=out_dir,
               intent_train_file=intent_train_file,
               workspace_base_file=workspace_base_file,
-              figure_path=default_section[FIGURE_PATH_ITEM],
+              figure_path=figure_path,
               keep_workspace=keep_workspace,
               username=username, password=password, iam_apikey=iam_apikey, url=url,
+              version=version,
               weight_mode=weight_mode, conf_thres=conf_thres_str,
               partial_credit_table=partial_credit_table)
     else:
-        validate_config([TEST_FILE_ITEM, TEST_OUT_PATH_ITEM], default_section)
+        test_input_file = default_section.get(TEST_FILE_ITEM, out_dir + "/input.csv")
+        test_out_path   = default_section.get(TEST_OUT_PATH_ITEM, out_dir + "/" + mode + "-out.csv")
 
         if BLIND_TEST == mode:
-            previous_blind_out = default_section.get(
-                PREVIOUS_BLIND_OUT_ITEM, None)
-            blind(temp_dir=temp_dir,
+            previous_blind_out = default_section.get(PREVIOUS_BLIND_OUT_ITEM, None)
+            blind_figure_title = default_section.get(BLIND_FIGURE_TITLE,'Blind Test Results')
+            blind(out_dir=out_dir,
                   intent_train_file=intent_train_file,
                   workspace_base_file=workspace_base_file,
-                  test_input_file=default_section[TEST_FILE_ITEM],
-                  figure_path=default_section[FIGURE_PATH_ITEM],
-                  test_out_path=default_section[TEST_OUT_PATH_ITEM],
+                  test_input_file=test_input_file,
+                  figure_path=figure_path,
+                  test_out_path=test_out_path,
                   previous_blind_out=previous_blind_out,
                   keep_workspace=keep_workspace,
                   username=username, password=password, iam_apikey=iam_apikey, url=url,
+                  version=version,
                   weight_mode=weight_mode, conf_thres=conf_thres_str,
                   partial_credit_table=partial_credit_table,
-                  figure_title=default_section[BLIND_FIGURE_TITLE])
+                  figure_title=blind_figure_title)
         elif STANDARD_TEST == mode:
-            test(temp_dir=temp_dir,
+            test(out_dir=out_dir,
                  intent_train_file=intent_train_file,
                  workspace_base_file=workspace_base_file,
-                 test_input_file=default_section[TEST_FILE_ITEM],
-                 test_out_path=default_section[TEST_OUT_PATH_ITEM],
+                 test_input_file=test_input_file,
+                 test_out_path=test_out_path,
                  keep_workspace=keep_workspace,
                  username=username,
                  password=password,
                  iam_apikey=iam_apikey,
+                 version=version,
                  url=url)
         else:
             raise ValueError("Unknown mode '{}'".format(mode))

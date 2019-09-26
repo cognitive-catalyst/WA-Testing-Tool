@@ -43,6 +43,7 @@ WCS_PASSWORD_ITEM = 'password'
 WCS_IAM_APIKEY_ITEM = 'iam_apikey'
 WCS_BASEURL_ITEM = 'url'
 WCS_CREDS_SECTION = 'ASSISTANT CREDENTIALS'
+WA_API_VERSION_ITEM = 'version'
 
 SPEC_FILENAME = 'workspace.json'
 WORKSPACE_BASE_FILENAME = 'workspace_base.json'
@@ -68,12 +69,13 @@ BLIND_TEST = 'blind'
 STANDARD_TEST = 'test'
 
 FOLD_NUM_DEFAULT = 5
-WCS_VERSION = '2018-07-10'
+DEFAULT_WA_VERSION = '2019-02-28'
 WORKSPACE_ID_TAG = 'workspace_id'
 TIME_TO_WAIT = 600
 BOOL_MAP = {True: 'yes', False: 'no'}
 DEFAULT_TEST_RATE = 100
 DEFAULT_CONF_THRES = 0.2
+DEFAULT_TEMP_DIR = "./data"
 
 POPULATION_WEIGHT_MODE = 'population'
 EQUAL_WEIGHT_MODE = 'equal'
@@ -117,11 +119,11 @@ def unmarshall_entity(entities_str):
     return entities
 
 
-def delete_workspaces(username, password, iam_apikey, url, workspace_ids):
+def delete_workspaces(username, password, iam_apikey, url, version, workspace_ids):
     """ Delete workspaces
     """
     c = AssistantV1(username=username, password=password, iam_apikey=iam_apikey,
-                    version=WCS_VERSION, url=url)
+                    version=version, url=url)
     for workspace_id in workspace_ids:
         c.delete_workspace(workspace_id=workspace_id)
     print('Cleaned up workspaces')

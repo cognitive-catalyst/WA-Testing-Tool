@@ -22,7 +22,7 @@ import json
 import os.path
 from argparse import ArgumentParser
 from watson_developer_cloud import AssistantV1
-from __init__ import WCS_VERSION, TRAIN_INTENT_FILENAME, \
+from __init__ import TRAIN_INTENT_FILENAME, DEFAULT_WA_VERSION, \
                      TRAIN_ENTITY_FILENAME, WORKSPACE_BASE_FILENAME, UTF_8
 
 
@@ -30,7 +30,7 @@ def func(args):
     workspace = None
     if not os.path.isfile(args.input):
         conv = AssistantV1(username=args.username, password=args.password, iam_apikey=args.iam_apikey,
-                           version=WCS_VERSION, url=args.url)
+                           version=args.version, url=args.url)
         raw_workspace = conv.get_workspace(workspace_id=args.input, export=True)
         try:
            #V2 API syntax
@@ -96,6 +96,8 @@ def create_parser():
                         help='URL to Watson Assistant. Ex: https://gateway-wdc.watsonplatform.net/assistant/api')
     parser.add_argument('-o', '--outdir', type=str, help='Output directory',
                         default=os.getcwd())
+    parser.add_argument('-v', '--version', type=str, default=DEFAULT_WA_VERSION,
+                        help='Watson Assistant API version in YYYY-MM-DD form')
     return parser
 
 

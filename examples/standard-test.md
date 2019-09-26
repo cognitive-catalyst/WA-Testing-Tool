@@ -9,16 +9,6 @@ There is one and only one column in `test_input_file.csv` containing the test ut
 `config.ini`
 
 ```
-[DEFAULT]
-mode = TEST
-workspace_id = 01234567-9ABC-DEF0-1234-56789ABCDEF0
-test_input_file = ./data/test.csv
-test_output_path = ./data/test-out.csv
-temporary_file_directory = ./data
-; Clean the workspaces after testing
-keep_workspace_after_test = no
-
-
 [ASSISTANT CREDENTIALS]
 ; If your WA environment provides username and password, configure them and leave iam_apikey empty
 ; If your WA environment provides iam_apikey, set the username value as: apikey and password value as: <the value of your apikey>
@@ -26,9 +16,20 @@ username = <wa username>
 password = <wa password>
 iam_apikey = <wa iam apikey>
 url = https://gateway-wdc.watsonplatform.net/assistant/api
+version=2019-02-28
 
+[DEFAULT]
+mode = test
+workspace_id = 01234567-9ABC-DEF0-1234-56789ABCDEF0
+
+; optional - defaults shown here
+;output_directory = ./data
+;test_input_file = ./data/input.csv
+;test_output_path = ./data/test-out.csv
+;keep_workspace_after_test = no
 ```
-`test_input_file.csv`
+
+Sample `test_input_file.csv`
 
 | utterance   |
 | ----------- |

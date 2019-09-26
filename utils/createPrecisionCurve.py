@@ -210,6 +210,8 @@ def func(args):
     # Save figure as file
     plt.savefig(args.outfile)
 
+    print("Wrote precision curve to {}".format(args.outfile))
+
 
 def create_parser():
     parser = ArgumentParser(description="Draw precision curves on a single canvas \
