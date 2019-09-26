@@ -41,7 +41,7 @@ mode = kfold
 ; The remaining parameters in DEFAULT section depend upon the MODE above
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-; (Optional for blind and test) Test input file. Defaults to <temporary_file_directory>/input.csv
+; (Optional for blind and test) Test input file. Defaults to <output_directory>/input.csv
 ; blind mode requires two columns, test mode requires one column
 ;   In blind mode column headers are 'utterance' and 'golden intent'
 ;   In test mode column header is 'utterance'
