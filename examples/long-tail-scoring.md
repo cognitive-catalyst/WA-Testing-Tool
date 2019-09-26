@@ -8,7 +8,7 @@ There are two starting possibilities:
 
 1) The user has run existing [k-folds](kfold.md), [test](standard-test.md), or [blind](blind.md) test which creates a summary .csv file
 
-2) The user has a separate analysis which creates a .csv file with "golden", "predicted", and "confidence" columns 
+2) The user has a separate analysis which creates a .csv file with "golden", "predicted", and "confidence" columns
 
 User executes `longtailscoring.py` providing an input filename and output filename.  If using workflow 2, the user provides the names of the golden, predicted, and confidence column header names with `-g`, `-t`, and `-c` respectively.
 The summary is written to the output filename.
@@ -20,10 +20,10 @@ User must have an input .csv file containing at least three column headers repre
 
 ## Invocation
 Workflow #1
-Assuming input file at `data/test-out.csv` created by other tools in this repository and writing to `test-out-metrics.csv'. 
+Assuming input file at `data/blind-out.csv` created by other tools in this repository and writing to `blind-out-metrics.csv'.
 
 ```
-python utils/longtailscoring.py -i data/test-out.csv -o data/test-out-metrics.csv
+python utils/longtailscoring.py -i data/blind-out.csv -o data/blind-out-metrics.csv
 ```
 
 Workflow #2

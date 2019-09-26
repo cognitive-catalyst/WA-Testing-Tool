@@ -27,7 +27,6 @@ mode = kfold
 
 ; (Optional) All output files will be stored here. Default is `./data` (formerly called `temporary_file_directory`)
 ;output_directory = ./data
-;temporary_file_directory = ./data
 
 ; (Optional) yes/no on whether to keep(yes) or delete(no) workspaces created by this tool after the testing phase. Default is 'no'
 ;keep_workspace_after_test = no

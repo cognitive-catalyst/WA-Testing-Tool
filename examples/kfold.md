@@ -15,17 +15,6 @@ User's workspace must allow to create 5 more workspaces. For 'lite' plans, use 3
 `config.ini`
 
 ```
-[DEFAULT]
-mode = KFOLD
-workspace_id = 01234567-9ABC-DEF0-1234-56789ABCDEF0
-temporary_file_directory = ./data
-out_figure_path= ./data/figure.png
-; number of folds
-fold_num = 5
-; Clean the workspaces after testing
-keep_workspace_after_test = no
-
-
 [ASSISTANT CREDENTIALS]
 ; If your WA environment provides username and password, configure them and leave iam_apikey empty
 ; If your WA environment provides iam_apikey, set the username value as: apikey and password value as: <the value of your apikey>
@@ -33,7 +22,22 @@ username = <wa username>
 password = <wa password>
 iam_apikey = <wa iam apikey>
 url = https://gateway-wdc.watsonplatform.net/assistant/api
+
+[DEFAULT]
+mode = kfold
+workspace_id = 01234567-9ABC-DEF0-1234-56789ABCDEF0
+
+; optional - defaults shown here
+;fold_num = 5
+;output_directory = ./data
+;out_figure_path= ./data/figure.png
+;conf_thres = 0.2
 ```
 
 ## Sample output
 ![KFold curves](../resources/kfold-curves.png)
+
+## Troubleshooting
+The most common error running a k-folds test is running out of available workspaces, particularly if you are on a Lite plan which limits you to 5 workspaces.  The k-folds test creates `fold_num` workspaces.
+
+If you run out of workspaces, delete any unused workspaces and reduce the `fold_num` parameter to a smaller value (ex: `fold_num=3`).
