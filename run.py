@@ -26,7 +26,7 @@ import pandas as pd
 from watson_developer_cloud import AssistantV1
 from utils import TRAIN_FILENAME, TEST_FILENAME, UTTERANCE_COLUMN, \
                   GOLDEN_INTENT_COLUMN, TEST_OUT_FILENAME, WORKSPACE_ID_TAG, \
-                  WCS_VERSION, UTF_8, INTENT_JUDGE_COLUMN, BOOL_MAP, \
+                  WA_API_VERSION_ITEM, DEFAULT_WA_VERSION, UTF_8, INTENT_JUDGE_COLUMN, BOOL_MAP, \
                   DEFAULT_TEST_RATE, POPULATION_WEIGHT_MODE, DEFAULT_TEMP_DIR, FOLD_NUM_DEFAULT, \
                   DEFAULT_CONF_THRES, WCS_USERNAME_ITEM, WCS_PASSWORD_ITEM, WCS_IAM_APIKEY_ITEM, WCS_BASEURL_ITEM, \
                   WCS_CREDS_SECTION, CREATE_TEST_TRAIN_FOLDS_PATH, \
@@ -71,14 +71,14 @@ def validate_config(fields, section):
                 format(field))
 
 
-def list_workspaces(username, password, iam_apikey, url):
+def list_workspaces(username, password, iam_apikey, version, url):
     c = AssistantV1(username=username, password=password, iam_apikey=iam_apikey,
-                    version=WCS_VERSION, url=url)
+                    version=version, url=url)
     return c.list_workspaces()
 
 
 def kfold(fold_num, out_dir, intent_train_file, workspace_base_file,
-          figure_path, keep_workspace, username, password, iam_apikey, url, weight_mode,
+          figure_path, keep_workspace, username, password, iam_apikey, url, version, weight_mode,
           conf_thres, partial_credit_table):
     FOLD_TRAIN = 'fold_train'
     FOLD_TEST = 'fold_test'
@@ -97,6 +97,7 @@ def kfold(fold_num, out_dir, intent_train_file, workspace_base_file,
     print('{}={}'.format(CONF_THRES_ITEM, conf_thres))
     print('{}={}'.format(WCS_USERNAME_ITEM, username))
     print('{}={}'.format(WCS_BASEURL_ITEM, url))
+    print('{}={}'.format(WA_API_VERSION_ITEM, version))
     print('{}={}'.format(PARTIAL_CREDIT_TABLE_ITEM, partial_credit_table))
 
     working_dir = os.path.join(out_dir, KFOLD)
@@ -133,7 +134,7 @@ def kfold(fold_num, out_dir, intent_train_file, workspace_base_file,
                       '-n', fold_param[WORKSPACE_NAME],
                       '-u', username, '-p', password,
                       '-a', iam_apikey,
-                      '-l', url,
+                      '-l', url, '-v', version,
                       '-w', workspace_base_file]
         train_processes_specs[
             subprocess.Popen(train_args, stdout=spec_file)] = spec_file
@@ -166,7 +167,7 @@ def kfold(fold_num, out_dir, intent_train_file, workspace_base_file,
                          '-i', fold_param[FOLD_TEST],
                          '-o', fold_param[TEST_OUT],
                          '-u', username, '-p', password,
-                         '-a', iam_apikey, '-l', url,
+                         '-a', iam_apikey, '-l', url, '-v', version,
                          '-t', UTTERANCE_COLUMN, '-g', GOLDEN_INTENT_COLUMN,
                          '-w', workspace_id, '-r', str(FOLD_TEST_RATE),
                          '-m']
@@ -238,12 +239,12 @@ def kfold(fold_num, out_dir, intent_train_file, workspace_base_file,
                         workspace_id = json.load(f)[WORKSPACE_ID_TAG]
                         workspace_ids.append(workspace_id)
 
-            delete_workspaces(username, password, iam_apikey, url, workspace_ids)
+            delete_workspaces(username, password, iam_apikey, url, version, workspace_ids)
 
 
 def blind(out_dir, intent_train_file, workspace_base_file, figure_path,
           test_out_path, test_input_file, previous_blind_out, keep_workspace,
-          username, password, iam_apikey, url, weight_mode, conf_thres, partial_credit_table, figure_title):
+          username, password, iam_apikey, url, version, weight_mode, conf_thres, partial_credit_table, figure_title):
     print('Begin {} with following details:'.format(BLIND_TEST.upper()))
     print('{}={}'.format(INTENT_FILE_ITEM, intent_train_file))
     print('{}={}'.format(WORKSPACE_BASE_ITEM, workspace_base_file))
@@ -257,6 +258,7 @@ def blind(out_dir, intent_train_file, workspace_base_file, figure_path,
     print('{}={}'.format(CONF_THRES_ITEM, conf_thres))
     print('{}={}'.format(WCS_USERNAME_ITEM, username))
     print('{}={}'.format(WCS_BASEURL_ITEM, url))
+    print('{}={}'.format(WA_API_VERSION_ITEM, version))
     print('{}={}'.format(PARTIAL_CREDIT_TABLE_ITEM, partial_credit_table))
 
     # Validate previous blind out format
@@ -285,7 +287,7 @@ def blind(out_dir, intent_train_file, workspace_base_file, figure_path,
                   '-i', intent_train_file, '-n', 'blind test',
                   '-u', username, '-p', password,
                   '-a', iam_apikey,
-                  '-l', url,
+                  '-l', url, '-v', version,
                   '-w', workspace_base_file]
     with open(workspace_spec_json, 'w') as f:
         if subprocess.run(train_args, stdout=f).returncode == 0:
@@ -302,7 +304,7 @@ def blind(out_dir, intent_train_file, workspace_base_file, figure_path,
                      '-o', test_out_path, '-m',
                      '-u', username, '-p', password, '-a', iam_apikey, '-l', url,
                      '-t', UTTERANCE_COLUMN, '-g', GOLDEN_INTENT_COLUMN,
-                     '-w', workspace_id,
+                     '-w', workspace_id, '-v', version,
                      '-r', str(MAX_TEST_RATE)]
         if partial_credit_table is not None:
             test_args += ['--partial_credit_table', partial_credit_table]
@@ -334,11 +336,11 @@ def blind(out_dir, intent_train_file, workspace_base_file, figure_path,
             raise RuntimeError('Failure in generating confusion matrix')
     finally:
         if not keep_workspace:
-            delete_workspaces(username, password, iam_apikey, url, [workspace_id])
+            delete_workspaces(username, password, iam_apikey, url, version, [workspace_id])
 
 
 def test(out_dir, intent_train_file, workspace_base_file, test_out_path,
-         test_input_file, keep_workspace, username, password, iam_apikey, url):
+         test_input_file, keep_workspace, username, password, iam_apikey, version, url):
     print('Begin {} with following details:'.format(STANDARD_TEST.upper()))
     print('{}={}'.format(INTENT_FILE_ITEM, intent_train_file))
     print('{}={}'.format(WORKSPACE_BASE_ITEM, workspace_base_file))
@@ -348,6 +350,7 @@ def test(out_dir, intent_train_file, workspace_base_file, test_out_path,
     print('{}={}'.format(DO_KEEP_WORKSPACE_ITEM, BOOL_MAP[keep_workspace]))
     print('{}={}'.format(WCS_USERNAME_ITEM, username))
     print('{}={}'.format(WCS_BASEURL_ITEM, url))
+    print('{}={}'.format(WA_API_VERSION_ITEM, version))
 
     # Validate test file
     extra_params = []
@@ -368,7 +371,7 @@ def test(out_dir, intent_train_file, workspace_base_file, test_out_path,
     workspace_spec_json = os.path.join(working_dir, SPEC_FILENAME)
     train_args = [sys.executable, TRAIN_CONVERSATION_PATH,
                   '-i', intent_train_file,
-                  '-n', 'standard test',
+                  '-n', 'standard test', '-v', version,
                   '-u', username, '-p', password, '-a', iam_apikey, '-l', url,
                   '-w', workspace_base_file]
     with open(workspace_spec_json, 'w') as f:
@@ -383,7 +386,7 @@ def test(out_dir, intent_train_file, workspace_base_file, test_out_path,
     try:
         if subprocess.run([sys.executable, TEST_CONVERSATION_PATH,
                            '-i', test_input_file,
-                           '-o', test_out_path, '-m',
+                           '-o', test_out_path, '-m', '-v', version,
                            '-u', username, '-p', password, '-a', iam_apikey, '-l', url,
                            '-w', workspace_id,
                            '-r', str(MAX_TEST_RATE)] + extra_params
@@ -393,7 +396,7 @@ def test(out_dir, intent_train_file, workspace_base_file, test_out_path,
             raise RuntimeError('Failure in testing data')
     finally:
         if not keep_workspace:
-            delete_workspaces(username, password, iam_apikey, url, [workspace_id])
+            delete_workspaces(username, password, iam_apikey, url, version, [workspace_id])
 
 
 def func(args):
@@ -420,10 +423,11 @@ def func(args):
     if url is None or url == "" or len(url) == 0:
       print("Using default url: {}".format(BASE_URL))
       url = BASE_URL
+    version = config[WCS_CREDS_SECTION].get(WA_API_VERSION_ITEM, DEFAULT_WA_VERSION)
 
     # List workspaces to see whether the creds is valid.
     # SDK has no method for validation purpose
-    list_workspaces(username, password, iam_apikey, url)
+    list_workspaces(username, password, iam_apikey, version, url)
 
     print('Credentials are correct')
 
@@ -439,7 +443,7 @@ def func(args):
     # Prepare folds
     if subprocess.run([sys.executable, WORKSPACE_PARSER_PATH,
                        '-i', default_section[WORKSPACE_ID_ITEM],
-                       '-o', out_dir,
+                       '-o', out_dir, '-v', version,
                        '-u', username, '-p', password, '-a', iam_apikey, '-l', url],
                       stdout=subprocess.PIPE).returncode == 0:
         print('Parsed workspace')
@@ -485,6 +489,7 @@ def func(args):
               figure_path=figure_path,
               keep_workspace=keep_workspace,
               username=username, password=password, iam_apikey=iam_apikey, url=url,
+              version=version,
               weight_mode=weight_mode, conf_thres=conf_thres_str,
               partial_credit_table=partial_credit_table)
     else:
@@ -503,6 +508,7 @@ def func(args):
                   previous_blind_out=previous_blind_out,
                   keep_workspace=keep_workspace,
                   username=username, password=password, iam_apikey=iam_apikey, url=url,
+                  version=version,
                   weight_mode=weight_mode, conf_thres=conf_thres_str,
                   partial_credit_table=partial_credit_table,
                   figure_title=blind_figure_title)
@@ -516,6 +522,7 @@ def func(args):
                  username=username,
                  password=password,
                  iam_apikey=iam_apikey,
+                 version=version,
                  url=url)
         else:
             raise ValueError("Unknown mode '{}'".format(mode))

@@ -28,7 +28,7 @@ import pandas as pd
 from argparse import ArgumentParser
 from watson_developer_cloud import AssistantV1
 
-from __init__ import UTF_8, WCS_VERSION, \
+from __init__ import UTF_8, DEFAULT_WA_VERSION,\
                   UTTERANCE_COLUMN, INTENT_COLUMN, \
                   TIME_TO_WAIT, WORKSPACE_ID_TAG
 
@@ -162,7 +162,7 @@ def func(args):
                     for _, row in entity_df.iterrows()]
 
     conv = AssistantV1(iam_apikey=args.iam_apikey, username=args.username, password=args.password,
-                       version=WCS_VERSION, url=args.url)
+                       version=args.version, url=args.url)
 
     if args.workspace_name is not None:
         workspace_name = args.workspace_name
@@ -223,6 +223,8 @@ def create_parser():
                         help='Assistant service password')
     parser.add_argument('-l', '--url', type=str, default='https://gateway.watsonplatform.net/assistant/api',
                         help='URL to Watson Assistant. Ex: https://gateway-wdc.watsonplatform.net/assistant/api')
+    parser.add_argument('-v', '--version', type=str, default=DEFAULT_WA_VERSION,
+                        help='Watson Assistant API version in YYYY-MM-DD form')
 
     return parser
 

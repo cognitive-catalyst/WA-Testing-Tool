@@ -28,7 +28,7 @@ from __init__ import UTF_8, CONFIDENCE_COLUMN, \
     UTTERANCE_COLUMN, PREDICTED_INTENT_COLUMN, \
     DETECTED_ENTITY_COLUMN, DIALOG_RESPONSE_COLUMN, \
     marshall_entity, save_dataframe_as_csv, INTENT_JUDGE_COLUMN, \
-    TEST_OUT_FILENAME, BOOL_MAP, WCS_VERSION, BASE_URL, \
+    TEST_OUT_FILENAME, BOOL_MAP, BASE_URL, DEFAULT_WA_VERSION, \
     parse_partial_credit_table, SCORE_COLUMN
 
 test_out_header = [PREDICTED_INTENT_COLUMN, CONFIDENCE_COLUMN,
@@ -67,13 +67,13 @@ async def post(session, json, url, sem):
 
 
 async def fill_df(utterance, row_idx, out_df, workspace_id, wa_username,
-                  wa_password, sem, baseUrl):
+                  wa_password, sem, baseUrl, version):
     """ Send utterance to Assistant and save response to dataframe
     """
     async with aiohttp.ClientSession(
             auth=aiohttp.BasicAuth(wa_username, wa_password)) as session:
         MSG_ENDPOINT = baseUrl + '/v1/workspaces/{}/message?version={}'
-        url = MSG_ENDPOINT.format(workspace_id, WCS_VERSION)
+        url = MSG_ENDPOINT.format(workspace_id, version)
 
         # Replace newline chars before sending to WA
         utterance = utterance.replace('\n', ' ')
@@ -139,7 +139,7 @@ def func(args):
 
     tasks = (fill_df(out_df.loc[row_idx, test_column],
                      row_idx, out_df, args.workspace_id,
-                     args.username, args.password, sem, args.url)
+                     args.username, args.password, sem, args.url, args.version)
              for row_idx in range(out_df.shape[0]))
     loop.run_until_complete(asyncio.gather(*tasks))
 
@@ -204,6 +204,8 @@ def create_parser():
                         help='Maximum number of requests per second')
     parser.add_argument('-c', '--partial_credit_table', type=str,
                         help='Partial credit table')
+    parser.add_argument('-v', '--version', type=str, default=DEFAULT_WA_VERSION,
+                        help='Watson Assistant API version in YYYY-MM-DD form')
     return parser
 
 
