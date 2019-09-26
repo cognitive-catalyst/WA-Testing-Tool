@@ -172,6 +172,7 @@ def func(args):
                     credit_tables[golden_intent][predict_intent]
 
     save_dataframe_as_csv(df=out_df, file=args.outfile)
+    print("Wrote standard test result file to {}".format(args.outfile))
 
 
 def create_parser():

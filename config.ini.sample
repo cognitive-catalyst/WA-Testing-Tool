@@ -1,59 +1,3 @@
-[DEFAULT]
-; (Required) One of:
-; Workspace ID (can be found on Watson Assistant UI - navigate to Skills tab and click three dots for View API Details)
-; Path to JSON file representing the locally saved workspace
-workspace_id = <workspace_id or workspace JSON>
-
-; (Required) Test request rate (maximum number of API calls per second)
-max_test_rate = 100
-
-; (Required) All temporary files will be stored here
-temporary_file_directory = ./data
-
-; (Required) yes/no on whether to keep(yes) or delete(no) workspaces created by this tool after the testing phase
-keep_workspace_after_test = no
-
-; (Required) Mode to run tool in.  This setting affects which other variables are required in the rest of the DEFAULT section.
-; Value values: KFOLD, BLIND or TEST
-mode = kfold
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; The remaining parameters in DEFAULT section depend upon the MODE above
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-; (Required for blind and test) Test input file. blind mode requires two columns, test mode requires one column
-; In blind mode column headers are 'utterance' and 'golden intent'
-; In test mode column header is 'utterance'
-test_input_file = ./data/test.csv
-
-; (Required for blind and test) Test output path
-test_output_path = ./data/test-out.csv
-
-; (Required for blind and kfold) Output figure path
-out_figure_path= ./data/figure.png
-
-; (Required for kfold) Number of folds.  If on LITE plan use 3.
-; Each fold creates a workspace (make sure you have enough workspaces available, LITE plans are restricted to 5)
-fold_num = 5
-
-; (Required for blind) Title for blind testing output figure
-blind_figure_title = 'Blind Test Results'
-
-; (Optional for blind and kfold) Threshold of confidence for classification, below which an answer is automatically wrong
-; Default value is 0.2 if not specified. (Watson Assistant automatically classifies as "#Irrelevant" below 0.2)
-conf_thres = 0.2
-
-; (Optional for blind and kfold) Path to Partial Credit Table
-; partial_credit_table = ./data/partial-credit-table.csv
-
-; (Optional for blind and kfold) Weighting scheme for result scoring.
-; Valid values: POPULATION (default), EQUAL or WEIGHT_FILE (path to a weights CSV file)
-weight_mode = population
-
-; (Optional for blind) Previous blind test output file, for comparing consecutive blind tests
-; For simplicity use a file created by this tool on a previous run
-; previous_blind_out = ./data/prev-test-out.csv
-
 [ASSISTANT CREDENTIALS]
 ; Regardless of mode you must specify a WA environment to test the classification against.
 ; If your WA environment provides username and password, configure them and leave iam_apikey empty
@@ -63,3 +7,68 @@ username =
 password =
 iam_apikey =
 url = https://gateway.watsonplatform.net/assistant/api
+
+[DEFAULT]
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Required parameters independent of mode
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; (Required) One of:
+; Workspace ID (can be found on Watson Assistant UI - navigate to Skills tab and click three dots for View API Details)
+; Path to JSON file representing the locally saved workspace
+workspace_id = <workspace_id or workspace JSON>
+
+; (Required) Mode to run tool in.  This setting affects which other variables are required in the rest of the DEFAULT section.
+; Value values: KFOLD, BLIND or TEST
+mode = kfold
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Optional parameters independent of mode
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+; (Optional) All output files will be stored here. Default is `./data` (formerly called `temporary_file_directory`)
+;output_directory = ./data
+;temporary_file_directory = ./data
+
+; (Optional) yes/no on whether to keep(yes) or delete(no) workspaces created by this tool after the testing phase. Default is 'no'
+;keep_workspace_after_test = no
+
+; (Required) Test request rate (maximum number of API calls per second). Default is 100.
+;max_test_rate = 100
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; The remaining parameters in DEFAULT section depend upon the MODE above
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+; (Optional for blind and test) Test input file. Defaults to <temporary_file_directory>/input.csv
+; blind mode requires two columns, test mode requires one column
+;   In blind mode column headers are 'utterance' and 'golden intent'
+;   In test mode column header is 'utterance'
+; test_input_file = ./data/test.csv
+
+; (Optional for blind and test) Test output path. Defaults to <temp_dir>/<mode>-out.csv
+; test_output_path = ./data/test-out.csv
+
+; (Optional for blind and kfold) Output figure path. Defaults to <temp_dir>/<mode>.jpg
+; out_figure_path= ./data/figure.png
+
+; (Optional for kfold) Number of folds.  If on LITE plan use 3. Default is 5.
+; Each fold creates a workspace (make sure you have enough workspaces available, LITE plans are restricted to 5)
+; fold_num = 5
+
+; (Optional for blind) Title for blind testing output figure. Default is 'Blind Test Results'
+; blind_figure_title = 'Blind Test Results'
+
+; (Optional for blind and kfold) Threshold of confidence for classification, below which an answer is automatically wrong
+; Default value is 0.2 if not specified. (Watson Assistant automatically classifies as "#Irrelevant" below 0.2)
+; conf_thres = 0.2
+
+; (Optional for blind and kfold) Path to Partial Credit Table
+; partial_credit_table = ./data/partial-credit-table.csv
+
+; (Optional for blind and kfold) Weighting scheme for result scoring.
+; Valid values: POPULATION (default), EQUAL or WEIGHT_FILE (path to a weights CSV file)
+; weight_mode = population
+
+; (Optional for blind) Previous blind test output file, for comparing consecutive blind tests
+; For simplicity use a file created by this tool on a previous run
+; previous_blind_out = ./data/prev-test-out.csv

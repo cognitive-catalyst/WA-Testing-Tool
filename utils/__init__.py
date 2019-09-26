@@ -74,6 +74,7 @@ TIME_TO_WAIT = 600
 BOOL_MAP = {True: 'yes', False: 'no'}
 DEFAULT_TEST_RATE = 100
 DEFAULT_CONF_THRES = 0.2
+DEFAULT_TEMP_DIR = "./data"
 
 POPULATION_WEIGHT_MODE = 'population'
 EQUAL_WEIGHT_MODE = 'equal'
