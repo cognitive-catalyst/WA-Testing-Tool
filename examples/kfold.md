@@ -22,6 +22,7 @@ username = <wa username>
 password = <wa password>
 iam_apikey = <wa iam apikey>
 url = https://gateway-wdc.watsonplatform.net/assistant/api
+version=2019-02-28
 
 [DEFAULT]
 mode = kfold

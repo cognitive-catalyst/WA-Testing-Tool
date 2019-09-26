@@ -8,6 +8,9 @@ password =
 iam_apikey =
 url = https://gateway.watsonplatform.net/assistant/api
 
+;API version, default is 2019-02-28, specify the version matching your Watson Assistant
+;version=
+
 [DEFAULT]
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Required parameters independent of mode
