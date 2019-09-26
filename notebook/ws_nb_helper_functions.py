@@ -48,8 +48,8 @@ def copy_python_env_data_results_zip_to_project_asset(project=project, data_resu
     # !echo $WA_TOOL_INSTALL_DIR_W_PATH/$WA_TOOL_RESULTS_TARGZ_FILE $WA_TOOL_DATA_DIR_W_PATH
 
     print('Creating data zip file...')
-    #subprocess.call(["tar", "-cvf", WA_TOOL_RESULTS_TARGZ_FILE, WA_TOOL_DATA_DIR_W_PATH])
-    !tar -czvf $WA_TOOL_INSTALL_DIR_W_PATH/$WA_TOOL_RESULTS_TARGZ_FILE $WA_TOOL_DATA_DIR_W_PATH
+    subprocess.call(["tar", "-cvf", WA_TOOL_INSTALL_DIR_W_PATH+'/'+WA_TOOL_RESULTS_TARGZ_FILE, WA_TOOL_DATA_DIR_W_PATH])
+    #!tar -czvf $WA_TOOL_INSTALL_DIR_W_PATH/$WA_TOOL_RESULTS_TARGZ_FILE $WA_TOOL_DATA_DIR_W_PATH
 
     print('Verify .tar.gz file was created...')
     #check for the file in the list
