@@ -2,6 +2,10 @@
 import os
 import sys
 
+from project_lib import Project
+project = Project(project_id='TBD', project_access_token='p-TBD')
+pc = project.project_context
+
 
 def copy_project_asset_file_to_python_env(project=project, asset_filename='asset_file_in_project', python_env_target_dir='python environemnt target directory'):
     filename_with_path=python_env_target_dir+'/'+asset_filename
