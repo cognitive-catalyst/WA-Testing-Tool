@@ -31,7 +31,7 @@ def func(args):
                      header=None)
     kf = KFold(n_splits=args.fold_num, shuffle=True)
     for fold_idx, (train_idx, test_idx) in \
-            enumerate(kf.split(df.index.get_values())):
+             enumerate(kf.split(df.index.to_numpy())):
         out_directory = os.path.join(args.outdir, str(fold_idx))
         if not os.path.exists(out_directory):
             os.makedirs(out_directory)

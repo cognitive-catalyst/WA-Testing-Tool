@@ -26,7 +26,7 @@ from time import sleep
 import csv
 import pandas as pd
 from argparse import ArgumentParser
-from watson_developer_cloud import AssistantV1
+from ibm_watson import AssistantV1
 import sys
 import traceback
 

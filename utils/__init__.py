@@ -18,7 +18,7 @@ import logging
 import csv
 import os
 import pandas as pd
-from watson_developer_cloud import AssistantV1
+from ibm_watson import AssistantV1
 
 UTF_8 = 'utf-8'
 TRAIN_FILENAME = 'train.csv'

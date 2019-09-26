@@ -23,7 +23,7 @@ import json
 from argparse import ArgumentParser
 import csv
 import pandas as pd
-from watson_developer_cloud import AssistantV1
+from ibm_watson import AssistantV1
 from utils import TRAIN_FILENAME, TEST_FILENAME, UTTERANCE_COLUMN, \
                   GOLDEN_INTENT_COLUMN, TEST_OUT_FILENAME, WORKSPACE_ID_TAG, \
                   WCS_VERSION, UTF_8, INTENT_JUDGE_COLUMN, BOOL_MAP, \
@@ -227,7 +227,7 @@ def kfold(fold_num, temp_dir, intent_train_file, workspace_base_file,
         else:
             raise RuntimeError('Failure in generating intent metrics')
 
-        confusion_args = [sys.executable, CONFUSION_MATRIX_PATH, 
+        confusion_args = [sys.executable, CONFUSION_MATRIX_PATH,
                           '-i', kfold_result_file,
                           '-o', kfold_result_file_base+".confusion_args.csv"]
         if subprocess.run(confusion_args).returncode == 0:
