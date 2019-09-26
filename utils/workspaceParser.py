@@ -14,6 +14,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 """ Parse workspace into artifacts for training
 """
 import os
@@ -21,7 +22,7 @@ import csv
 import json
 import os.path
 from argparse import ArgumentParser
-from watson_developer_cloud import AssistantV1
+from ibm_watson import AssistantV1
 from __init__ import TRAIN_INTENT_FILENAME, DEFAULT_WA_VERSION, \
                      TRAIN_ENTITY_FILENAME, WORKSPACE_BASE_FILENAME, UTF_8
 
