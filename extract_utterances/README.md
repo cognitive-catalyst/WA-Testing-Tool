@@ -26,11 +26,11 @@ You may optionally provide
 Example execution:
 
 ```
-python getUtteranceBeforeNode.py -n node_1_1234567890123 -a 1111222233334444555566667777888899990000 -w 11111111-2222-3333-4444-555566667777 -l https://gateway-wdc.watsonplatform.net/assistant/api -c all -o output.tsv
+python3 getUtteranceBeforeNode.py -n node_1_1234567890123 -a 1111222233334444555566667777888899990000 -w 11111111-2222-3333-4444-555566667777 -l https://gateway-wdc.watsonplatform.net/assistant/api -c all -o output.tsv
 ```
 
 You can print the help using the following command:
 
 ```
-python getUtteranceBeforeNode.py -h
+python3 getUtteranceBeforeNode.py -h
 ```

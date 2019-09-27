@@ -11,12 +11,12 @@ This is done with the `export` command on Mac/Linux shell or `SET` in Windows
 
 Run a sample test as follows:
 ```
-python flowtest.py tests/Customer_Care_Test.tsv
+python3 flowtest.py tests/Customer_Care_Test.tsv
 ```
 
 Run all tests in a directory (and it's subdirectories) as follows:
 ```
-python flowtest.py tests
+python3 flowtest.py tests
 ```
 
 Check the `results` folder for test output.  If any MATCH column has a 'FALSE' value, the test has failed.
