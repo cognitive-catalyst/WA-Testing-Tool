@@ -477,7 +477,7 @@ def func(args):
     weight_mode          = default_section.get(WEIGHT_MODE_ITEM, POPULATION_WEIGHT_MODE).lower()
     conf_thres_str       = default_section.get(CONF_THRES_ITEM, str(DEFAULT_CONF_THRES))
     partial_credit_table = default_section.get(PARTIAL_CREDIT_TABLE_ITEM, None)
-    figure_path          = default_section.get(FIGURE_PATH_ITEM, out_dir + "/" + mode + ".jpg")
+    figure_path          = default_section.get(FIGURE_PATH_ITEM, out_dir + "/" + mode + ".png")
 
     if KFOLD == mode:
         fold_num = default_section.get(FOLD_NUM_ITEM, FOLD_NUM_DEFAULT)
