@@ -18,6 +18,9 @@
 """
 import csv
 import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import numpy as np
 from argparse import ArgumentParser
 from sklearn.metrics import confusion_matrix
 from __init__ import UTF_8
@@ -46,8 +49,23 @@ def func(args):
                            columns=column_labels)
 
     out_df.to_csv(args.out_file, encoding='utf-8', quoting=csv.QUOTE_ALL, index=index_labels, columns=column_labels)
-
     print ("Wrote confusion matrix output to {}.".format(args.out_file))
+
+    #Plot a normalized confusion matrix as a heatmap
+    plt.figure(figsize = (10,10))
+    df_cm = pd.DataFrame(output_matrix, index=index_labels, columns=column_labels)
+    df_cm = df_cm.astype('float') / df_cm.sum(axis=1)[:, np.newaxis]
+    sns.set(font_scale=1)
+    hm = sns.heatmap(df_cm, annot=True , cmap="Greys",cbar=False,fmt='.1%',linewidths=0.1,linecolor='black')
+    hm.set_yticklabels(hm.get_yticklabels(), rotation=0)
+    hm.set_xticklabels(hm.get_xticklabels(), rotation=90)
+    plt.title("Normalized Confusion Matrix")
+    plt.tight_layout()
+    plt.autoscale()
+    out_image_file = args.out_file[:-4] + ".png"
+    plt.savefig(out_image_file,bbox_inches='tight',dpi=400)
+   
+    print ("Wrote confusion matrix diagram to {}.".format(out_image_file))
 
 def create_parser():
     parser = ArgumentParser(
@@ -56,7 +74,7 @@ def create_parser():
                         help='File that contains intent test and golden data')
     parser.add_argument('-o', '--out_file', type=str,
                         help='Output file path',
-                        default='intent-metrics.csv')
+                        default='confusion-matrix.csv')
     parser.add_argument('-t', '--test_column', type=str,
                         default='predicted intent',
                         help='Test column name')
