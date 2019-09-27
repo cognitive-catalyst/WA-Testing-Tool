@@ -14,13 +14,14 @@ and positive predictive value rates, and a confustion matrix.
 - Able to resume from where it stops using modularized scripts.
 
 ## Prerequisite
-- *nix OS (Recommend)
 - Python 3.6.4 +
+- Mac users: you may need to initialize Python's SSL certificate store by running `Install Certificates.command` found in `/Applications/Python`.  See more [here](https://github.com/cognitive-catalyst/WA-Testing-Tool/issues/38)
+
 
 ## Quick Start
-1. Install dependencies `pip install -r requirements.txt`
+1. Install dependencies `pip3 install -r requirements.txt`
 2. Set up parameters properly in `config.ini`. Use `config.ini.sample` to bootstrap your configuration.
-3. Run the process. `python run.py -c <path to config.ini>`
+3. Run the process. `python3 run.py -c <path to config.ini>`
 
 ## Input Files
 `config.ini` - Configuration file for `run.py`.
@@ -69,10 +70,12 @@ There are a variety of ways to use this tool.  Primarily you will execute a k-fo
 [Extract utterances leading to a dialog node](extract_utterances/README.md)
 
 ## Caveats and Troubleshooting
-Due to different coverage among service plans, user may need to adjust `max_test_rate` accordingly to avoid network connection error.
+1. Due to different coverage among service plans, user may need to adjust `max_test_rate` accordingly to avoid network connection error.
 
-Users on Lite plans are only able to create 5 workspaces.  They should set `fold_num=3` on their k-fold configuration file.
+2. Users on Lite plans are only able to create 5 workspaces.  They should set `fold_num=3` on their k-fold configuration file.
 
-In case of interrupted execution, the tool may not be able to clean up the workspaces it creates.  In this case you will need to manually delete the extra workspaces.
+3. In case of interrupted execution, the tool may not be able to clean up the workspaces it creates.  In this case you will need to manually delete the extra workspaces.
 
-Workspace ID is *not* the Skill ID.  In the Watson Assistant user interface, the Workspace ID can be found on the Skills tab, clicking the three dots (top-right of skill), and choosing View API Details.
+4. Workspace ID is *not* the Skill ID.  In the Watson Assistant user interface, the Workspace ID can be found on the Skills tab, clicking the three dots (top-right of skill), and choosing View API Details.
+
+5. SSL: [CERTIFICATE_VERIFY_FAILED] on Mac means you may need to initialize Python's SSL certificate store by running `Install Certificates.command` found in `/Applications/Python`.  See more [here](https://github.com/cognitive-catalyst/WA-Testing-Tool/issues/38)
