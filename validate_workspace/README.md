@@ -20,13 +20,13 @@ A online connection to the workspace is referenced with "`-o` `--username` your_
 To validate a workspace against an SOE contract, invoke with `-s`.  You can optionally specify the legal "route" values with `--soe_route`
 
 ```
-python validateWS.py -f your_workspace_file.json -s --soe_route "TTS,OPT_OUT,UI,SOE,API,None"
+python3 validateWS.py -f your_workspace_file.json -s --soe_route "TTS,OPT_OUT,UI,SOE,API,None"
 ```
 
 To validate a workspace against IBM Voice Gateway syntax, invoke with `-g`.  You can optionally specify the expected voice gateway commands that should be present on any playback nodes with `--voice_gateway_commands`
 
 ```
-python validateWS.py -f your_workspace_file.json -g --voice_gateway_commands "vgwActSetSTTConfig,vgwActPlayText"
+python3 validateWS.py -f your_workspace_file.json -g --voice_gateway_commands "vgwActSetSTTConfig,vgwActPlayText"
 ```
 
 Note that you can simultaneously validate against SOE contract and IBM Voice Gateway syntax by specifying both `-s` and `-g` options.

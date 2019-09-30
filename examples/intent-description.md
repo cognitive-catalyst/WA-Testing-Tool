@@ -25,7 +25,7 @@ positional arguments:
 
 ## Local Watson Assistant Workspace File
 ```console
-$ python get_intent_description.py local path/to/workspace.json
+$ python3 get_intent_description.py local path/to/workspace.json
 ```
 
 ```
@@ -42,7 +42,7 @@ optional arguments:
 
 ## Remote Watson Assistant Workspace
 ```console
-$ python get_intent_description.py remote -u <wa-username> -p <wa-password> -w <wa-workspace-id>
+$ python3 get_intent_description.py remote -u <wa-username> -p <wa-password> -w <wa-workspace-id>
 ```
 
 

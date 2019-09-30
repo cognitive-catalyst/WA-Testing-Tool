@@ -21,7 +21,7 @@ Workflow #1
 Assuming input file at `data/test-out.csv` created by other tools in this repository and writing to `test-out-metrics.csv'.
 
 ```
-python utils/intentmetrics.py -i data/test-out.csv -o data/test-out-metrics.csv
+python3 utils/intentmetrics.py -i data/test-out.csv -o data/test-out-metrics.csv
 ```
 
 Workflow #2
@@ -41,7 +41,7 @@ Assuming input file at `data/golden_vs_predicted.csv` and writing to `data/golde
 
 Invoke via:
 ```
-python utils/intentmetrics.py -i data/golden_vs_predicted.csv -o data/golden_vs_predicted-metrics.csv -t "predicted" -g "golden"
+python3 utils/intentmetrics.py -i data/golden_vs_predicted.csv -o data/golden_vs_predicted-metrics.csv -t "predicted" -g "golden"
 ```
 
 ## Sample output

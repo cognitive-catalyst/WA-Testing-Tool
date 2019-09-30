@@ -23,7 +23,7 @@ Workflow #1
 Assuming input file at `data/blind-out.csv` created by other tools in this repository and writing to `blind-out-metrics.csv'.
 
 ```
-python utils/longtailscoring.py -i data/blind-out.csv -o data/blind-out-metrics.csv
+python3 utils/longtailscoring.py -i data/blind-out.csv -o data/blind-out-metrics.csv
 ```
 
 Workflow #2
@@ -43,7 +43,7 @@ Assuming input file at `data/golden_vs_predicted.csv` and writing to `data/golde
 
 Invoke via:
 ```
-python utils/longtailscoring.py -i data/golden_vs_predicted.csv -o data/golden_vs_predicted-metrics.csv -t "predicted" -g "golden" -c "conf" -l 0.5 -n "out_of_scope"
+python3 utils/longtailscoring.py -i data/golden_vs_predicted.csv -o data/golden_vs_predicted-metrics.csv -t "predicted" -g "golden" -c "conf" -l 0.5 -n "out_of_scope"
 ```
 
 ## Sample output
