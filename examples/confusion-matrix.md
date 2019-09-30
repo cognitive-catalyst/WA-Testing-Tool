@@ -8,7 +8,7 @@ There are two starting possibilities:
 
 1) The user has run existing [k-folds](kfold.md) or [blind](blind.md) test which creates a summary .csv file
 
-2) The user has a separate analysis which creates a .csv file with "golden" and "predicted" columns 
+2) The user has a separate analysis which creates a .csv file with "golden" and "predicted" columns
 
 User executes `confusionmatrix.py` providing an input filename and output filename.  If using workflow 2, the user provides the names of the golden and predicted column header names with `-g` and `-t` respectively.
 The summary is written to the output filename.
@@ -18,7 +18,7 @@ User must have an input .csv file containing at least two column headers represe
 
 ## Invocation
 Workflow #1
-Assuming input file at `data/test-out.csv` created by other tools in this repository and writing to `test-out-matrix.csv'. 
+Assuming input file at `data/test-out.csv` created by other tools in this repository and writing to `test-out-matrix.csv'.
 
 ```
 python utils/confusionmatrix.py -i data/test-out.csv -o data/test-out-matrix.csv
@@ -50,3 +50,12 @@ python utils/confusionmatrix.py -i data/golden_vs_predicted.csv -o data/golden_v
 "golden:intent1","1","0"
 "golden:intent2","2","2"
 ```
+
+This mode also generates the confusion matrix as a heatmap where:
+* COLOR of box relates to number of samples for that intent
+
+An ideal confusion matrix has black boxes on the diagonal and no other colors.  For improvement focus on the darkest boxes off of the main diagonal.
+
+Using a [larger example file](../resources/example-kfold-test-out-union.csv) we get the following heatmap:
+
+![Example heatmap](../resources/example-kfold-test-out-union-confusion.png)
