@@ -7,3 +7,4 @@ aiohttp>=3.4
 configparser
 squarify>=0.3.0
 ibm-watson==3.4.0
+seaborn>=0.9.0

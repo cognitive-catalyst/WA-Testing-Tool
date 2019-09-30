@@ -56,7 +56,8 @@ def func(args):
     df_cm = pd.DataFrame(output_matrix, index=index_labels, columns=column_labels)
     df_cm = df_cm.astype('float') / df_cm.sum(axis=1)[:, np.newaxis]
     sns.set(font_scale=1)
-    hm = sns.heatmap(df_cm, annot=True , cmap="Greys",cbar=False,fmt='.1%',linewidths=0.1,linecolor='black')
+    # Add 'annot=True' to the list of options for heatmap if you want to print the numbers, ideal only for small maps
+    hm = sns.heatmap(df_cm, cmap="Greys",cbar=False,fmt='.1%',linewidths=0.1,linecolor='black')
     hm.set_yticklabels(hm.get_yticklabels(), rotation=0)
     hm.set_xticklabels(hm.get_xticklabels(), rotation=90)
     plt.title("Normalized Confusion Matrix")
