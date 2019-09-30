@@ -50,3 +50,12 @@ python3 utils/confusionmatrix.py -i data/golden_vs_predicted.csv -o data/golden_
 "golden:intent1","1","0"
 "golden:intent2","2","2"
 ```
+
+This mode also generates the confusion matrix as a heatmap where:
+* COLOR of box relates to number of samples for that intent
+
+An ideal confusion matrix has black boxes on the diagonal and no other colors.  For improvement focus on the darkest boxes off of the main diagonal.
+
+Using a [larger example file](../resources/example-kfold-test-out-union.csv) we get the following heatmap:
+
+![Example heatmap](../resources/example-kfold-test-out-union-confusion.png)
