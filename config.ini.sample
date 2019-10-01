@@ -50,7 +50,7 @@ mode = kfold
 ; (Optional for blind and test) Test output path. Defaults to <temp_dir>/<mode>-out.csv
 ; test_output_path = ./data/test-out.csv
 
-; (Optional for blind and kfold) Output figure path. Defaults to <temp_dir>/<mode>.jpg
+; (Optional for blind and kfold) Output figure path. Defaults to <temp_dir>/<mode>.png
 ; out_figure_path= ./data/figure.png
 
 ; (Optional for kfold) Number of folds.  If on LITE plan use 3. Default is 5.
