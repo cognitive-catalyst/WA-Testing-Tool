@@ -169,6 +169,8 @@ def func(args):
     fig = plt.figure()
     ax = fig.gca()
 
+    ax.set_ylim([0, 1.0]) # Hardcoding y-axis to a consistent 0-1.0 for the benefit of easing historical comparisions
+
     ax.grid(color='b', linestyle='--', alpha=0.3)
     ax.set_xlabel('Percentage of Questions Answered',
                   fontsize=LEGEND_AXIS_FONT_SIZE)
