@@ -24,6 +24,7 @@ from argparse import ArgumentParser
 import csv
 import pandas as pd
 from ibm_watson import AssistantV1
+from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 from utils import TRAIN_FILENAME, TEST_FILENAME, UTTERANCE_COLUMN, \
                   GOLDEN_INTENT_COLUMN, TEST_OUT_FILENAME, WORKSPACE_ID_TAG, \
                   WA_API_VERSION_ITEM, DEFAULT_WA_VERSION, UTF_8, INTENT_JUDGE_COLUMN, BOOL_MAP, \
@@ -72,8 +73,13 @@ def validate_config(fields, section):
 
 
 def list_workspaces(username, password, iam_apikey, version, url):
-    c = AssistantV1(username=username, password=password, iam_apikey=iam_apikey,
-                    version=version, url=url)
+    authenticator = IAMAuthenticator(iam_apikey)
+    c = AssistantV1(
+        version=version,
+        authenticator=authenticator
+    )
+    c.set_service_url(url)
+
     return c.list_workspaces()
 
 

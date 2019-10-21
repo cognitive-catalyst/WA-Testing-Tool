@@ -23,6 +23,7 @@ import json
 import os.path
 from argparse import ArgumentParser
 from ibm_watson import AssistantV1
+from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 from __init__ import TRAIN_INTENT_FILENAME, DEFAULT_WA_VERSION, \
                      TRAIN_ENTITY_FILENAME, WORKSPACE_BASE_FILENAME, UTF_8
 
@@ -30,8 +31,13 @@ from __init__ import TRAIN_INTENT_FILENAME, DEFAULT_WA_VERSION, \
 def func(args):
     workspace = None
     if not os.path.isfile(args.input):
-        conv = AssistantV1(username=args.username, password=args.password, iam_apikey=args.iam_apikey,
-                           version=args.version, url=args.url)
+        authenticator = IAMAuthenticator(args.iam_apikey)
+        conv = AssistantV1(
+            version=args.version,
+            authenticator=authenticator
+        )
+        conv.set_service_url(args.url)
+
         raw_workspace = conv.get_workspace(workspace_id=args.input, export=True)
         try:
            #V2 API syntax

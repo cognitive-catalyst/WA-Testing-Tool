@@ -1,13 +1,19 @@
 import sys
 import json
 from argparse import ArgumentParser
-from watson_developer_cloud import AssistantV1
+from ibm_watson import AssistantV1
+from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 
 WCS_VERSION='2018-09-20'
 DEFAULT_PAGE_LIMIT=100
 
 def getAssistant(iam_apikey, url):
-    c = AssistantV1(iam_apikey=iam_apikey, version=WCS_VERSION, url=url)
+    authenticator = IAMAuthenticator(iam_apikey)
+    c = AssistantV1(
+        version=WCS_VERSION,
+        authenticator=authenticator
+    )
+    c.set_service_url(url)
     return c
 
 
