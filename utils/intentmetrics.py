@@ -60,6 +60,10 @@ def func(args):
 
             precisions[idx] = precision
             recalls[idx] = recall
+            print ("precision")
+            print (precision)
+            print ("recall")
+            print (recall)
             fscores[idx] = (2 * precision * recall) / (precision + recall)
 
     out_df = pd.DataFrame(data={'intent': labels,
