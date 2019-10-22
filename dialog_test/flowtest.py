@@ -3,13 +3,16 @@ import sys
 import flowtest_v1
 import pkg_resources
 import pandas as pd
+import validators
 
 DATA_FOLDER='tests'
 OUTPUT_FOLDER='results'
 USERNAME=os.environ["ASSISTANT_USERNAME"]
 PASSWORD=os.environ["ASSISTANT_PASSWORD"]
+WA_URL=os.environ["ASSISTANT_URL"]
 workspace_id=os.environ["WORKSPACE_ID"]
 conversation_version="2018-09-20"
+url_default="https://gateway.watsonplatform.net/assistant/api"
 
 def getWatsonSDKVersion():
     for pkg in pkg_resources.working_set:
@@ -33,6 +36,13 @@ def validateArguments():
     if len(workspace_id) < 5:
         print ('No valid WORKSPACE_ID specified in environment')
         sys.exit(-4)
+
+    if validators.url(WA_URL):
+        global url_default
+        url_default = WA_URL
+    else:
+        print('No valid ASSISTANT_URL specified in environment')
+        print('Defaulting to :' + url_default)
 
 def initialize():
     if not os.path.exists(OUTPUT_FOLDER):
@@ -72,7 +82,7 @@ def processFile(flowfile:str, watsonSDKVersion:str):
     #print(flow)
     #print()
 
-    ft = flowtest_v1.FlowTestV1(username=USERNAME, password=PASSWORD, version=conversation_version)
+    ft = flowtest_v1.FlowTestV1(username=USERNAME, password=PASSWORD, version=conversation_version, url=url_default)
 
     # print('Creating blank template: ')
     # blank_flow = ft.createBlankTemplate()

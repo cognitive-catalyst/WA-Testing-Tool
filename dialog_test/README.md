@@ -6,7 +6,7 @@ Prerequisites:
 * Watson Developer Cloud SDK (1.x or 2.x)
 
 ## Running the tests
-You will need to set three environment variables: ASSISTANT_USERNAME, ASSISTANT_PASSWORD, and WORKSPACE_ID.  The WORKSPACE_ID should be the first workspace the test executes against.  
+You will need to set three environment variables: ASSISTANT_USERNAME, ASSISTANT_PASSWORD, WORKSPACE_ID and ASSISTANT_URL.  The WORKSPACE_ID should be the first workspace the test executes against.  
 This is done with the `export` command on Mac/Linux shell or `SET` in Windows
 
 Run a sample test as follows:

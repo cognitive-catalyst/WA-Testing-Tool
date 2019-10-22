@@ -8,3 +8,4 @@ configparser
 squarify>=0.3.0
 ibm-watson==4.0.1
 seaborn>=0.9.0
+validators==0.14.0

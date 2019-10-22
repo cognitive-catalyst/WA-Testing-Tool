@@ -33,7 +33,7 @@ class FlowTestV1:
             version=kwargs.get("version"),
             authenticator=authenticator
         )
-        self.ctk.set_service_url("https://gateway.watsonplatform.net/assistant/api")
+        self.ctk.set_service_url(kwargs.get("url"))
 
     def reportFailure(self):
         print("************************* FAIL ****************************")
