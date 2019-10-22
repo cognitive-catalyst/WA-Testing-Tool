@@ -16,12 +16,12 @@ Go to the “Settings” tab of your project and scroll to “Access tokens” a
 
 (Complete instructions https://dataplatform.cloud.ibm.com/docs/content/wsj/analyze-data/token.html)
  
-![step2](notebook_ws/images/step2.png)
+![step2](images/step2.png)
 
 ---
 **STEP 3.**	Navigate to “Assets” of your Watson Studio project and import the Notebook by clicking “New Notebook”
 
- ![step3](notebook_ws/images/step3.png)
+ ![step3](images/step3.png)
 
 ---
 **STEP 4.**	Select “From URL” option.
@@ -36,10 +36,10 @@ Use this Dev URL:
 Master URL (to be enabled in future): 
 (https://github.com/cognitive-catalyst/WA-Testing-Tool/blob/master/notebook_ws/WA-Testing-Tool-WS-Python-Notebook.ipynb) 
 
-![step4](notebook_ws/images/step4.png)
+![step4](images/step4.png)
  
 ---
-**STEP 5.**	Navigate to “Assets” >> “Notebooks” for your project and Launch the new Notebooks in Edit mode. ![step5](notebook_ws/images/step5.png)
+**STEP 5.**	Navigate to “Assets” >> “Notebooks” for your project and Launch the new Notebooks in Edit mode. ![step5](images/step5.png)
 
 ---
 **STEP 6.**	Once launched, the first step is to add the project token to the Notebook to enable the files to be shared with the project environment securely. 
@@ -48,7 +48,7 @@ Add the project token to this Notebook:
 
 > 6.1.	Click on the three vertical dots in the top menu bar and then "Insert project Token".
  
- ![step6.1](notebook_ws/images/step6.1.png)
+ ![step6.1](images/step6.1.png)
 
 > 6.2.	A new project token for your project should appear in the first cell.
 
@@ -58,7 +58,7 @@ Add the project token to this Notebook:
 
 > 6.5.	Make sure to "Run' the cell with your token to initialize the project token into variables.
   Example of the first cell (project token cell)
-  ![step6.5](notebook_ws/images/step6.5.png)
+  ![step6.5](images/step6.5.png)
 
 
 Once the project token cell is added make sure to ‘run’ it to initialize the variables.
@@ -70,7 +70,7 @@ In Section 1, the cells are for setting up the environment and initializing the 
 
 ---
 **STEP 8.**	In Section 2, to add an input file (for example input for blind and standard tests.) simply drag-drop on the Data Files from the Notebook page, or you can add the file to the directly to the project Assets.
-![step8](notebook_ws/images/step8.png)
+![step8](images/step8.png)
  
 ---
 **STEP 9.**	Section 3 is for analyzing the results of your tests. Feel free to extend the analysis based on your needs and using the output files generated from the tests.
