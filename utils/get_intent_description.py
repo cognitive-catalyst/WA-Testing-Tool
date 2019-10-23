@@ -41,7 +41,7 @@ def get_remote_workspace(args):
         version=WA_API_VERSION,
         authenticator=authenticator
     )
-    conv.set_service_url(BASE_URL)
+    conv.set_service_url(args.url)
 
     workspace = conv.get_workspace(args.workspace_id, export=True)
     write_output(workspace, args.output)
@@ -95,6 +95,11 @@ if __name__ == '__main__':
     requiredNamed.add_argument(
         '--workspace_id', '-w',
         help='Watson Assistant Workspace ID',
+        required=True
+    )
+    requiredNamed.add_argument(
+        '--url', '-l',
+        help='Watson Assistant Url',
         required=True
     )
     credentials_parser.set_defaults(func=get_remote_workspace)
