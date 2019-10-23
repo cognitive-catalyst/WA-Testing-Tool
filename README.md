@@ -20,8 +20,13 @@ and positive predictive value rates, and a confustion matrix.
 
 ## Quick Start
 1. Install dependencies `pip3 install -r requirements.txt`
-2. Set up parameters properly in `config.ini`. Use `config.ini.sample` to bootstrap your configuration.
-3. Run the process. `python3 run.py -c <path to config.ini>`
+2. Set up parameters properly in configuration file (ex: `config.ini`). Use `config.ini.sample` to bootstrap your configuration.
+3. Run the process. `python3 run.py -c config.ini` or `python3 run.py -c <path to your config file>`
+
+## Quick Update
+If you have already installed this utility use these steps to get the latest code.
+1. Upgrade dependencies `pip3 install --upgrade -r requirements.txt`
+2. Update to latest code level `git pull`
 
 ## Input Files
 `config.ini` - Configuration file for `run.py`.
@@ -79,3 +84,5 @@ There are a variety of ways to use this tool.  Primarily you will execute a k-fo
 4. Workspace ID is *not* the Skill ID.  In the Watson Assistant user interface, the Workspace ID can be found on the Skills tab, clicking the three dots (top-right of skill), and choosing View API Details.
 
 5. SSL: [CERTIFICATE_VERIFY_FAILED] on Mac means you may need to initialize Python's SSL certificate store by running `Install Certificates.command` found in `/Applications/Python`.  See more [here](https://github.com/cognitive-catalyst/WA-Testing-Tool/issues/38)
+
+6. "This utility used to work and now it doesn't." Upgrade to latest dependencies with `pip3 install --upgrade -r requirements.txt` and latest code with `git pull`.
