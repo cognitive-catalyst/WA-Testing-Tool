@@ -8,7 +8,7 @@ This Notebook is a 'wrapper' that enables you to the run the WA-Testing Tool on 
 https://dataplatform.cloud.ibm.com/projects/create-project
 
 ---
-**STEP 2.**	This Notebook uses Watson Studio project token. In a newly created project or if your existing Watson Studio project does not already have project token setup, make sure to set that up first. 
+**STEP 2.**	The Notebook uses Watson Studio project token. In a newly created project or if your existing Watson Studio project does not already have project token setup, make sure to set that up first. 
 
 Here are the steps:
 
@@ -28,23 +28,26 @@ Go to the “Settings” tab of your project and scroll to “Access tokens” a
 
 Provide a “Name” for the Notebook. For runtime, at a minimum select “Default Python3.6 XS” .
 
-Enter the Notebook URL” from the github repository
+Enter the "Notebook" UR. Using the github repository URL below:
 
-Use this Dev URL: 
+Dev URL (use this): 
 (https://github.com/cognitive-catalyst/WA-Testing-Tool/blob/87_notebook_ws/notebook_ws/WA-Testing-Tool-WS-Python-Notebook.ipynb)
 
 Master URL (to be enabled in future): 
 (https://github.com/cognitive-catalyst/WA-Testing-Tool/blob/master/notebook_ws/WA-Testing-Tool-WS-Python-Notebook.ipynb) 
 
+Create the Notebook.
+
 ![step4](images/step4.png)
  
----
-**STEP 5.**	Navigate to “Assets” >> “Notebooks” for your project and Launch the new Notebooks in Edit mode. ![step5](images/step5.png)
 
 ---
-**STEP 6.**	Once launched, the first step is to add the project token to the Notebook to enable the files to be shared with the project environment securely. 
+**STEP 5.**	Navigate to “Assets” >> “Notebooks” for your project and Launch the new Notebook in Edit mode. ![step5](images/step5.png)
 
-Add the project token to this Notebook:
+---
+**STEP 6.**	Once launched, the first step is to add the project token to the Notebook cell. This is needed to enable the files to be shared with the project environment securely. 
+
+To add the project token to the Notebook:
 
 > 6.1.	Click on the three vertical dots in the top menu bar and then "Insert project Token".
  
@@ -56,7 +59,7 @@ Add the project token to this Notebook:
 
 > 6.4.	The project token is an authorization token that is used to access project resources like data sources, connections, and used by platform APIs.
 
-> 6.5.	Make sure to "Run' the cell with your token to initialize the project token into variables.
+> 6.5.	Make sure to "Run" the cell with your token to initialize the project token into variables.
   Example of the first cell (project token cell)
   ![step6.5](images/step6.5.png)
 
