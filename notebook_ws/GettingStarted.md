@@ -28,13 +28,14 @@ Go to the “Settings” tab of your project and scroll to “Access tokens” a
 
 Provide a “Name” for the Notebook. For runtime, at a minimum select “Default Python3.6 XS” .
 
-Enter the "Notebook" UR. Using the github repository URL below:
+Enter the "Notebook URL". Use the github repository URL below:
 
-Dev URL (use this): 
+Master URL: 
+(https://github.com/cognitive-catalyst/WA-Testing-Tool/blob/master/notebook_ws/WA-Testing-Tool-WS-Python-Notebook.ipynb) 
+
+Dev URL (use this for the dev branch): 
 (https://github.com/cognitive-catalyst/WA-Testing-Tool/blob/87_notebook_ws/notebook_ws/WA-Testing-Tool-WS-Python-Notebook.ipynb)
 
-Master URL (to be enabled in future): 
-(https://github.com/cognitive-catalyst/WA-Testing-Tool/blob/master/notebook_ws/WA-Testing-Tool-WS-Python-Notebook.ipynb) 
 
 Create the Notebook.
 
