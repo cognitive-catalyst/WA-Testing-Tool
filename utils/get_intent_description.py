@@ -100,7 +100,7 @@ if __name__ == '__main__':
     requiredNamed.add_argument(
         '--url', '-l',
         help='Watson Assistant Url',
-        required=True
+        default='https://gateway.watsonplatform.net/assistant/api'
     )
     credentials_parser.set_defaults(func=get_remote_workspace)
 
