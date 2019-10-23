@@ -27,6 +27,7 @@ import csv
 import pandas as pd
 from argparse import ArgumentParser
 from ibm_watson import AssistantV1
+from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 import sys
 import traceback
 
@@ -169,8 +170,12 @@ def func(args):
                      'values': row[ENTITY_VALUES_ARR_COLUMN]}
                     for _, row in entity_df.iterrows()]
 
-    conv = AssistantV1(iam_apikey=args.iam_apikey, username=args.username, password=args.password,
-                       version=args.version, url=args.url)
+    authenticator = IAMAuthenticator(args.iam_apikey)
+    conv = AssistantV1(
+        version=args.version,
+        authenticator=authenticator
+    )
+    conv.set_service_url(args.url)
 
     if args.workspace_name is not None:
         workspace_name = args.workspace_name

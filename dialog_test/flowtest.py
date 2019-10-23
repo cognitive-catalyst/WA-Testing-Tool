@@ -6,8 +6,10 @@ import pandas as pd
 
 DATA_FOLDER='tests'
 OUTPUT_FOLDER='results'
+url_default="https://gateway.watsonplatform.net/assistant/api"
 USERNAME=os.environ["ASSISTANT_USERNAME"]
 PASSWORD=os.environ["ASSISTANT_PASSWORD"]
+WA_URL=os.environ.get("ASSISTANT_URL", url_default)
 workspace_id=os.environ["WORKSPACE_ID"]
 conversation_version="2018-09-20"
 
@@ -33,6 +35,11 @@ def validateArguments():
     if len(workspace_id) < 5:
         print ('No valid WORKSPACE_ID specified in environment')
         sys.exit(-4)
+
+    if "ASSISTANT_URL" not in os.environ:
+        global url_default
+        print('No valid ASSISTANT_URL specified in environment')
+        print('Defaulting to: ' + url_default)
 
 def initialize():
     if not os.path.exists(OUTPUT_FOLDER):
@@ -72,7 +79,7 @@ def processFile(flowfile:str, watsonSDKVersion:str):
     #print(flow)
     #print()
 
-    ft = flowtest_v1.FlowTestV1(username=USERNAME, password=PASSWORD, version=conversation_version)
+    ft = flowtest_v1.FlowTestV1(username=USERNAME, password=PASSWORD, version=conversation_version, url=url_default)
 
     # print('Creating blank template: ')
     # blank_flow = ft.createBlankTemplate()

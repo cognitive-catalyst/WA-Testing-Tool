@@ -2,7 +2,8 @@ import json
 import sys
 import os
 import argparse
-from watson_developer_cloud import AssistantV1
+from ibm_watson import AssistantV1
+from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 
 class ArgParser(argparse.ArgumentParser):
     def error(self, message):
@@ -31,7 +32,10 @@ class DialogNode:
         return self.data['dialog_node']
 
     def getTitle(self):
-        return self.data['title']
+       try:
+           return self.data['title']
+       except:
+           return DialogNode.getId(self)
 
     def getContext(self):
         return self.data.get('context')
@@ -248,7 +252,12 @@ def getWorkspaceJson(args):
     return json.load(jsonFile)
   if args.online:
     VERSION='2018-09-20'
-    service = AssistantV1(username=args.username[0], password=args.password[0], version=VERSION, url=args.url[0])
+    authenticator = IAMAuthenticator(args.password[0])
+    service = AssistantV1(
+        version=VERSION,
+        authenticator=authenticator
+    )
+    service.set_service_url(args.url)
 
     #Note: export=True is rate-limited, see https://cloud.ibm.com/apidocs/assistant?code=python#get-information-about-a-workspace
     response=service.get_workspace(workspace_id=args.workspace_id[0], export=True)

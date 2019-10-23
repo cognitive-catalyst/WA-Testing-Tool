@@ -19,6 +19,7 @@ import csv
 import os
 import pandas as pd
 from ibm_watson import AssistantV1
+from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 
 UTF_8 = 'utf-8'
 TRAIN_FILENAME = 'train.csv'
@@ -122,8 +123,12 @@ def unmarshall_entity(entities_str):
 def delete_workspaces(username, password, iam_apikey, url, version, workspace_ids):
     """ Delete workspaces
     """
-    c = AssistantV1(username=username, password=password, iam_apikey=iam_apikey,
-                    version=version, url=url)
+    authenticator = IAMAuthenticator(iam_apikey)
+    c = AssistantV1(
+        version=version,
+        authenticator=authenticator
+    )
+    c.set_service_url(url)
     for workspace_id in workspace_ids:
         c.delete_workspace(workspace_id=workspace_id)
     print('Cleaned up workspaces')

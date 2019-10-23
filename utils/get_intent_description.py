@@ -17,9 +17,12 @@
 
 
 import argparse
-from watson_developer_cloud import AssistantV1
+from ibm_watson import AssistantV1
+from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 import json
 import csv
+
+from __init__ import BASE_URL
 
 WA_API_VERSION = '2017-05-26'
 
@@ -33,11 +36,13 @@ def add_output_arg(parser):
 
 
 def get_remote_workspace(args):
+    authenticator = IAMAuthenticator(args.password)
     conv = AssistantV1(
-        WA_API_VERSION,
-        username=args.user,
-        password=args.password
+        version=WA_API_VERSION,
+        authenticator=authenticator
     )
+    conv.set_service_url(args.url)
+
     workspace = conv.get_workspace(args.workspace_id, export=True)
     write_output(workspace, args.output)
 
@@ -50,7 +55,7 @@ def get_local_workspace(args):
 
 
 def write_output(workspace_json, output_file):
-    intents = workspace_json['intents']
+    intents = workspace_json.result['intents']
 
     keys = ['intent', 'description']
     with open(output_file, 'w') as f:
@@ -91,6 +96,11 @@ if __name__ == '__main__':
         '--workspace_id', '-w',
         help='Watson Assistant Workspace ID',
         required=True
+    )
+    requiredNamed.add_argument(
+        '--url', '-l',
+        help='Watson Assistant Url',
+        default='https://gateway.watsonplatform.net/assistant/api'
     )
     credentials_parser.set_defaults(func=get_remote_workspace)
 

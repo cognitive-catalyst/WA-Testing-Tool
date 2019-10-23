@@ -1,4 +1,5 @@
-from watson_developer_cloud import ConversationV1
+from ibm_watson import AssistantV1
+from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 import pandas as pd
 import re
 import json
@@ -27,7 +28,12 @@ class FlowTestV1:
                         'Intent9', 'Confidence9', 'Intent10', 'Confidence10' ]
     
     def __init__(self, **kwargs):
-        self.ctk = ConversationV1(**kwargs)
+        authenticator = IAMAuthenticator(kwargs.get("password"))
+        self.ctk = AssistantV1(
+            version=kwargs.get("version"),
+            authenticator=authenticator
+        )
+        self.ctk.set_service_url(kwargs.get("url"))
 
     def reportFailure(self):
         print("************************* FAIL ****************************")
