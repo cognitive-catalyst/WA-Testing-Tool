@@ -3,16 +3,15 @@ import sys
 import flowtest_v1
 import pkg_resources
 import pandas as pd
-import validators
 
 DATA_FOLDER='tests'
 OUTPUT_FOLDER='results'
+url_default="https://gateway.watsonplatform.net/assistant/api"
 USERNAME=os.environ["ASSISTANT_USERNAME"]
 PASSWORD=os.environ["ASSISTANT_PASSWORD"]
-WA_URL=os.environ["ASSISTANT_URL"]
+WA_URL=os.environ.get("ASSISTANT_URL", url_default)
 workspace_id=os.environ["WORKSPACE_ID"]
 conversation_version="2018-09-20"
-url_default="https://gateway.watsonplatform.net/assistant/api"
 
 def getWatsonSDKVersion():
     for pkg in pkg_resources.working_set:
@@ -37,12 +36,10 @@ def validateArguments():
         print ('No valid WORKSPACE_ID specified in environment')
         sys.exit(-4)
 
-    if validators.url(WA_URL):
+    if "ASSISTANT_URL" not in os.environ:
         global url_default
-        url_default = WA_URL
-    else:
         print('No valid ASSISTANT_URL specified in environment')
-        print('Defaulting to :' + url_default)
+        print('Defaulting to: ' + url_default)
 
 def initialize():
     if not os.path.exists(OUTPUT_FOLDER):
