@@ -24,8 +24,8 @@ import os
 tool_base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, tool_base)
 import workspaceParser
-from utils import WCS_CREDS_SECTION, WCS_USERNAME_ITEM, SPEC_FILENAME, \
-                  WCS_PASSWORD_ITEM, TRAIN_CONVERSATION_PATH, \
+from utils import WCS_CREDS_SECTION, SPEC_FILENAME, \
+                  WCS_IAM_APIKEY_ITEM, TRAIN_CONVERSATION_PATH, \
                   delete_workspaces, WORKSPACE_ID_TAG, DEFAULT_WA_VERSION
 
 
@@ -53,11 +53,10 @@ class WorkspaceParserTestCase(CommandLineTestCase):
         config = configparser.ConfigParser()
         config.read(config_path)
 
-        username = config[WCS_CREDS_SECTION][WCS_USERNAME_ITEM]
-        password = config[WCS_CREDS_SECTION][WCS_PASSWORD_ITEM]
+        apikey = config[WCS_CREDS_SECTION][WCS_IAM_APIKEY_ITEM]
 
         args = [sys.executable, TRAIN_CONVERSATION_PATH, '-i', intent_path,
-                '-e', entity_path, '-u', username, '-p', password, '-v', DEFAULT_WA_VERSION]
+                '-e', entity_path, '-a', apikey, '-v', DEFAULT_WA_VERSION]
 
         workspace_spec_json = os.path.join(self.test_dir, SPEC_FILENAME)
         # Train a new instance in order to pull the workspace detail
@@ -75,15 +74,15 @@ class WorkspaceParserTestCase(CommandLineTestCase):
 
         args = \
             self.parser.parse_args(
-                ['-w', workspace_id, '-u', username,
-                 '-p', password, '-o', self.test_dir])
+                ['-w', workspace_id, '-a', apikey,
+                 '-o', self.test_dir])
         try:
             workspaceParser.func(args)
         except Exception as e:
             print(e)
             raised = True
 
-        delete_workspaces(username, password,
+        delete_workspaces(apikey,
                           [workspace_id])
         self.assertFalse(raised, 'Exception raised')
 

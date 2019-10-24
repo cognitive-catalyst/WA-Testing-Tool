@@ -23,7 +23,7 @@ import json
 import os
 tool_base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, tool_base)
-from utils import WCS_USERNAME_ITEM, WCS_PASSWORD_ITEM, WCS_CREDS_SECTION, \
+from utils import WCS_IAM_APIKEY_ITEM, WCS_CREDS_SECTION, \
                   TRAIN_CONVERSATION_PATH, SPEC_FILENAME, delete_workspaces, \
                   WORKSPACE_ID_TAG
 
@@ -49,8 +49,7 @@ class TrainConversationTestCase(CommandLineTestCase):
         config = configparser.ConfigParser()
         config.read(config_path)
 
-        username = config[WCS_CREDS_SECTION][WCS_USERNAME_ITEM]
-        password = config[WCS_CREDS_SECTION][WCS_PASSWORD_ITEM]
+        apikey = config[WCS_CREDS_SECTION][WCS_IAM_APIKEY_ITEM]
 
         intent_path = os.path.join(tool_base, 'resources', 'sample',
                                    'intents.csv')
@@ -58,8 +57,7 @@ class TrainConversationTestCase(CommandLineTestCase):
                                    'entities.csv')
 
         args = [sys.executable, TRAIN_CONVERSATION_PATH, '-i',
-                intent_path, '-e', entity_path, '-u', username, '-p',
-                password]
+                intent_path, '-e', entity_path, '-a', apikey]
 
         workspace_spec_json = os.path.join(self.test_dir, SPEC_FILENAME)
 
@@ -77,7 +75,7 @@ class TrainConversationTestCase(CommandLineTestCase):
                 else:
                     print('Training complete')
                     workspace_id = json.load(f)[WORKSPACE_ID_TAG]
-                    delete_workspaces(username, password, [workspace_id])
+                    delete_workspaces(apikey, [workspace_id])
 
         except Exception as e:
             print(e)
