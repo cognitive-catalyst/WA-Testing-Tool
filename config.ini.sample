@@ -1,10 +1,6 @@
 [ASSISTANT CREDENTIALS]
 ; Regardless of mode you must specify a WA environment to test the classification against.
-; If your WA environment provides username and password, configure them and leave iam_apikey empty
-; If your WA environment provides iam_apikey, set the username value as: apikey and password value as: <the value of your apikey>
 ; Update the url for the WA API to match your specific WA region
-username =
-password =
 iam_apikey =
 url = https://gateway.watsonplatform.net/assistant/api
 

@@ -12,10 +12,6 @@ Further, reports are generated for an [intent metrics summary](intent-metrics.md
 
 ```
 [ASSISTANT CREDENTIALS]
-; If your WA environment provides username and password, configure them and leave iam_apikey empty
-; If your WA environment provides iam_apikey, set the username value as: apikey and password value as: <the value of your apikey>
-username = <wa username>
-password = <wa password>
 iam_apikey = <wa iam apikey>
 url = https://gateway-wdc.watsonplatform.net/assistant/api
 version=2019-02-28
