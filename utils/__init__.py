@@ -39,8 +39,6 @@ DIALOG_RESPONSE_COLUMN = 'dialog response'
 GOLDEN_INTENT_COLUMN = 'golden intent'
 SCORE_COLUMN = 'score'
 
-WCS_USERNAME_ITEM = 'username'
-WCS_PASSWORD_ITEM = 'password'
 WCS_IAM_APIKEY_ITEM = 'iam_apikey'
 WCS_BASEURL_ITEM = 'url'
 WCS_CREDS_SECTION = 'ASSISTANT CREDENTIALS'
@@ -120,7 +118,7 @@ def unmarshall_entity(entities_str):
     return entities
 
 
-def delete_workspaces(username, password, iam_apikey, url, version, workspace_ids):
+def delete_workspaces(iam_apikey, url, version, workspace_ids):
     """ Delete workspaces
     """
     authenticator = IAMAuthenticator(iam_apikey)

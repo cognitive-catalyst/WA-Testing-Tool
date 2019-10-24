@@ -194,12 +194,8 @@ def create_parser():
                         default=os.path.join(os.getcwd(), TEST_OUT_FILENAME))
     parser.add_argument('-w', '--workspace_id', type=str, required=True,
                         help='Workspace ID')
-    parser.add_argument('-u', '--username', type=str, required=True,
-                        help='Assistant service username')
-    parser.add_argument('-p', '--password', type=str, required=True,
-                        help='Assistant service password')
     parser.add_argument('-a', '--iam_apikey', type=str, required=True,
-                        help='Assistant service iam api key')
+                        help='Assistant service IAM api key')
     parser.add_argument('-l', '--url', type=str, default='https://gateway.watsonplatform.net/assistant/api',
                         help='URL to Watson Assistant. Ex: https://gateway-wdc.watsonplatform.net/assistant/api')
     parser.add_argument('-t', '--test_column', type=str,
