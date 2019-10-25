@@ -6,7 +6,7 @@ This is a syntax validator for Watson Assistant workspaces (skills) that integra
 Gather the information needed to connect to your workspace.  You can run the tool against a local copy of the workspace or can use the remote copy.
 
 Export the Watson Assistant workspace you wish to validate: https://developer.ibm.com/tutorials/learn-how-to-export-import-a-watson-assistant-workspace/
-Or gather the username/password, URL, and workspace ID.
+Or gather the IAM apikey, URL, and workspace ID.
 
 *Execution steps*
 You are required to provide:
@@ -15,7 +15,7 @@ You are required to provide:
 
 A local file is referenced with "`-f` your_filename_here".
 
-A online connection to the workspace is referenced with "`-o` `--username` your_username_here `--password` your_password_here `--url` your_url_here `--workspace_id` your_workspace_id_here".
+An online connection to the workspace is referenced with "`-o` `--apikey` your_apikey_here `--url` your_url_here `--workspace_id` your_workspace_id_here".
 
 To validate a workspace against an SOE contract, invoke with `-s`.  You can optionally specify the legal "route" values with `--soe_route`
 

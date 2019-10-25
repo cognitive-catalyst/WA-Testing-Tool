@@ -23,6 +23,8 @@ import asyncio
 import pandas as pd
 from argparse import ArgumentParser
 import aiohttp
+from ibm_watson import AssistantV1
+from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 
 from __init__ import UTF_8, CONFIDENCE_COLUMN, \
     UTTERANCE_COLUMN, PREDICTED_INTENT_COLUMN, \
@@ -38,24 +40,30 @@ test_out_header = [PREDICTED_INTENT_COLUMN, CONFIDENCE_COLUMN,
 MAX_RETRY_LIMIT = 5
 
 
-async def post(session, json, url, sem):
+async def message(service, workspace_id, utterance):
+    # Include user_id in request body for Plus and Premium plans
+    response = service.message(
+        workspace_id=workspace_id,
+        input={
+            'text': utterance,
+            'alternate_intents': True
+        },
+        context={
+            'metadata': {
+                'user_id': 'test'
+            }
+        })
+    return response.get_result()
+
+async def post(service, workspace_id, utterance, sem):
     """ Single post restrained by semaphore
     """
     counter = 0
     async with sem:
         while True:
             try:
-                # Include user_id in request body for Plus and Premium plans
-                json.update({
-                    'context': {
-                        'metadata': {
-                            'user_id': 'test'
-                        }
-                    }
-                })
-                async with session.post(url, json=json, raise_for_status=True) as response:
-                    res = await response.json()
-                    return res
+                res = await message(service, workspace_id, utterance)
+                return res
             except Exception as e:
                 # Max retries reached, print out the response payload
                 if counter == MAX_RETRY_LIMIT:
@@ -65,20 +73,13 @@ async def post(session, json, url, sem):
                 print("RETRY")
                 print(counter)
 
-
-async def fill_df(utterance, row_idx, out_df, workspace_id, wa_username,
-                  wa_password, sem, baseUrl, version):
-    """ Send utterance to Assistant and save response to dataframe
-    """
-    async with aiohttp.ClientSession(
-            auth=aiohttp.BasicAuth(wa_username, wa_password)) as session:
-        MSG_ENDPOINT = baseUrl + '/v1/workspaces/{}/message?version={}'
-        url = MSG_ENDPOINT.format(workspace_id, version)
-
+async def fill_df(utterance, row_idx, out_df, workspace_id, conversation, sem):
+        """ Send utterance to Assistant and save response to dataframe
+        """
+#    async:
         # Replace newline chars before sending to WA
         utterance = utterance.replace('\n', ' ')
-        resp = await post(session, {'input': {'text': utterance},
-                                    'alternate_intents': True}, url, sem)
+        resp = await post(conversation, workspace_id, utterance, sem)
         try:
             intents = resp['intents']
 
@@ -137,9 +138,16 @@ def func(args):
     sem = asyncio.Semaphore(args.rate_limit)
     loop = asyncio.get_event_loop()
 
+    authenticator = IAMAuthenticator(args.iam_apikey)
+    conv = AssistantV1(
+        version=args.version,
+        authenticator=authenticator
+    )
+    conv.set_service_url(args.url)
+
     tasks = (fill_df(out_df.loc[row_idx, test_column],
-                     row_idx, out_df, args.workspace_id,
-                     args.username, args.password, sem, args.url, args.version)
+                     row_idx, out_df, args.workspace_id, conv,
+                     sem)
              for row_idx in range(out_df.shape[0]))
     loop.run_until_complete(asyncio.gather(*tasks))
 
@@ -185,12 +193,8 @@ def create_parser():
                         default=os.path.join(os.getcwd(), TEST_OUT_FILENAME))
     parser.add_argument('-w', '--workspace_id', type=str, required=True,
                         help='Workspace ID')
-    parser.add_argument('-u', '--username', type=str, required=True,
-                        help='Assistant service username')
-    parser.add_argument('-p', '--password', type=str, required=True,
-                        help='Assistant service password')
     parser.add_argument('-a', '--iam_apikey', type=str, required=True,
-                        help='Assistant service iam api key')
+                        help='Assistant service IAM api key')
     parser.add_argument('-l', '--url', type=str, default='https://gateway.watsonplatform.net/assistant/api',
                         help='URL to Watson Assistant. Ex: https://gateway-wdc.watsonplatform.net/assistant/api')
     parser.add_argument('-t', '--test_column', type=str,

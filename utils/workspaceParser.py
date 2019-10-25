@@ -93,10 +93,6 @@ def create_parser():
         description="Parse workspace into artifacts for training")
     parser.add_argument('-i', '--input', type=str, required=True,
                         help='Workspace ID or path of workspace JSON')
-    parser.add_argument('-u', '--username', type=str, required=True,
-                        help='Assistant service username')
-    parser.add_argument('-p', '--password', type=str, required=True,
-                        help='Assistant service password')
     parser.add_argument('-a', '--iam_apikey', type=str, required=True,
                         help='Assistant service iam api key')
     parser.add_argument('-l', '--url', type=str, default='https://gateway.watsonplatform.net/assistant/api',

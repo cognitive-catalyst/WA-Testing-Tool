@@ -217,7 +217,7 @@ def buildJumpReport(workspace, jumpReportFile, jumpLabel):
    jumps = []
    for dialogNode in workspace.getDialogNodes():
        if(getTargetTitles):
-          idToTitleDict[dialogNode.getId()] = dialogNode.getTitle() 
+          idToTitleDict[dialogNode.getId()] = dialogNode.getTitle()
        if 'jump_to' == dialogNode.getNextStep():
            behavior = dialogNode.data['next_step']
            type = behavior['selector'] #'body' or 'condition'
@@ -242,7 +242,7 @@ def buildJumpReport(workspace, jumpReportFile, jumpLabel):
           target = target + ":" + idToTitleDict[target]
 
        line = '{}\t{}\t{}'.format(source, jump['type'], target)
-       outFile.write(line+'\n') 
+       outFile.write(line+'\n')
    outFile.close()
    print('Wrote jump report file to {}'.format(jumpReportFile))
 
@@ -252,7 +252,7 @@ def getWorkspaceJson(args):
     return json.load(jsonFile)
   if args.online:
     VERSION='2018-09-20'
-    authenticator = IAMAuthenticator(args.password[0])
+    authenticator = IAMAuthenticator(args.iam_apikey[0])
     service = AssistantV1(
         version=VERSION,
         authenticator=authenticator
@@ -287,9 +287,8 @@ if __name__ == '__main__':
     parser.add_argument('--soe_routes', help='Comma-separated list of SOE action routes. Ex: "SOE,API,None"', default='SOE,API,None')
     parser.add_argument('--jump_report', help='Filename to print a report of all jumps in the workspace')
     parser.add_argument('--jump_labels', help='When building jump report, label the nodes by `ID|Title|Both`', default='Both')
-    parser.add_argument('-u', '--username', nargs=1, type=str, help='Username to Watson Assistant.')
-    parser.add_argument('-p', '--password', nargs=1, type=str, help='Password to Watson Assistant.')
-    parser.add_argument('-l', '--url', nargs=1, type=str, help='URL to Watson Assistant. Ex: https://gateway-wdc.watsonplatform.net/assistant/api')
+    parser.add_argument('-a', '--iam_apikey', nargs=1, type=str, required=True, help='Assistant service IAM api key')
+    parser.add_argument('-l', '--url', type=str, help='URL to Watson Assistant. Ex: https://gateway-wdc.watsonplatform.net/assistant/api')
     parser.add_argument('-w', '--workspace_id', nargs=1, type=str, help='ID of the Watson Assistant workspace')
 
     args = parser.parse_args()
