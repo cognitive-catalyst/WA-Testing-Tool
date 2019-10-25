@@ -252,7 +252,7 @@ def getWorkspaceJson(args):
     return json.load(jsonFile)
   if args.online:
     VERSION='2018-09-20'
-    authenticator = IAMAuthenticator(args.iam_apikey[0])
+    authenticator = IAMAuthenticator(args.password[0])
     service = AssistantV1(
         version=VERSION,
         authenticator=authenticator
