@@ -81,7 +81,7 @@ class RunTestCase(CommandLineTestCase):
         apikey = self.config[WCS_CREDS_SECTION][WCS_IAM_APIKEY_ITEM]
 
         args = [sys.executable, TRAIN_CONVERSATION_PATH, '-i', intent_path,
-                '-e', entity_path, '-a', apikey, '-n', 'KFOLD_TEST_RUN']
+                '-e', entity_path, '-a', apikey, '-n', 'KFOLD_TEST_RUN', '-l', self.config[WCS_CREDS_SECTION][WCS_BASEURL_ITEM]]
 
         workspace_spec_json = os.path.join(self.test_dir, SPEC_FILENAME)
         # Train a new instance in order to pull the workspace detail
@@ -150,7 +150,7 @@ class RunTestCase(CommandLineTestCase):
         apikey = self.config[WCS_CREDS_SECTION][WCS_IAM_APIKEY_ITEM]
 
         args = [sys.executable, TRAIN_CONVERSATION_PATH, '-i', intent_path,
-                '-e', entity_path, '-a', apikey, '-n', 'BLIND_TEST_RUN']
+                '-e', entity_path, '-a', apikey, '-n', 'BLIND_TEST_RUN', '-l', self.config[WCS_CREDS_SECTION][WCS_BASEURL_ITEM]]
 
         workspace_spec_json = os.path.join(self.test_dir, SPEC_FILENAME)
         # Train a new instance in order to pull the workspace detail
@@ -217,7 +217,7 @@ class RunTestCase(CommandLineTestCase):
         apikey = self.config[WCS_CREDS_SECTION][WCS_IAM_APIKEY_ITEM]
 
         args = [sys.executable, TRAIN_CONVERSATION_PATH, '-i', intent_path,
-                '-e', entity_path, '-a', apikey, '-n', 'STD_TEST_RUN']
+                '-e', entity_path, '-a', apikey, '-n', 'STD_TEST_RUN', '-l', self.config[WCS_CREDS_SECTION][WCS_BASEURL_ITEM]]
 
         workspace_spec_json = os.path.join(self.test_dir, SPEC_FILENAME)
         # Train a new instance in order to pull the workspace detail
