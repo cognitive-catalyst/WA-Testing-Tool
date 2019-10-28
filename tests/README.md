@@ -6,7 +6,7 @@ Script that executes a consolidated run against the following tests on run.py:
   - test_with_empty_args - Negative test with no arguments - Purposeful fail
 
 ## Features
-- Relies on the run.py configuration file.
+- Relies on the run.py configuration file (config.ini).
 - Single execution - test_run.py.
 - Saves results of each run into a timedate stamped folder.
 

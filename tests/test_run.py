@@ -25,7 +25,7 @@ tool_base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, tool_base)
 from utils import FOLD_NUM_DEFAULT, KFOLD, BLIND_TEST, STANDARD_TEST, \
                   TRAIN_CONVERSATION_PATH, WCS_CREDS_SECTION, \
-                  WCS_USERNAME_ITEM, WCS_PASSWORD_ITEM, \
+                  WCS_IAM_APIKEY_ITEM, \
                   WORKSPACE_ID_TAG, SPEC_FILENAME, BOOL_MAP, \
                   delete_workspaces, WCS_BASEURL_ITEM
 
@@ -78,11 +78,10 @@ class RunTestCase(CommandLineTestCase):
         entity_path = os.path.join(tool_base, 'resources', 'sample',
                                    'entities.csv')
 
-        username = self.config[WCS_CREDS_SECTION][WCS_USERNAME_ITEM]
-        password = self.config[WCS_CREDS_SECTION][WCS_PASSWORD_ITEM]
+        apikey = self.config[WCS_CREDS_SECTION][WCS_IAM_APIKEY_ITEM]
 
         args = [sys.executable, TRAIN_CONVERSATION_PATH, '-i', intent_path,
-                '-e', entity_path, '-u', username, '-p', password, '-a', password, '-n', 'KFOLD_TEST_RUN']
+                '-e', entity_path, '-a', apikey, '-n', 'KFOLD_TEST_RUN']
 
         workspace_spec_json = os.path.join(self.test_dir, SPEC_FILENAME)
         # Train a new instance in order to pull the workspace detail
@@ -93,9 +92,8 @@ class RunTestCase(CommandLineTestCase):
                 print(f.read())
                 raise Exception()
 
-       with open(workspace_spec_json, 'r') as f:
-            self.config[DEFAULT_SECTION][WORKSPACE_ID_ITEM] = \
-                json.load(f)[WORKSPACE_ID_TAG]
+        with open(workspace_spec_json, 'r') as f:
+            self.config[DEFAULT_SECTION][WORKSPACE_ID_ITEM] = json.load(f)[WORKSPACE_ID_TAG]
 
         self.config[DEFAULT_SECTION][MODE_ITEM] = KFOLD
         self.config[DEFAULT_SECTION][TEMP_DIR_ITEM] = kfold_test_dir
@@ -119,7 +117,7 @@ class RunTestCase(CommandLineTestCase):
         workspace_ids = []
         workspace_ids.append(self.config[DEFAULT_SECTION][WORKSPACE_ID_ITEM])
 
-        delete_workspaces(username, password, password,self.config[WCS_CREDS_SECTION][WCS_BASEURL_ITEM], '2019-02-28',workspace_ids)
+        delete_workspaces(apikey,self.config[WCS_CREDS_SECTION][WCS_BASEURL_ITEM], '2019-02-28',workspace_ids)
 
         self.assertFalse(raised, 'Exception raised')
 
@@ -149,11 +147,10 @@ class RunTestCase(CommandLineTestCase):
                                                'sample', 'kfold', '1',
                                                'test-out.csv')
 
-        username = self.config[WCS_CREDS_SECTION][WCS_USERNAME_ITEM]
-        password = self.config[WCS_CREDS_SECTION][WCS_PASSWORD_ITEM]
+        apikey = self.config[WCS_CREDS_SECTION][WCS_IAM_APIKEY_ITEM]
 
         args = [sys.executable, TRAIN_CONVERSATION_PATH, '-i', intent_path,
-                '-e', entity_path, '-u', username, '-p', password, '-a', password, '-n', 'BLIND_TEST_RUN']
+                '-e', entity_path, '-a', apikey, '-n', 'BLIND_TEST_RUN']
 
         workspace_spec_json = os.path.join(self.test_dir, SPEC_FILENAME)
         # Train a new instance in order to pull the workspace detail
@@ -194,7 +191,7 @@ class RunTestCase(CommandLineTestCase):
         workspace_ids = []
         workspace_ids.append(self.config[DEFAULT_SECTION][WORKSPACE_ID_ITEM])
 
-        delete_workspaces(username, password, password,self.config[WCS_CREDS_SECTION][WCS_BASEURL_ITEM],'2019-02-28',workspace_ids)
+        delete_workspaces(apikey,self.config[WCS_CREDS_SECTION][WCS_BASEURL_ITEM],'2019-02-28',workspace_ids)
 
         self.assertFalse(raised, 'Exception raised')
 
@@ -217,11 +214,10 @@ class RunTestCase(CommandLineTestCase):
         entity_path = os.path.join(tool_base, 'resources', 'sample',
                                    'entities.csv')
 
-        username = self.config[WCS_CREDS_SECTION][WCS_USERNAME_ITEM]
-        password = self.config[WCS_CREDS_SECTION][WCS_PASSWORD_ITEM]
+        apikey = self.config[WCS_CREDS_SECTION][WCS_IAM_APIKEY_ITEM]
 
         args = [sys.executable, TRAIN_CONVERSATION_PATH, '-i', intent_path,
-                '-e', entity_path, '-u', username, '-p', password, '-a', password, '-n', 'STD_TEST_RUN']
+                '-e', entity_path, '-a', apikey, '-n', 'STD_TEST_RUN']
 
         workspace_spec_json = os.path.join(self.test_dir, SPEC_FILENAME)
         # Train a new instance in order to pull the workspace detail
@@ -258,7 +254,7 @@ class RunTestCase(CommandLineTestCase):
         workspace_ids = []
         workspace_ids.append(self.config[DEFAULT_SECTION][WORKSPACE_ID_ITEM])
 
-        delete_workspaces(username, password, password,self.config[WCS_CREDS_SECTION][WCS_BASEURL_ITEM], '2019-02-28', workspace_ids)
+        delete_workspaces(apikey,self.config[WCS_CREDS_SECTION][WCS_BASEURL_ITEM], '2019-02-28', workspace_ids)
 
         self.assertFalse(raised, 'Exception raised')
 
