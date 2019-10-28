@@ -229,7 +229,7 @@ def create_parser():
     parser.add_argument('-d', '--workspace_description', type=str,
                         help='Workspace description')
     parser.add_argument('-a', '--iam_apikey', type=str, required=True,
-                        help='Assistant service iam api key')
+                        help='Assistant service IAM api key')
     parser.add_argument('-l', '--url', type=str, default='https://gateway.watsonplatform.net/assistant/api',
                         help='URL to Watson Assistant. Ex: https://gateway-wdc.watsonplatform.net/assistant/api')
     parser.add_argument('-v', '--version', type=str, default=DEFAULT_WA_VERSION,

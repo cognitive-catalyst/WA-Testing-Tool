@@ -24,7 +24,7 @@ import os
 tool_base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, tool_base)
 from utils import TRAIN_CONVERSATION_PATH, TEST_CONVERSATION_PATH, \
-                  WCS_USERNAME_ITEM, WCS_PASSWORD_ITEM, WCS_CREDS_SECTION, \
+                  WCS_IAM_APIKEY_ITEM, WCS_CREDS_SECTION, \
                   DEFAULT_TEST_RATE, WORKSPACE_ID_TAG, SPEC_FILENAME, \
                   delete_workspaces
 
@@ -50,8 +50,7 @@ class TestConversationTestCase(CommandLineTestCase):
         config = configparser.ConfigParser()
         config.read(config_path)
 
-        username = config[WCS_CREDS_SECTION][WCS_USERNAME_ITEM]
-        password = config[WCS_CREDS_SECTION][WCS_PASSWORD_ITEM]
+        apikey = config[WCS_CREDS_SECTION][WCS_IAM_APIKEY_ITEM]
 
         intent_path = os.path.join(tool_base, 'resources', 'sample',
                                    'intents.csv')
@@ -59,8 +58,7 @@ class TestConversationTestCase(CommandLineTestCase):
                                    'entities.csv')
 
         train_args = [sys.executable, TRAIN_CONVERSATION_PATH, '-i',
-                      intent_path, '-e', entity_path, '-u', username, '-p',
-                      password]
+                      intent_path, '-e', entity_path, '-a', apikey]
 
         workspace_spec_json = os.path.join(self.test_dir, SPEC_FILENAME)
 
@@ -84,11 +82,10 @@ class TestConversationTestCase(CommandLineTestCase):
                     test_args = [sys.executable, self.script_path, '-i',
                                  test_in_path, '-o', test_out_path, '-w',
                                  workspace_id, '-t', 'utterance', '-m', '-g',
-                                 'golden intent', '-u', username, '-p',
-                                 password, '-r', str(DEFAULT_TEST_RATE)]
+                                 'golden intent', '-a', apikey, '-r', str(DEFAULT_TEST_RATE)]
                     print('Begin testing')
                     returncode = subprocess.run(test_args).returncode
-                    delete_workspaces(username, password, [workspace_id])
+                    delete_workspaces(apikey, [workspace_id])
                     if returncode != 0:
                         print('Testing failed')
                         raise Exception()

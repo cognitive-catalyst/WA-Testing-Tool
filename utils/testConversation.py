@@ -215,4 +215,6 @@ def create_parser():
 
 if __name__ == '__main__':
     ARGS = create_parser().parse_args()
+    #for arg in vars(ARGS):
+    #    print("{} {}".format(arg, getattr(ARGS, arg)))
     func(ARGS)
