@@ -15,7 +15,7 @@ You are required to provide:
 
 A local file is referenced with "`-f` your_filename_here".
 
-A online connection to the workspace is referenced with "`-o` `--apikey` your_apikey_here `--url` your_url_here `--workspace_id` your_workspace_id_here".
+An online connection to the workspace is referenced with "`-o` `--apikey` your_apikey_here `--url` your_url_here `--workspace_id` your_workspace_id_here".
 
 To validate a workspace against an SOE contract, invoke with `-s`.  You can optionally specify the legal "route" values with `--soe_route`
 

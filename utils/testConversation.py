@@ -73,7 +73,6 @@ async def post(service, workspace_id, utterance, sem):
                 print("RETRY")
                 print(counter)
 
-
 async def fill_df(utterance, row_idx, out_df, workspace_id, conversation, sem):
         """ Send utterance to Assistant and save response to dataframe
         """
