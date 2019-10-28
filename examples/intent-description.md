@@ -42,14 +42,13 @@ optional arguments:
 
 ## Remote Watson Assistant Workspace
 ```console
-$ python3 get_intent_description.py remote -u <wa-username> -p <wa-password> -w <wa-workspace-id>
+$ python3 get_intent_description.py remote -a <wa-iam-apikey> -w <wa-workspace-id>
 ```
 
 
 ```
-usage: get_intent_description.py remote [-h] [--output OUTPUT] --user USER
-                                        --password PASSWORD --workspace_id
-                                        WORKSPACE_ID
+usage: get_intent_description.py remote [-h] [--output OUTPUT] --iam_apikey APIKEY
+                                        --workspace_id WORKSPACE_ID
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -57,9 +56,7 @@ optional arguments:
                         Output file (default: intent_desc.csv)
 
 required arguments:
-  --user USER, -u USER  Watson Assistant Username (default: None)
-  --password PASSWORD, -p PASSWORD
-                        Watson Assistant Password (default: None)
+  --iam_apikey APIKEY, -a apikey  Watson Assistant IAM API key (default: None)
   --workspace_id WORKSPACE_ID, -w WORKSPACE_ID
                         Watson Assistant Workspace ID (default: None)
 
