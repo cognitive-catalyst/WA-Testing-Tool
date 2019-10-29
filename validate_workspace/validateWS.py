@@ -156,7 +156,7 @@ def validateRoute(dialogNode:DialogNode, valid_routes:list):
 
 # Command definition at https://www.ibm.com/support/knowledgecenter/en/SS4U29/api.html
 # List as of Version 1.0.0.3, extracted from website on June 20 2019
-legalVoiceGatewayCommands = ['vgwActPlayText','vgwActPlayUrl','vgwActHangup','vgwActSendSMS','vgwActSetSTTConfig','vgwActSetTTSConfig','vgwActSetConversationConfig','vgwActSetWVAConfig','vgwActTransfer','vgwActSendSIPInfo','vgwActCollectDTMF','vgwActCollectDtmf','vgwActPauseDTMF','vgwActUnPauseDTMF','vgwActExcludeFromTTSCache','vgwActPauseSTT','vgwActUnPauseSTT','vgwActDisableSTTDuringPlayback','vgwActEnableSTTDuringPlayback','vgwActDisableSpeechBargeIn','vgwActEnableSpeechBargeIn','vgwActDisableDTMFBargeIn','vgwActEnableDTMFBargeIn','vgwActForceNoInputTurn','vgwActEnableTranscriptionReport','vgwActDisableTranscriptionReport','vgwActAddCustomCDRData','vgwActSetTenantType']
+legalVoiceGatewayCommands = ['vgwActPlayText','vgwActPlayUrl','vgwActHangup','vgwActSendSMS','vgwActSetSTTConfig','vgwActSetTTSConfig','vgwActSetConversationConfig','vgwActSetWVAConfig','vgwActTransfer','vgwActSendSIPInfo','vgwActCollectDTMF','vgwActPauseDTMF','vgwActUnPauseDTMF','vgwActExcludeFromTTSCache','vgwActPauseSTT','vgwActUnPauseSTT','vgwActDisableSTTDuringPlayback','vgwActEnableSTTDuringPlayback','vgwActDisableSpeechBargeIn','vgwActEnableSpeechBargeIn','vgwActDisableDTMFBargeIn','vgwActEnableDTMFBargeIn','vgwActForceNoInputTurn','vgwActEnableTranscriptionReport','vgwActDisableTranscriptionReport','vgwActAddCustomCDRData','vgwActSetTenantType']
 
 ###
 # If a node plays text without doing a WA jump, it should use these Voice Gateway commands
