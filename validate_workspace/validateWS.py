@@ -59,6 +59,19 @@ class DialogNode:
                         print("ERROR:\t{}\tHas invalid action object".format(self.getId()))
         return None
 
+    def getMCR(self):
+        dialog_node = self.data
+        if 'metadata' in dialog_node:
+            if '_customization' in dialog_node.get('metadata'):
+                if 'mcr' in dialog_node.get('metadata').get('_customization'):
+                    #print(json.dumps(dialog_node, indent=4, separators=(',', ': '), sort_keys=True))
+                    try:
+                        mcr = dialog_node.get('metadata').get('_customization').get('mcr')
+                        return mcr
+                    except:
+                        print("ERROR:\t{}\tHas invalid action object".format(self.getId()))
+        return None
+
     def getVoiceGatewayCommands(self):
         dialog_node = self.data
         vgw_action_list = []
@@ -143,7 +156,7 @@ def validateRoute(dialogNode:DialogNode, valid_routes:list):
 
 # Command definition at https://www.ibm.com/support/knowledgecenter/en/SS4U29/api.html
 # List as of Version 1.0.0.3, extracted from website on June 20 2019
-legalVoiceGatewayCommands = ['vgwActPlayText','vgwActPlayUrl','vgwActHangup','vgwActSendSMS','vgwActSetSTTConfig','vgwActSetTTSConfig','vgwActSetConversationConfig','vgwActSetWVAConfig','vgwActTransfer','vgwActSendSIPInfo','vgwActCollectDTMF','vgwActPauseDTMF','vgwActUnPauseDTMF','vgwActExcludeFromTTSCache','vgwActPauseSTT','vgwActUnPauseSTT','vgwActDisableSTTDuringPlayback','vgwActEnableSTTDuringPlayback','vgwActDisableSpeechBargeIn','vgwActEnableSpeechBargeIn','vgwActDisableDTMFBargeIn','vgwActEnableDTMFBargeIn','vgwActForceNoInputTurn','vgwActEnableTranscriptionReport','vgwActDisableTranscriptionReport','vgwActAddCustomCDRData','vgwActSetTenantType']
+legalVoiceGatewayCommands = ['vgwActPlayText','vgwActPlayUrl','vgwActHangup','vgwActSendSMS','vgwActSetSTTConfig','vgwActSetTTSConfig','vgwActSetConversationConfig','vgwActSetWVAConfig','vgwActTransfer','vgwActSendSIPInfo','vgwActCollectDTMF','vgwActCollectDtmf','vgwActPauseDTMF','vgwActUnPauseDTMF','vgwActExcludeFromTTSCache','vgwActPauseSTT','vgwActUnPauseSTT','vgwActDisableSTTDuringPlayback','vgwActEnableSTTDuringPlayback','vgwActDisableSpeechBargeIn','vgwActEnableSpeechBargeIn','vgwActDisableDTMFBargeIn','vgwActEnableDTMFBargeIn','vgwActForceNoInputTurn','vgwActEnableTranscriptionReport','vgwActDisableTranscriptionReport','vgwActAddCustomCDRData','vgwActSetTenantType']
 
 ###
 # If a node plays text without doing a WA jump, it should use these Voice Gateway commands
@@ -209,7 +222,9 @@ def verifyNoDeadEnd(dialogNode:DialogNode):
     if len(text) == 0 and 'jump_to' != dialogNode.getNextStep() and 'skip_user_input' != dialogNode.getNextStep() and 'returns' != dialogNode.getDigressionType():
         context = dialogNode.getContext()
         if context == None or 'action' not in context:
-           print("WARN:\t{}\tDoes not play text, set an action, or perform a jump.  It may be a dead end node.".format(dialogNode.getId()))
+            mcr = dialogNode.getMCR()
+            if mcr != True and mcr != None:
+                print("WARN:\t{}\tDoes not play text, set an action, perform a jump and is not configured for MCR.  It may be a dead end node.".format(dialogNode.getId()))
 
 def buildJumpReport(workspace, jumpReportFile, jumpLabel):
    getTargetTitles = (jumpLabel == 'Both' or jumpLabel == 'Title')
