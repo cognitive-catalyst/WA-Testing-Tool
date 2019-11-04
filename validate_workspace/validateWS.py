@@ -24,6 +24,15 @@ def cleanValue(value:str):
     except:
         return ""
 
+def getKeys(prefix, dictionary):
+   keys = []
+   for key, value in dictionary.items():
+      if(isinstance(value, dict)):
+         keys.extend(getKeys(prefix + key + ".", value))
+      else:
+         keys.append(prefix + key)
+   return keys
+
 class DialogNode:
     def __init__(self, jsonObject:json):
       self.data = jsonObject
@@ -246,6 +255,18 @@ def buildJumpReport(workspace, jumpReportFile, jumpLabel):
    outFile.close()
    print('Wrote jump report file to {}'.format(jumpReportFile))
 
+def buildContextVariableReport(workspace):
+   context_variables=set()
+   for dialogNode in workspace.getDialogNodes():
+      context = dialogNode.getContext()
+      if context is not None:
+          list_variables = getKeys("", context)
+          context_variables.update(list_variables)
+
+   print("Full context variable list:")
+   for key in sorted(context_variables):
+      print(key)
+
 def getWorkspaceJson(args):
   if args.file and args.file[0]:
     jsonFile = open(args.file[0], 'r')
@@ -287,7 +308,8 @@ if __name__ == '__main__':
     parser.add_argument('--soe_routes', help='Comma-separated list of SOE action routes. Ex: "SOE,API,None"', default='SOE,API,None')
     parser.add_argument('--jump_report', help='Filename to print a report of all jumps in the workspace')
     parser.add_argument('--jump_labels', help='When building jump report, label the nodes by `ID|Title|Both`', default='Both')
-    parser.add_argument('-a', '--iam_apikey', nargs=1, type=str, required=True, help='Assistant service IAM api key')
+    parser.add_argument('--context_variables', help='Print list of all context variables used in workspace', dest='context_variables', action='store_true')
+    parser.add_argument('-a', '--iam_apikey', nargs=1, type=str, help='Assistant service IAM api key')
     parser.add_argument('-l', '--url', type=str, help='URL to Watson Assistant. Ex: https://gateway-wdc.watsonplatform.net/assistant/api')
     parser.add_argument('-w', '--workspace_id', nargs=1, type=str, help='ID of the Watson Assistant workspace')
 
@@ -318,3 +340,6 @@ if __name__ == '__main__':
 
     if(jumpReportFile is not None):
         buildJumpReport(workspace, jumpReportFile, jumpLabel)
+
+    if(args.context_variables is True):
+        buildContextVariableReport(workspace)
