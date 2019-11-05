@@ -35,4 +35,4 @@ The remaining tests in this folder are unit tests.  They need to be executed rel
 
 For example,
 
-`python3 test_workspaceParser.py`
+`python3 tests/test_workspaceParser.py`
