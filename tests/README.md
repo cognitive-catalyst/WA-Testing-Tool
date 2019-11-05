@@ -1,4 +1,4 @@
-# WA-Testing-Tool - Test Runs
+# WA-Testing-Tool - Integration Test
 Script that executes a consolidated run against the following tests on run.py:
   - test_kfold - `KFOLD` K fold cross validation on training set,
   - test_blind - `BLIND` Evaluating a blind test, and
@@ -29,3 +29,10 @@ Script that executes a consolidated run against the following tests on run.py:
 4. Workspace ID is *not* the Skill ID.  In the Watson Assistant user interface, the Workspace ID can be found on the Skills tab, clicking the three dots (top-right of skill), and choosing View API Details.
 
 5. SSL: [CERTIFICATE_VERIFY_FAILED] on Mac means you may need to initialize Python's SSL certificate store by running `Install Certificates.command` found in `/Applications/Python`.  See more [here](https://github.com/cognitive-catalyst/WA-Testing-Tool/issues/38)
+
+# WA-Testing-Tool - Unit Test
+The remaining tests in this folder are unit tests.  They need to be executed relative to the project root.
+
+For example,
+
+`python3 tests/test_workspaceParser.py`
