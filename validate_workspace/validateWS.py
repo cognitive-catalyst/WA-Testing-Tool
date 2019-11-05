@@ -70,7 +70,7 @@ class DialogNode:
                         return mcr
                     except:
                         print("ERROR:\t{}\tHas invalid action object".format(self.getId()))
-        return None
+        return False
 
     def getVoiceGatewayCommands(self):
         dialog_node = self.data
@@ -222,8 +222,7 @@ def verifyNoDeadEnd(dialogNode:DialogNode):
     if len(text) == 0 and 'jump_to' != dialogNode.getNextStep() and 'skip_user_input' != dialogNode.getNextStep() and 'returns' != dialogNode.getDigressionType():
         context = dialogNode.getContext()
         if context == None or 'action' not in context:
-            mcr = dialogNode.getMCR()
-            if mcr != True and mcr != None:
+            if not dialogNode.getMCR():
                 print("WARN:\t{}\tDoes not play text, set an action, perform a jump and is not configured for MCR.  It may be a dead end node.".format(dialogNode.getId()))
 
 def buildJumpReport(workspace, jumpReportFile, jumpLabel):
@@ -302,7 +301,7 @@ if __name__ == '__main__':
     parser.add_argument('--soe_routes', help='Comma-separated list of SOE action routes. Ex: "SOE,API,None"', default='SOE,API,None')
     parser.add_argument('--jump_report', help='Filename to print a report of all jumps in the workspace')
     parser.add_argument('--jump_labels', help='When building jump report, label the nodes by `ID|Title|Both`', default='Both')
-    parser.add_argument('-a', '--iam_apikey', nargs=1, type=str, required=True, help='Assistant service IAM api key')
+    parser.add_argument('-a', '--iam_apikey', nargs=1, type=str, help='Assistant service IAM api key')
     parser.add_argument('-l', '--url', type=str, help='URL to Watson Assistant. Ex: https://gateway-wdc.watsonplatform.net/assistant/api')
     parser.add_argument('-w', '--workspace_id', nargs=1, type=str, help='ID of the Watson Assistant workspace')
 
