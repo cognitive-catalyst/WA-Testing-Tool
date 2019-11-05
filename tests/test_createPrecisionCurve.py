@@ -20,8 +20,10 @@ import sys
 import os
 tool_base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, tool_base)
-import createPrecisionCurve
 from utils import FOLD_NUM_DEFAULT
+
+sys.path.append("utils")
+import createPrecisionCurve
 
 
 class CreatePrecisionCurveTestCase(CommandLineTestCase):
