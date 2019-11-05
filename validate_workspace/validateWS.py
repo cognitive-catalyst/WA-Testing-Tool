@@ -59,6 +59,19 @@ class DialogNode:
                         print("ERROR:\t{}\tHas invalid action object".format(self.getId()))
         return None
 
+    def getMCR(self):
+        dialog_node = self.data
+        if 'metadata' in dialog_node:
+            if '_customization' in dialog_node.get('metadata'):
+                if 'mcr' in dialog_node.get('metadata').get('_customization'):
+                    #print(json.dumps(dialog_node, indent=4, separators=(',', ': '), sort_keys=True))
+                    try:
+                        mcr = dialog_node.get('metadata').get('_customization').get('mcr')
+                        return mcr
+                    except:
+                        print("ERROR:\t{}\tHas invalid action object".format(self.getId()))
+        return False
+
     def getVoiceGatewayCommands(self):
         dialog_node = self.data
         vgw_action_list = []
@@ -209,7 +222,8 @@ def verifyNoDeadEnd(dialogNode:DialogNode):
     if len(text) == 0 and 'jump_to' != dialogNode.getNextStep() and 'skip_user_input' != dialogNode.getNextStep() and 'returns' != dialogNode.getDigressionType():
         context = dialogNode.getContext()
         if context == None or 'action' not in context:
-           print("WARN:\t{}\tDoes not play text, set an action, or perform a jump.  It may be a dead end node.".format(dialogNode.getId()))
+            if not dialogNode.getMCR():
+                print("WARN:\t{}\tDoes not play text, set an action, perform a jump and is not configured for MCR.  It may be a dead end node.".format(dialogNode.getId()))
 
 def buildJumpReport(workspace, jumpReportFile, jumpLabel):
    getTargetTitles = (jumpLabel == 'Both' or jumpLabel == 'Title')
@@ -287,7 +301,7 @@ if __name__ == '__main__':
     parser.add_argument('--soe_routes', help='Comma-separated list of SOE action routes. Ex: "SOE,API,None"', default='SOE,API,None')
     parser.add_argument('--jump_report', help='Filename to print a report of all jumps in the workspace')
     parser.add_argument('--jump_labels', help='When building jump report, label the nodes by `ID|Title|Both`', default='Both')
-    parser.add_argument('-a', '--iam_apikey', nargs=1, type=str, required=True, help='Assistant service IAM api key')
+    parser.add_argument('-a', '--iam_apikey', nargs=1, type=str, help='Assistant service IAM api key')
     parser.add_argument('-l', '--url', type=str, help='URL to Watson Assistant. Ex: https://gateway-wdc.watsonplatform.net/assistant/api')
     parser.add_argument('-w', '--workspace_id', nargs=1, type=str, help='ID of the Watson Assistant workspace')
 
