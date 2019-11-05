@@ -19,6 +19,7 @@ import csv
 import os
 import pandas as pd
 from ibm_watson import AssistantV1
+from ibm_watson import NaturalLanguageClassifierV1
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 
 UTF_8 = 'utf-8'
@@ -55,8 +56,12 @@ CREATE_TEST_TRAIN_FOLDS_PATH = os.path.join(root_path,
                                             'createTestTrainFolds.py')
 TRAIN_CONVERSATION_PATH = os.path.join(root_path,
                                        'trainConversation.py')
+TRAIN_CLASSIFIER_PATH = os.path.join(root_path,
+                                       'trainNLC.py')
 TEST_CONVERSATION_PATH = os.path.join(root_path,
                                       'testConversation.py')
+TEST_CLASSIFIER_PATH = os.path.join(root_path,
+                                      'testNLC.py')
 CREATE_PRECISION_CURVE_PATH = os.path.join(root_path,
                                            'createPrecisionCurve.py')
 WORKSPACE_PARSER_PATH = os.path.join(root_path,
@@ -72,6 +77,7 @@ STANDARD_TEST = 'test'
 FOLD_NUM_DEFAULT = 5
 DEFAULT_WA_VERSION = '2019-02-28'
 WORKSPACE_ID_TAG = 'workspace_id'
+CLASSIFIER_ID_TAG = 'classifier_id'
 TIME_TO_WAIT = 600
 BOOL_MAP = {True: 'yes', False: 'no'}
 DEFAULT_TEST_RATE = 100
@@ -124,15 +130,23 @@ def delete_workspaces(username, password, iam_apikey, url, version, workspace_id
     """ Delete workspaces
     """
     authenticator = IAMAuthenticator(iam_apikey)
-    c = AssistantV1(
-        version=version,
-        authenticator=authenticator
-    )
-    c.set_service_url(url)
+    
     for workspace_id in workspace_ids:
-        c.delete_workspace(workspace_id=workspace_id)
+        if 'natural-language-classifier' in url:
+            c = NaturalLanguageClassifierV1(
+                    authenticator=authenticator
+                    )
+            c.set_service_url(url)
+            c.delete_classifier(classifier_id=workspace_id)
+        else:
+            c = AssistantV1(
+                    version=version,
+                    authenticator=authenticator
+                    )
+            c.set_service_url(url)
+            c.delete_workspace(workspace_id=workspace_id)
+            
     print('Cleaned up workspaces')
-
 
 def parse_partial_credit_table(file):
     df = pd.read_csv(file, quoting=csv.QUOTE_ALL,
