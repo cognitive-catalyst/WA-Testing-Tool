@@ -31,11 +31,14 @@ from __init__ import UTF_8, CONFIDENCE_COLUMN, \
     DETECTED_ENTITY_COLUMN, DIALOG_RESPONSE_COLUMN, \
     marshall_entity, save_dataframe_as_csv, INTENT_JUDGE_COLUMN, \
     TEST_OUT_FILENAME, BOOL_MAP, BASE_URL, DEFAULT_WA_VERSION, \
-    parse_partial_credit_table, SCORE_COLUMN
+    parse_partial_credit_table, SCORE_COLUMN, \
+    GOLDEN_INTENT_COLUMN, DISAMBIGUATION_THRESHOLD_COLUMN, DISAMBIGUATION_INTENT_COLUMN, DISAMBIGUATION_BENEFIT_COLUMN
 
 test_out_header = [PREDICTED_INTENT_COLUMN, CONFIDENCE_COLUMN,
                    DETECTED_ENTITY_COLUMN, DIALOG_RESPONSE_COLUMN,
                    SCORE_COLUMN]
+
+disambiguation_out_header = [PREDICTED_INTENT_COLUMN, CONFIDENCE_COLUMN, DISAMBIGUATION_INTENT_COLUMN]
 
 MAX_RETRY_LIMIT = 5
 
@@ -45,9 +48,9 @@ async def message(service, workspace_id, utterance):
     response = service.message(
         workspace_id=workspace_id,
         input={
-            'text': utterance,
-            'alternate_intents': True
+            'text': utterance
         },
+        alternate_intents=True,
         context={
             'metadata': {
                 'user_id': 'test'
@@ -73,7 +76,43 @@ async def post(service, workspace_id, utterance, sem):
                 print("RETRY")
                 print(counter)
 
-async def fill_df(utterance, row_idx, out_df, workspace_id, conversation, sem):
+def disambiguation_analysis(extended_out_df, row_idx, intents):
+    # Disambiguation section
+    disambiguation_benefit = 0
+    intent_match = False
+
+    extended_out_df.loc[row_idx, PREDICTED_INTENT_COLUMN] = \
+        intents[0]['intent']
+    extended_out_df.loc[row_idx, CONFIDENCE_COLUMN] = \
+        intents[0]['confidence']
+
+    if intents[0]['intent'] == extended_out_df.loc[row_idx, GOLDEN_INTENT_COLUMN]:
+        intent_match = True
+
+    disambiguation_threshold = (intents[0]['confidence'] * 55) / 100
+    extended_out_df.loc[row_idx, DISAMBIGUATION_THRESHOLD_COLUMN] = disambiguation_threshold
+
+    for i in range(1,len(intents)):
+        predicted_intent = intents[i]['intent']
+        extended_out_df.loc[row_idx, PREDICTED_INTENT_COLUMN + '_' + str(i)] = predicted_intent
+        confidence = intents[i]['confidence']
+        extended_out_df.loc[row_idx, CONFIDENCE_COLUMN + '_' + str(i)] = confidence
+        disambiguated = 0
+        if confidence >= disambiguation_threshold:
+            disambiguated = 1
+            if predicted_intent == extended_out_df.loc[row_idx, GOLDEN_INTENT_COLUMN]:
+                disambiguation_benefit = 1
+
+        extended_out_df.loc[row_idx, DISAMBIGUATION_INTENT_COLUMN + '_' + str(i)] = disambiguated
+
+    if (intent_match == False) and (disambiguation_benefit == 1):
+        extended_out_df.loc[row_idx, DISAMBIGUATION_BENEFIT_COLUMN] = 1
+    else:
+        extended_out_df.loc[row_idx, DISAMBIGUATION_BENEFIT_COLUMN] = 0
+
+    return extended_out_df
+
+async def fill_df(utterance, row_idx, out_df, workspace_id, conversation, sem, extended_out_df):
         """ Send utterance to Assistant and save response to dataframe
         """
 #    async:
@@ -88,6 +127,8 @@ async def fill_df(utterance, row_idx, out_df, workspace_id, conversation, sem):
                     intents[0]['intent']
                 out_df.loc[row_idx, CONFIDENCE_COLUMN] = \
                     intents[0]['confidence']
+
+            extended_out_df = disambiguation_analysis(extended_out_df, row_idx, intents)
 
             out_df.loc[row_idx, DETECTED_ENTITY_COLUMN] = \
                 marshall_entity(resp['entities'])
@@ -105,6 +146,7 @@ async def fill_df(utterance, row_idx, out_df, workspace_id, conversation, sem):
 def func(args):
     in_df = None
     out_df = None
+    extended_out_df = None
     test_column = UTTERANCE_COLUMN
     if args.test_column is not None:  # Test input has multiple columns
         test_column = args.test_column
@@ -116,9 +158,13 @@ def func(args):
 
         if args.merge_input:  # Merge rest of columns from input to output
             out_df = in_df
+            extended_out_df = in_df.copy()
         else:
             out_df = in_df[[test_column]].copy()
             out_df.columns = [test_column]
+
+            extended_out_df = in_df[[test_column]].copy()
+            extended_out_df.columns = [test_column]
 
     else:
         test_series = pd.read_csv(args.infile, quoting=csv.QUOTE_ALL,
@@ -133,6 +179,18 @@ def func(args):
     # Initial columns for test output
     for column in test_out_header:
         out_df[column] = ''
+    
+    # Disambiguation Header
+    extended_out_df[PREDICTED_INTENT_COLUMN] = ''
+    extended_out_df[CONFIDENCE_COLUMN] = ''
+    extended_out_df[DISAMBIGUATION_THRESHOLD_COLUMN] = ''
+
+    for i in range(1,10):
+        for column in disambiguation_out_header:
+            column = column + '_' + str(i)
+            extended_out_df[column] = ''
+
+    extended_out_df[DISAMBIGUATION_BENEFIT_COLUMN] = ''
 
     # Applied coroutines
     sem = asyncio.Semaphore(args.rate_limit)
@@ -147,7 +205,7 @@ def func(args):
 
     tasks = (fill_df(out_df.loc[row_idx, test_column],
                      row_idx, out_df, args.workspace_id, conv,
-                     sem)
+                     sem, extended_out_df)
              for row_idx in range(out_df.shape[0]))
     loop.run_until_complete(asyncio.gather(*tasks))
 
@@ -179,8 +237,15 @@ def func(args):
                 out_df.loc[row_idx, SCORE_COLUMN] = \
                     credit_tables[golden_intent][predict_intent]
 
+
     save_dataframe_as_csv(df=out_df, file=args.outfile)
     print("Wrote standard test result file to {}".format(args.outfile))
+
+    head = os.path.split(args.outfile)
+    print (head[0])
+    disambig_out = os.path.join(head[0],'test-disambiguation-out.csv')
+    save_dataframe_as_csv(df=extended_out_df, file=disambig_out)
+    print("Wrote extended standard test result file to {}".format(disambig_out))
 
 
 def create_parser():

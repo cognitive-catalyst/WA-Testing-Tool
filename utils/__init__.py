@@ -39,6 +39,11 @@ DIALOG_RESPONSE_COLUMN = 'dialog response'
 GOLDEN_INTENT_COLUMN = 'golden intent'
 SCORE_COLUMN = 'score'
 
+# Extended CSV column names - Disambiguate evaluation
+DISAMBIGUATION_THRESHOLD_COLUMN = 'disambiguation threshold'
+DISAMBIGUATION_INTENT_COLUMN = 'disambiguate intent'
+DISAMBIGUATION_BENEFIT_COLUMN = 'disambiguation benefit?'
+
 WCS_IAM_APIKEY_ITEM = 'iam_apikey'
 WCS_BASEURL_ITEM = 'url'
 WCS_CREDS_SECTION = 'ASSISTANT CREDENTIALS'
