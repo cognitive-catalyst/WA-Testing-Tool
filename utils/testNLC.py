@@ -174,7 +174,7 @@ def create_parser():
                         help='Output file path',
                         default=os.path.join(os.getcwd(), TEST_OUT_FILENAME))
     parser.add_argument('-w', '--workspace_id', type=str, required=True,
-                        help='Workspace ID')
+                        help='Classifier ID')
     parser.add_argument('-a', '--iam_apikey', type=str, required=True,
                         help='NLC service IAM api key')
     parser.add_argument('-l', '--url', type=str, default='https://gateway.watsonplatform.net/natural-language-classifier/api',
