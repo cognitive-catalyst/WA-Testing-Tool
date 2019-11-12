@@ -30,7 +30,7 @@ from utils import TRAIN_FILENAME, TEST_FILENAME, UTTERANCE_COLUMN, \
                   GOLDEN_INTENT_COLUMN, TEST_OUT_FILENAME, WORKSPACE_ID_TAG, CLASSIFIER_ID_TAG, \
                   WA_API_VERSION_ITEM, DEFAULT_WA_VERSION, UTF_8, INTENT_JUDGE_COLUMN, BOOL_MAP, \
                   DEFAULT_TEST_RATE, POPULATION_WEIGHT_MODE, DEFAULT_TEMP_DIR, FOLD_NUM_DEFAULT, \
-                  DEFAULT_CONF_THRES, WCS_USERNAME_ITEM, WCS_PASSWORD_ITEM, WCS_IAM_APIKEY_ITEM, WCS_BASEURL_ITEM, \
+                  DEFAULT_CONF_THRES, WCS_IAM_APIKEY_ITEM, WCS_BASEURL_ITEM, \
                   WCS_CREDS_SECTION, CREATE_TEST_TRAIN_FOLDS_PATH, \
                   TRAIN_CONVERSATION_PATH, TEST_CONVERSATION_PATH, \
                   TEST_CLASSIFIER_PATH, TRAIN_CLASSIFIER_PATH, CREATE_PRECISION_CURVE_PATH, SPEC_FILENAME, \
@@ -75,9 +75,9 @@ def validate_config(fields, section):
                 format(field))
 
 
-def list_workspaces(username, password, iam_apikey, version, url):
+def list_workspaces(iam_apikey, version, url):
     authenticator = IAMAuthenticator(iam_apikey)
-    if WATSON_SERVICE == 'assistant':
+    if WATSON_SERVICE != 'nlc':
         c = AssistantV1(
             version=version,
             authenticator=authenticator
@@ -91,7 +91,7 @@ def list_workspaces(username, password, iam_apikey, version, url):
 
 
 def kfold(fold_num, out_dir, intent_train_file, workspace_base_file,
-          figure_path, keep_workspace, username, password, iam_apikey, url, version, weight_mode,
+          figure_path, keep_workspace, iam_apikey, url, version, weight_mode,
           conf_thres, partial_credit_table):
     FOLD_TRAIN = 'fold_train'
     FOLD_TEST = 'fold_test'
@@ -108,7 +108,6 @@ def kfold(fold_num, out_dir, intent_train_file, workspace_base_file,
     print('{}={}'.format(DO_KEEP_WORKSPACE_ITEM, BOOL_MAP[keep_workspace]))
     print('{}={}'.format(WEIGHT_MODE_ITEM, weight_mode))
     print('{}={}'.format(CONF_THRES_ITEM, conf_thres))
-    print('{}={}'.format(WCS_USERNAME_ITEM, username))
     print('{}={}'.format(WCS_BASEURL_ITEM, url))
     print('{}={}'.format(WA_API_VERSION_ITEM, version))
     print('{}={}'.format(PARTIAL_CREDIT_TABLE_ITEM, partial_credit_table))
@@ -142,17 +141,16 @@ def kfold(fold_num, out_dir, intent_train_file, workspace_base_file,
     train_processes_specs = {}
     for fold_param in fold_params:
         spec_file = open(fold_param[WORKSPACE_SPEC], 'w')
-        if WATSON_SERVICE == 'assistant':
+        if WATSON_SERVICE != 'nlc':
             train_module_path = TRAIN_CONVERSATION_PATH
         else:
             train_module_path = TRAIN_CLASSIFIER_PATH
         train_args = [sys.executable, train_module_path,
                       '-i', fold_param[FOLD_TRAIN],
                       '-n', fold_param[WORKSPACE_NAME],
-                      '-u', username, '-p', password,
                       '-a', iam_apikey,
                       '-l', url]
-        if WATSON_SERVICE == 'assistant':
+        if WATSON_SERVICE != 'nlc':
             train_args += ['-v', version,'-w', workspace_base_file]
         train_processes_specs[
             subprocess.Popen(train_args, stdout=spec_file)] = spec_file
@@ -178,7 +176,7 @@ def kfold(fold_num, out_dir, intent_train_file, workspace_base_file,
         FOLD_TEST_RATE = int(MAX_TEST_RATE / fold_num)
         for fold_param in fold_params:
             workspace_id = None
-            if WATSON_SERVICE == 'assistant':
+            if WATSON_SERVICE != 'nlc':
                 test_module_path = TEST_CONVERSATION_PATH
                 id_tag = WORKSPACE_ID_TAG
             else:
@@ -190,14 +188,13 @@ def kfold(fold_num, out_dir, intent_train_file, workspace_base_file,
             test_args = [sys.executable, test_module_path,
                          '-i', fold_param[FOLD_TEST],
                          '-o', fold_param[TEST_OUT],
-                         '-u', username, '-p', password,
                          '-a', iam_apikey, '-l', url, 
                          '-t', UTTERANCE_COLUMN, '-g', GOLDEN_INTENT_COLUMN,
                          '-w', workspace_id, '-r', str(FOLD_TEST_RATE),
                          '-m']
             if partial_credit_table is not None:
                 test_args += ['--partial_credit_table', partial_credit_table]
-            if WATSON_SERVICE == 'assistant':
+            if WATSON_SERVICE != 'nlc':
                 test_args += ['-v', version]
             test_processes.append(subprocess.Popen(test_args))
 
@@ -258,7 +255,7 @@ def kfold(fold_num, out_dir, intent_train_file, workspace_base_file,
 
     finally:
         if not keep_workspace:
-            if WATSON_SERVICE == 'assistant':
+            if WATSON_SERVICE != 'nlc':
                 id_tag = WORKSPACE_ID_TAG
             else:
                 id_tag = CLASSIFIER_ID_TAG     
@@ -269,12 +266,12 @@ def kfold(fold_num, out_dir, intent_train_file, workspace_base_file,
                         workspace_id = json.load(f)[id_tag]
                         workspace_ids.append(workspace_id)
 
-            delete_workspaces(username, password, iam_apikey, url, version, workspace_ids)
+            delete_workspaces(iam_apikey, url, version, workspace_ids)
 
 
 def blind(out_dir, intent_train_file, workspace_base_file, figure_path,
           test_out_path, test_input_file, previous_blind_out, workspace_id, keep_workspace,
-          username, password, iam_apikey, url, version, weight_mode, conf_thres, partial_credit_table, figure_title):
+          iam_apikey, url, version, weight_mode, conf_thres, partial_credit_table, figure_title):
     print('Begin {} with following details:'.format(BLIND_TEST.upper()))
     print('{}={}'.format(INTENT_FILE_ITEM, intent_train_file))
     print('{}={}'.format(WORKSPACE_BASE_ITEM, workspace_base_file))
@@ -286,7 +283,6 @@ def blind(out_dir, intent_train_file, workspace_base_file, figure_path,
     print('{}={}'.format(DO_KEEP_WORKSPACE_ITEM, BOOL_MAP[keep_workspace]))
     print('{}={}'.format(WEIGHT_MODE_ITEM, weight_mode))
     print('{}={}'.format(CONF_THRES_ITEM, conf_thres))
-    print('{}={}'.format(WCS_USERNAME_ITEM, username))
     print('{}={}'.format(WCS_BASEURL_ITEM, url))
     print('{}={}'.format(WA_API_VERSION_ITEM, version))
     print('{}={}'.format(PARTIAL_CREDIT_TABLE_ITEM, partial_credit_table))
@@ -312,11 +308,10 @@ def blind(out_dir, intent_train_file, workspace_base_file, figure_path,
     if not os.path.exists(working_dir):
         os.makedirs(working_dir)
 
-    if WATSON_SERVICE == 'assistant':
+    if WATSON_SERVICE != 'nlc':
         workspace_spec_json = os.path.join(working_dir, SPEC_FILENAME)
         train_args = [sys.executable, TRAIN_CONVERSATION_PATH,
                       '-i', intent_train_file, '-n', 'blind test',
-                      '-u', username, '-p', password,
                       '-a', iam_apikey,
                       '-l', url, '-v', version,
                       '-w', workspace_base_file]
@@ -330,20 +325,20 @@ def blind(out_dir, intent_train_file, workspace_base_file, figure_path,
         with open(workspace_spec_json, 'r') as f:
             workspace_id = json.load(f)[WORKSPACE_ID_TAG]
     try:
-        if WATSON_SERVICE == 'assistant':
+        if WATSON_SERVICE != 'nlc':
             test_module_path = TEST_CONVERSATION_PATH
         else:
             test_module_path = TEST_CLASSIFIER_PATH
         test_args = [sys.executable, test_module_path,
                      '-i', test_input_file,
                      '-o', test_out_path, '-m',
-                     '-u', username, '-p', password, '-a', iam_apikey, '-l', url,
+                     '-a', iam_apikey, '-l', url,
                      '-t', UTTERANCE_COLUMN, '-g', GOLDEN_INTENT_COLUMN,
                      '-w', workspace_id, 
                      '-r', str(MAX_TEST_RATE)]
         if partial_credit_table is not None:
             test_args += ['--partial_credit_table', partial_credit_table]
-        if WATSON_SERVICE == 'assistant':
+        if WATSON_SERVICE != 'nlc':
              test_args += ['-v', version]
         if subprocess.run(test_args).returncode == 0:
             print('Tested blind workspace')
@@ -372,12 +367,12 @@ def blind(out_dir, intent_train_file, workspace_base_file, figure_path,
         if subprocess.run(confusion_args).returncode != 0:
             raise RuntimeError('Failure in generating confusion matrix')
     finally:
-        if not keep_workspace and WATSON_SERVICE == 'assistant':
-            delete_workspaces(username, password, iam_apikey, url, version, [workspace_id])
+        if not keep_workspace and WATSON_SERVICE != 'nlc':
+            delete_workspaces(iam_apikey, url, version, [workspace_id])
 
 
 def test(out_dir, intent_train_file, workspace_base_file, test_out_path,
-         test_input_file, workspace_id, keep_workspace, username, password, iam_apikey, version, url):
+         test_input_file, workspace_id, keep_workspace, iam_apikey, version, url):
     print('Begin {} with following details:'.format(STANDARD_TEST.upper()))
     print('{}={}'.format(INTENT_FILE_ITEM, intent_train_file))
     print('{}={}'.format(WORKSPACE_BASE_ITEM, workspace_base_file))
@@ -385,7 +380,6 @@ def test(out_dir, intent_train_file, workspace_base_file, test_out_path,
     print('{}={}'.format(TEST_OUT_PATH_ITEM, test_out_path))
     print('{}={}'.format(OUT_DIR_ITEM, out_dir))
     print('{}={}'.format(DO_KEEP_WORKSPACE_ITEM, BOOL_MAP[keep_workspace]))
-    print('{}={}'.format(WCS_USERNAME_ITEM, username))
     print('{}={}'.format(WCS_BASEURL_ITEM, url))
     print('{}={}'.format(WA_API_VERSION_ITEM, version))
 
@@ -405,12 +399,12 @@ def test(out_dir, intent_train_file, workspace_base_file, test_out_path,
     if not os.path.exists(working_dir):
         os.makedirs(working_dir)
 
-    if WATSON_SERVICE == 'assistant':
+    if WATSON_SERVICE != 'nlc':
         workspace_spec_json = os.path.join(working_dir, SPEC_FILENAME)
         train_args = [sys.executable, TRAIN_CONVERSATION_PATH,
                       '-i', intent_train_file,
                       '-n', 'standard test', '-v', version,
-                      '-u', username, '-p', password, '-a', iam_apikey, '-l', url,
+                      '-a', iam_apikey, '-l', url,
                       '-w', workspace_base_file]
         with open(workspace_spec_json, 'w') as f:
             if subprocess.run(train_args, stdout=f).returncode == 0:
@@ -422,16 +416,16 @@ def test(out_dir, intent_train_file, workspace_base_file, test_out_path,
         with open(workspace_spec_json, 'r') as f:
             workspace_id = json.load(f)[WORKSPACE_ID_TAG]
     try:
-        if WATSON_SERVICE == 'assistant':
+        if WATSON_SERVICE != 'nlc':
             test_module_path = TEST_CONVERSATION_PATH
         else:
             test_module_path = TEST_CLASSIFIER_PATH
-        if WATSON_SERVICE == 'assistant':
+        if WATSON_SERVICE != 'nlc':
              extra_params += ['-v', version]
         if subprocess.run([sys.executable, test_module_path,
                            '-i', test_input_file,
                            '-o', test_out_path, '-m',
-                           '-u', username, '-p', password, '-a', iam_apikey, '-l', url,
+                           '-a', iam_apikey, '-l', url,
                            '-w', workspace_id,
                            '-r', str(MAX_TEST_RATE)] + extra_params
                           ).returncode == 0:
@@ -439,8 +433,8 @@ def test(out_dir, intent_train_file, workspace_base_file, test_out_path,
         else:
             raise RuntimeError('Failure in testing data')
     finally:
-        if not keep_workspace and WATSON_SERVICE == 'assistant':
-            delete_workspaces(username, password, iam_apikey, url, version, [workspace_id])
+        if not keep_workspace and WATSON_SERVICE != 'nlc':
+            delete_workspaces(iam_apikey, url, version, [workspace_id])
 
 
 def func(args):
@@ -455,11 +449,9 @@ def func(args):
             "Section '{}' is missing in config file".format(WCS_CREDS_SECTION))
 
     # Validate WCS creds
-    validate_config([WCS_USERNAME_ITEM, WCS_PASSWORD_ITEM, WCS_IAM_APIKEY_ITEM],
+    validate_config([WCS_IAM_APIKEY_ITEM],
                     config[WCS_CREDS_SECTION])
 
-    username = config[WCS_CREDS_SECTION][WCS_USERNAME_ITEM]
-    password = config[WCS_CREDS_SECTION][WCS_PASSWORD_ITEM]
     iam_apikey = config[WCS_CREDS_SECTION][WCS_IAM_APIKEY_ITEM]
     url = None
     if WCS_BASEURL_ITEM in config[WCS_CREDS_SECTION]:
@@ -470,14 +462,14 @@ def func(args):
     version = config[WCS_CREDS_SECTION].get(WA_API_VERSION_ITEM, DEFAULT_WA_VERSION)
     
     # Check the url to see which watson service the current test is against
-    # This variable will be used throughout to take tha appropriate branch for NLC vs WA
+    # This variable will be used throughout to take the appropriate branch for NLC vs WA
     if 'natural-language-classifier' in url:
         global WATSON_SERVICE
         WATSON_SERVICE = 'nlc'
 
     # List workspaces to see whether the creds is valid.
     # SDK has no method for validation purpose
-    list_workspaces(username, password, iam_apikey, version, url)
+    list_workspaces(iam_apikey, version, url)
 
     print('Credentials are correct')
 
@@ -490,12 +482,12 @@ def func(args):
     temp_dir = default_section.get(TEMP_DIR_ITEM, DEFAULT_TEMP_DIR)
     out_dir  = default_section.get(OUT_DIR_ITEM, temp_dir)
 
-    if WATSON_SERVICE == 'assistant':
+    if WATSON_SERVICE != 'nlc':
         # Prepare folds
         if subprocess.run([sys.executable, WORKSPACE_PARSER_PATH,
                            '-i', default_section[WORKSPACE_ID_ITEM],
                            '-o', out_dir, '-v', version,
-                           '-u', username, '-p', password, '-a', iam_apikey, '-l', url],
+                           '-a', iam_apikey, '-l', url],
                           stdout=subprocess.PIPE).returncode == 0:
             print('Parsed workspace')
         else:
@@ -539,7 +531,7 @@ def func(args):
               workspace_base_file=workspace_base_file,
               figure_path=figure_path,
               keep_workspace=keep_workspace,
-              username=username, password=password, iam_apikey=iam_apikey, url=url,
+              iam_apikey=iam_apikey, url=url,
               version=version,
               weight_mode=weight_mode, conf_thres=conf_thres_str,
               partial_credit_table=partial_credit_table)
@@ -559,7 +551,7 @@ def func(args):
                   previous_blind_out=previous_blind_out,
                   workspace_id=default_section[WORKSPACE_ID_ITEM],
                   keep_workspace=keep_workspace,
-                  username=username, password=password, iam_apikey=iam_apikey, url=url,
+                  iam_apikey=iam_apikey, url=url,
                   version=version,
                   weight_mode=weight_mode, conf_thres=conf_thres_str,
                   partial_credit_table=partial_credit_table,
@@ -572,8 +564,6 @@ def func(args):
                  test_out_path=test_out_path,
                  workspace_id=default_section[WORKSPACE_ID_ITEM],
                  keep_workspace=keep_workspace,
-                 username=username,
-                 password=password,
                  iam_apikey=iam_apikey,
                  version=version,
                  url=url)

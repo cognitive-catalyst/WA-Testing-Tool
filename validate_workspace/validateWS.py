@@ -24,6 +24,15 @@ def cleanValue(value:str):
     except:
         return ""
 
+def getKeys(prefix, dictionary):
+   keys = []
+   for key, value in dictionary.items():
+      if(isinstance(value, dict)):
+         keys.extend(getKeys(prefix + key + ".", value))
+      else:
+         keys.append(prefix + key)
+   return keys
+
 class DialogNode:
     def __init__(self, jsonObject:json):
       self.data = jsonObject
@@ -58,6 +67,19 @@ class DialogNode:
                     except:
                         print("ERROR:\t{}\tHas invalid action object".format(self.getId()))
         return None
+
+    def getMCR(self):
+        dialog_node = self.data
+        if 'metadata' in dialog_node:
+            if '_customization' in dialog_node.get('metadata'):
+                if 'mcr' in dialog_node.get('metadata').get('_customization'):
+                    #print(json.dumps(dialog_node, indent=4, separators=(',', ': '), sort_keys=True))
+                    try:
+                        mcr = dialog_node.get('metadata').get('_customization').get('mcr')
+                        return mcr
+                    except:
+                        print("ERROR:\t{}\tHas invalid action object".format(self.getId()))
+        return False
 
     def getVoiceGatewayCommands(self):
         dialog_node = self.data
@@ -209,7 +231,8 @@ def verifyNoDeadEnd(dialogNode:DialogNode):
     if len(text) == 0 and 'jump_to' != dialogNode.getNextStep() and 'skip_user_input' != dialogNode.getNextStep() and 'returns' != dialogNode.getDigressionType():
         context = dialogNode.getContext()
         if context == None or 'action' not in context:
-           print("WARN:\t{}\tDoes not play text, set an action, or perform a jump.  It may be a dead end node.".format(dialogNode.getId()))
+            if not dialogNode.getMCR():
+                print("WARN:\t{}\tDoes not play text, set an action, perform a jump and is not configured for MCR.  It may be a dead end node.".format(dialogNode.getId()))
 
 def buildJumpReport(workspace, jumpReportFile, jumpLabel):
    getTargetTitles = (jumpLabel == 'Both' or jumpLabel == 'Title')
@@ -217,7 +240,7 @@ def buildJumpReport(workspace, jumpReportFile, jumpLabel):
    jumps = []
    for dialogNode in workspace.getDialogNodes():
        if(getTargetTitles):
-          idToTitleDict[dialogNode.getId()] = dialogNode.getTitle() 
+          idToTitleDict[dialogNode.getId()] = dialogNode.getTitle()
        if 'jump_to' == dialogNode.getNextStep():
            behavior = dialogNode.data['next_step']
            type = behavior['selector'] #'body' or 'condition'
@@ -242,9 +265,21 @@ def buildJumpReport(workspace, jumpReportFile, jumpLabel):
           target = target + ":" + idToTitleDict[target]
 
        line = '{}\t{}\t{}'.format(source, jump['type'], target)
-       outFile.write(line+'\n') 
+       outFile.write(line+'\n')
    outFile.close()
    print('Wrote jump report file to {}'.format(jumpReportFile))
+
+def buildContextVariableReport(workspace):
+   context_variables=set()
+   for dialogNode in workspace.getDialogNodes():
+      context = dialogNode.getContext()
+      if context is not None:
+          list_variables = getKeys("", context)
+          context_variables.update(list_variables)
+
+   print("Full context variable list:")
+   for key in sorted(context_variables):
+      print(key)
 
 def getWorkspaceJson(args):
   if args.file and args.file[0]:
@@ -252,7 +287,7 @@ def getWorkspaceJson(args):
     return json.load(jsonFile)
   if args.online:
     VERSION='2018-09-20'
-    authenticator = IAMAuthenticator(args.password[0])
+    authenticator = IAMAuthenticator(args.iam_apikey[0])
     service = AssistantV1(
         version=VERSION,
         authenticator=authenticator
@@ -287,9 +322,9 @@ if __name__ == '__main__':
     parser.add_argument('--soe_routes', help='Comma-separated list of SOE action routes. Ex: "SOE,API,None"', default='SOE,API,None')
     parser.add_argument('--jump_report', help='Filename to print a report of all jumps in the workspace')
     parser.add_argument('--jump_labels', help='When building jump report, label the nodes by `ID|Title|Both`', default='Both')
-    parser.add_argument('-u', '--username', nargs=1, type=str, help='Username to Watson Assistant.')
-    parser.add_argument('-p', '--password', nargs=1, type=str, help='Password to Watson Assistant.')
-    parser.add_argument('-l', '--url', nargs=1, type=str, help='URL to Watson Assistant. Ex: https://gateway-wdc.watsonplatform.net/assistant/api')
+    parser.add_argument('--context_variables', help='Print list of all context variables used in workspace', dest='context_variables', action='store_true')
+    parser.add_argument('-a', '--iam_apikey', nargs=1, type=str, help='Assistant service IAM api key')
+    parser.add_argument('-l', '--url', type=str, help='URL to Watson Assistant. Ex: https://gateway-wdc.watsonplatform.net/assistant/api')
     parser.add_argument('-w', '--workspace_id', nargs=1, type=str, help='ID of the Watson Assistant workspace')
 
     args = parser.parse_args()
@@ -319,3 +354,6 @@ if __name__ == '__main__':
 
     if(jumpReportFile is not None):
         buildJumpReport(workspace, jumpReportFile, jumpLabel)
+
+    if(args.context_variables is True):
+        buildContextVariableReport(workspace)

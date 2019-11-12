@@ -54,7 +54,7 @@ For standard test, the input must only have one column or error will be thrown:
 ## Examples
 There are a variety of ways to use this tool.  Primarily you will execute a k-folds, blind, or standard test.
 ### Core execution modes
-[Run k fold validation](examples/kfold.md)
+[Run k-fold cross-validation](examples/kfold.md)
 
 [Run blind test](examples/blind.md)
 

@@ -22,8 +22,6 @@ from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 import json
 import csv
 
-from __init__ import BASE_URL
-
 WA_API_VERSION = '2017-05-26'
 
 
@@ -36,7 +34,7 @@ def add_output_arg(parser):
 
 
 def get_remote_workspace(args):
-    authenticator = IAMAuthenticator(args.password)
+    authenticator = IAMAuthenticator(args.iam_apikey)
     conv = AssistantV1(
         version=WA_API_VERSION,
         authenticator=authenticator
@@ -81,23 +79,17 @@ if __name__ == '__main__':
     )
     add_output_arg(credentials_parser)
 
-    requiredNamed = credentials_parser.add_argument_group('required arguments')
-    requiredNamed.add_argument(
-        '--user', '-u',
-        help='Watson Assistant Username',
-        required=True
-    )
-    requiredNamed.add_argument(
-        '--password', '-p',
-        help='Watson Assistant Password',
-        required=True
-    )
-    requiredNamed.add_argument(
+    requiredNames = credentials_parser.add_argument_group('required arguments')
+    requiredNames.add_argument(
         '--workspace_id', '-w',
         help='Watson Assistant Workspace ID',
         required=True
     )
-    requiredNamed.add_argument(
+    requiredNames.add_argument(
+        '--iam_apikey', '-a',
+        help='Assistant service IAM api key',
+        required=True),
+    requiredNames.add_argument(
         '--url', '-l',
         help='Watson Assistant Url',
         default='https://gateway.watsonplatform.net/assistant/api'

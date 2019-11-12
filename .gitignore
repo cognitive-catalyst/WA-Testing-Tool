@@ -2,6 +2,7 @@
 config.ini
 data/*
 !data/workspace_base.json.sample
+!data/workspace_parser_test.json.sample
 __pycache__/
 .vscode
 

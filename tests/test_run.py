@@ -25,9 +25,9 @@ tool_base = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, tool_base)
 from utils import FOLD_NUM_DEFAULT, KFOLD, BLIND_TEST, STANDARD_TEST, \
                   TRAIN_CONVERSATION_PATH, WCS_CREDS_SECTION, \
-                  WCS_USERNAME_ITEM, WCS_PASSWORD_ITEM, \
+                  WCS_IAM_APIKEY_ITEM, \
                   WORKSPACE_ID_TAG, SPEC_FILENAME, BOOL_MAP, \
-                  delete_workspaces
+                  delete_workspaces, WCS_BASEURL_ITEM
 
 from run import WORKSPACE_ID_ITEM, MODE_ITEM, DEFAULT_SECTION, \
                 DO_KEEP_WORKSPACE_ITEM, TEMP_DIR_ITEM, FIGURE_PATH_ITEM, \
@@ -51,6 +51,10 @@ class RunTestCase(CommandLineTestCase):
     def test_with_empty_args(self):
         """ User passes no args, should fail with SystemExit
         """
+        print('=======================================================================')
+        print('test_with_empty_args - User passes no args, should fail with SystemExit')
+        print('=======================================================================')
+
         with self.assertRaises(SystemExit):
             if subprocess.run([sys.executable,
                                self.script_path]).returncode != 0:
@@ -59,6 +63,10 @@ class RunTestCase(CommandLineTestCase):
     def test_kfold(self):
         """ User passes correct kfold config, should pass
         """
+        print('=============================================')
+        print('test_kfold - Executes KFOLD tests with run.py')
+        print('=============================================')
+
         raised = False
 
         kfold_test_dir = os.path.join(self.test_dir, KFOLD)
@@ -70,11 +78,10 @@ class RunTestCase(CommandLineTestCase):
         entity_path = os.path.join(tool_base, 'resources', 'sample',
                                    'entities.csv')
 
-        username = self.config[WCS_CREDS_SECTION][WCS_USERNAME_ITEM]
-        password = self.config[WCS_CREDS_SECTION][WCS_PASSWORD_ITEM]
+        apikey = self.config[WCS_CREDS_SECTION][WCS_IAM_APIKEY_ITEM]
 
         args = [sys.executable, TRAIN_CONVERSATION_PATH, '-i', intent_path,
-                '-e', entity_path, '-u', username, '-p', password]
+                '-e', entity_path, '-a', apikey, '-n', 'KFOLD_TEST_RUN', '-l', self.config[WCS_CREDS_SECTION][WCS_BASEURL_ITEM]]
 
         workspace_spec_json = os.path.join(self.test_dir, SPEC_FILENAME)
         # Train a new instance in order to pull the workspace detail
@@ -86,8 +93,7 @@ class RunTestCase(CommandLineTestCase):
                 raise Exception()
 
         with open(workspace_spec_json, 'r') as f:
-            self.config[DEFAULT_SECTION][WORKSPACE_ID_ITEM] = \
-                json.load(f)[WORKSPACE_ID_TAG]
+            self.config[DEFAULT_SECTION][WORKSPACE_ID_ITEM] = json.load(f)[WORKSPACE_ID_TAG]
 
         self.config[DEFAULT_SECTION][MODE_ITEM] = KFOLD
         self.config[DEFAULT_SECTION][TEMP_DIR_ITEM] = kfold_test_dir
@@ -108,14 +114,20 @@ class RunTestCase(CommandLineTestCase):
         if subprocess.run(args).returncode != 0:
             raised = True
 
-        delete_workspaces(username, password,
-                          [self.config[DEFAULT_SECTION][WORKSPACE_ID_ITEM]])
+        workspace_ids = []
+        workspace_ids.append(self.config[DEFAULT_SECTION][WORKSPACE_ID_ITEM])
+
+        delete_workspaces(apikey,self.config[WCS_CREDS_SECTION][WCS_BASEURL_ITEM], '2019-02-28',workspace_ids)
 
         self.assertFalse(raised, 'Exception raised')
 
     def test_blind(self):
         """ User passes correct blind config, should pass
         """
+        print('=============================================')
+        print('test_blind - Executes BLIND tests with run.py')
+        print('=============================================')
+
         raised = False
 
         blind_test_dir = os.path.join(self.test_dir, BLIND_TEST)
@@ -135,11 +147,10 @@ class RunTestCase(CommandLineTestCase):
                                                'sample', 'kfold', '1',
                                                'test-out.csv')
 
-        username = self.config[WCS_CREDS_SECTION][WCS_USERNAME_ITEM]
-        password = self.config[WCS_CREDS_SECTION][WCS_PASSWORD_ITEM]
+        apikey = self.config[WCS_CREDS_SECTION][WCS_IAM_APIKEY_ITEM]
 
         args = [sys.executable, TRAIN_CONVERSATION_PATH, '-i', intent_path,
-                '-e', entity_path, '-u', username, '-p', password]
+                '-e', entity_path, '-a', apikey, '-n', 'BLIND_TEST_RUN', '-l', self.config[WCS_CREDS_SECTION][WCS_BASEURL_ITEM]]
 
         workspace_spec_json = os.path.join(self.test_dir, SPEC_FILENAME)
         # Train a new instance in order to pull the workspace detail
@@ -177,14 +188,20 @@ class RunTestCase(CommandLineTestCase):
         if subprocess.run(args).returncode != 0:
             raised = True
 
-        delete_workspaces(username, password,
-                          [self.config[DEFAULT_SECTION][WORKSPACE_ID_ITEM]])
+        workspace_ids = []
+        workspace_ids.append(self.config[DEFAULT_SECTION][WORKSPACE_ID_ITEM])
+
+        delete_workspaces(apikey,self.config[WCS_CREDS_SECTION][WCS_BASEURL_ITEM],'2019-02-28',workspace_ids)
 
         self.assertFalse(raised, 'Exception raised')
 
     def test_std(self):
         """ User passes correct standard test config, should pass
         """
+        print('==============================================')
+        print('test_std - Executes Standard tests with run.py')
+        print('==============================================')
+
         raised = False
 
         std_test_dir = os.path.join(self.test_dir, STANDARD_TEST)
@@ -197,11 +214,10 @@ class RunTestCase(CommandLineTestCase):
         entity_path = os.path.join(tool_base, 'resources', 'sample',
                                    'entities.csv')
 
-        username = self.config[WCS_CREDS_SECTION][WCS_USERNAME_ITEM]
-        password = self.config[WCS_CREDS_SECTION][WCS_PASSWORD_ITEM]
+        apikey = self.config[WCS_CREDS_SECTION][WCS_IAM_APIKEY_ITEM]
 
         args = [sys.executable, TRAIN_CONVERSATION_PATH, '-i', intent_path,
-                '-e', entity_path, '-u', username, '-p', password]
+                '-e', entity_path, '-a', apikey, '-n', 'STD_TEST_RUN', '-l', self.config[WCS_CREDS_SECTION][WCS_BASEURL_ITEM]]
 
         workspace_spec_json = os.path.join(self.test_dir, SPEC_FILENAME)
         # Train a new instance in order to pull the workspace detail
@@ -235,8 +251,10 @@ class RunTestCase(CommandLineTestCase):
         if subprocess.run(args).returncode != 0:
             raised = True
 
-        delete_workspaces(username, password,
-                          [self.config[DEFAULT_SECTION][WORKSPACE_ID_ITEM]])
+        workspace_ids = []
+        workspace_ids.append(self.config[DEFAULT_SECTION][WORKSPACE_ID_ITEM])
+
+        delete_workspaces(apikey,self.config[WCS_CREDS_SECTION][WCS_BASEURL_ITEM], '2019-02-28', workspace_ids)
 
         self.assertFalse(raised, 'Exception raised')
 

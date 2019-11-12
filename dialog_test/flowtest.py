@@ -7,7 +7,6 @@ import pandas as pd
 DATA_FOLDER='tests'
 OUTPUT_FOLDER='results'
 url_default="https://gateway.watsonplatform.net/assistant/api"
-USERNAME=os.environ["ASSISTANT_USERNAME"]
 PASSWORD=os.environ["ASSISTANT_PASSWORD"]
 WA_URL=os.environ.get("ASSISTANT_URL", url_default)
 workspace_id=os.environ["WORKSPACE_ID"]
@@ -24,12 +23,8 @@ def validateArguments():
         print("ERROR: Required arguments: test filename (tab-separated file)")
         exit(-1)
 
-    if len(USERNAME) < 5:
-        print ('No valid ASSISTANT_USERNAME specified in environment')
-        sys.exit(-2)
-
     if len(PASSWORD) < 5:
-        print ('No valid ASSISTANT_PASSWORD specified in environment')
+        print ('No valid ASSISTANT_PASSWORD specified in environment (password is your IAM apikey)')
         sys.exit(-3)
 
     if len(workspace_id) < 5:
@@ -79,7 +74,7 @@ def processFile(flowfile:str, watsonSDKVersion:str):
     #print(flow)
     #print()
 
-    ft = flowtest_v1.FlowTestV1(username=USERNAME, password=PASSWORD, version=conversation_version, url=url_default)
+    ft = flowtest_v1.FlowTestV1(password=PASSWORD, version=conversation_version, url=url_default)
 
     # print('Creating blank template: ')
     # blank_flow = ft.createBlankTemplate()

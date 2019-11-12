@@ -68,7 +68,7 @@ def func(args):
                 ).get_result()
 
     resp = classifier
-#     # Poke the training status every SLEEP_INCRE secs
+    # Poke the training status every SLEEP_INCRE secs
     sleep_counter = 0
     while sleep_counter < TIME_TO_WAIT:
         raw_resp = nlc.get_classifier(classifier_id=resp[CLASSIFIER_ID_TAG])
@@ -77,7 +77,7 @@ def func(args):
             print(json.dumps(resp, indent=4))  # double quoted valid JSON
             return
         sleep_counter += SLEEP_INCRE
-        sleep(300)
+        sleep(SLEEP_INCRE)
     raise TrainTimeoutException('NLC training timeout')
 
 

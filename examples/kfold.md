@@ -16,10 +16,6 @@ User's workspace must allow to create 5 more workspaces. For 'lite' plans, use 3
 
 ```
 [ASSISTANT CREDENTIALS]
-; If your WA environment provides username and password, configure them and leave iam_apikey empty
-; If your WA environment provides iam_apikey, set the username value as: apikey and password value as: <the value of your apikey>
-username = <wa username>
-password = <wa password>
 iam_apikey = <wa iam apikey>
 url = https://gateway-wdc.watsonplatform.net/assistant/api
 version=2019-02-28
@@ -42,3 +38,10 @@ workspace_id = 01234567-9ABC-DEF0-1234-56789ABCDEF0
 The most common error running a k-folds test is running out of available workspaces, particularly if you are on a Lite plan which limits you to 5 workspaces.  The k-folds test creates `fold_num` workspaces.
 
 If you run out of workspaces, delete any unused workspaces and reduce the `fold_num` parameter to a smaller value (ex: `fold_num=3`).
+
+## Background on k-fold Testing
+Performing a k-fold cross-validation on your training set is a technique that can be used to find opportunities to further improve your training data by finding confusing training.   This tool helps you perform a cross-validation and use it to generate a confusion analysis.
+
+It is important not to misuse the score produced from a cross-validation.  A cross-validation score is a metric that measures ground truth consistency – i.e., how much confusion there is in your ground truth.  It is not a predictor of how well your ground truth will do when applied to real users.  As a simple illustration of this:  you can improve a cross validation score by removing all training that is difficult to handle, leaving only training that is very easy to classify into the correct intent.  This may produce a high cross-validation score such as 95%, but will perform very badly when applied to real customer utterances.
+
+Thus cross-validation should only be used for identifying opportunities for improving the consistency in the ground truth.   For a pre-deploy metric of overall quality, a properly created and maintained test set must be used.
