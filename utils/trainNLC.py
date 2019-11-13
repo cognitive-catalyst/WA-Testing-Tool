@@ -88,10 +88,6 @@ def create_parser():
                         help='Training file')
     parser.add_argument('-a', '--iam_apikey', type=str, required=True,
                         help='NLC service iam api key')
-    parser.add_argument('-u', '--username', type=str, required=True,
-                        help='NLC service username')
-    parser.add_argument('-p', '--password', type=str, required=True,
-                        help='NLC service password')
     parser.add_argument('-n', '--classifier_name', type=str,
                         help='Classifier name')
     parser.add_argument('-l', '--url', type=str, default='https://gateway.watsonplatform.net/natural_language_classifier/api',
