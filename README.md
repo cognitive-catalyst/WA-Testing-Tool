@@ -74,6 +74,12 @@ There are a variety of ways to use this tool.  Primarily you will execute a k-fo
 
 [Extract utterances leading to a dialog node](extract_utterances/README.md)
 
+## Testing Natural Language Classifier
+This tool can also be used to test a trained Natural Language Classifier (NLC). 
+To run this in NLC mode specify the NLC url in the configuration file instead of the WA instance URL. 
+Specify the `<classifier_id>` in the `workspace_id` parameter in the configuration file.
+Since NLC does not support downloading training data, the original training data should be provided if run in 'kfold' mode. This can be specified in the configuration file using the `train_input_file` parameter
+ 
 ## Caveats and Troubleshooting
 1. Due to different coverage among service plans, user may need to adjust `max_test_rate` accordingly to avoid network connection error.
 

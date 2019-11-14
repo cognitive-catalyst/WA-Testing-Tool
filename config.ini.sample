@@ -13,6 +13,7 @@ url = https://gateway.watsonplatform.net/assistant/api
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; (Required) One of:
 ; Workspace ID (can be found on Watson Assistant UI - navigate to Skills tab and click three dots for View API Details)
+; (If testing NLC this should be the Classifier Id)
 ; Path to JSON file representing the locally saved workspace
 workspace_id = <workspace_id or workspace JSON>
 
@@ -36,6 +37,9 @@ mode = kfold
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; The remaining parameters in DEFAULT section depend upon the MODE above
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+; (Requred for kfold and only for NLC) Training data input file. Defaults to <output_directory>/intent-train.csv
+; train_input_file = ./data/train.csv
 
 ; (Optional for blind and test) Test input file. Defaults to <output_directory>/input.csv
 ; blind mode requires two columns, test mode requires one column
