@@ -40,6 +40,11 @@ class DialogNode:
     def getId(self):
         return self.data['dialog_node']
 
+    def getParent(self):
+        if 'parent' in self.data:
+            return self.data['parent']
+        return None
+
     def getTitle(self):
        try:
            return self.data['title']
@@ -68,7 +73,8 @@ class DialogNode:
                         print("ERROR:\t{}\tHas invalid action object".format(self.getId()))
         return None
 
-    def getMCR(self):
+    def isMCR(self):
+        '''Is this node a multi-condition response node'''
         dialog_node = self.data
         if 'metadata' in dialog_node:
             if '_customization' in dialog_node.get('metadata'):
@@ -143,6 +149,20 @@ class DialogNode:
 class Workspace:
     def __init__(self, jsonData):
         self.data = jsonData
+        self.nodeMap = {}
+
+    def getParentNode(self, node):
+        if node.getParent() is None:
+            return None
+
+        #Lazy init for future calls
+        if self.nodeMap == {}:
+            node_list = self.getDialogNodes()
+            for node in node_list:
+                self.nodeMap[node.getId()] = node
+
+        parent = self.nodeMap.get(node.getParent(), None)
+        return parent
 
     def getTitle(self):
         return self.data['name']
@@ -226,13 +246,33 @@ def validateSTTConfiguration(dialogNode:DialogNode):
 # If a node does not play text it should send a context action or a jump
 # Webhooks and other integrations are checked in the context.action
 ###
-def verifyNoDeadEnd(dialogNode:DialogNode):
+def verifyNoDeadEnd(dialogNode:DialogNode, workspace:Workspace):
     text = dialogNode.getText()
-    if len(text) == 0 and 'jump_to' != dialogNode.getNextStep() and 'skip_user_input' != dialogNode.getNextStep() and 'returns' != dialogNode.getDigressionType():
+    if len(text) == 0 and \
+      'jump_to' != dialogNode.getNextStep() and \
+      'skip_user_input' != dialogNode.getNextStep() and \
+      'returns' != dialogNode.getDigressionType() and \
+      not dialogNode.isMCR():
+        #Potential dead-end.  There are some difficult-to-be-certain cases within here:
+        #1: Digression logic may prevent a dead-end
+        parent = workspace.getParentNode(dialogNode)
+        digressionFound = False if parent is None else (parent.getDigressionType() is not None)
+        while parent is not None and not digressionFound:
+            parent = workspace.getParentNode(parent)
+            digressionFound = False if parent is None else (parent.getDigressionType() is not None)
+
+        #2: Context variables may specify output text (Voice Gateway integration) or commands for an orchestrator, either of which is not dead-end
+        #   An 'action' is a giveaway that the conversation does not stop here
+        #   Note that digression nodes may not use context so this must be an independent test
+
         context = dialogNode.getContext()
-        if context == None or 'action' not in context:
-            if not dialogNode.getMCR():
-                print("WARN:\t{}\tDoes not play text, set an action, perform a jump and is not configured for MCR.  It may be a dead end node.".format(dialogNode.getId()))
+        deadendCausedByContext = (context == None or 'action' not in context)
+
+        if digressionFound:
+            print("WARN:\t{}\tDoes not play text, set an action, perform a jump and is not configured for MCR.  Inspect the digression settings in this node's ancestry to ensure it is not a dead-end node.".format(dialogNode.getId()))
+        elif deadendCausedByContext:
+            print("WARN:\t{}\tDoes not play text, set an action, perform a jump, is not configured for MCR, and does not occur in a digression.  It may be a dead end node.".format(dialogNode.getId()))
+        #else (nothing to do - not actually a dead-end)
 
 def buildJumpReport(workspace, jumpReportFile, jumpLabel):
    getTargetTitles = (jumpLabel == 'Both' or jumpLabel == 'Title')
@@ -350,7 +390,7 @@ if __name__ == '__main__':
         if(soeValidation):
             validateRoute(dialog, validSOERoutes)
         #Standard tests
-        verifyNoDeadEnd(dialog)
+        verifyNoDeadEnd(dialog, workspace)
 
     if(jumpReportFile is not None):
         buildJumpReport(workspace, jumpReportFile, jumpLabel)
