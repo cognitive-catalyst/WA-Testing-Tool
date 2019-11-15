@@ -25,6 +25,8 @@ mode = kfold
 workspace_id = 01234567-9ABC-DEF0-1234-56789ABCDEF0
 
 ; optional - defaults shown here
+;train file used by NLC only - defaults to <temporary_file_directory>/intent-train.csv
+;train_input_file = ./data/intent-train.csv
 ;fold_num = 5
 ;output_directory = ./data
 ;out_figure_path= ./data/figure.png
