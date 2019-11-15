@@ -75,12 +75,12 @@ There are a variety of ways to use this tool.  Primarily you will execute a k-fo
 [Extract utterances leading to a dialog node](extract_utterances/README.md)
 
 ## Testing Natural Language Classifier
-This tool can also be used to test a trained Natural Language Classifier (NLC). 
-To run this in NLC mode specify the NLC url in the configuration file instead of the WA instance URL. 
-Specify the `<classifier_id>` in the `workspace_id` parameter in the configuration file.
-Since NLC does not support downloading training data, the original training data should be provided if run in 'kfold' mode. This can be specified in the configuration file using the `train_input_file` parameter
- 
-## Caveats and Troubleshooting
+This tool can also be used to test a trained Natural Language Classifier (NLC). The configuration is similar to testing Watson Assistant except:
+1. Use the NLC URL in the `url` parameter (ex: `https://gateway.watsonplatform.net/natural-language-classifier/api`)
+2. Specify the `<classifier_id>` in the `workspace_id` parameter in the configuration
+3. Since NLC does not support downloading training data, the original training data must be provided if run in 'kfold' mode (using the `train_input_file` parameter)
+
+## General Caveats and Troubleshooting
 1. Due to different coverage among service plans, user may need to adjust `max_test_rate` accordingly to avoid network connection error.
 
 2. Users on Lite plans are only able to create 5 workspaces.  They should set `fold_num=3` on their k-fold configuration file.
