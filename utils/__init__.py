@@ -25,6 +25,7 @@ UTF_8 = 'utf-8'
 TRAIN_FILENAME = 'train.csv'
 TEST_FILENAME = 'test.csv'
 TEST_OUT_FILENAME = 'test-out.csv'
+TEST_EXTENDED_OUT_FILENAME = 'test-out-extended.csv'
 TRAIN_INTENT_FILENAME = 'intent-train.csv'
 TRAIN_ENTITY_FILENAME = 'entity-train.csv'
 
@@ -39,10 +40,17 @@ DIALOG_RESPONSE_COLUMN = 'dialog response'
 GOLDEN_INTENT_COLUMN = 'golden intent'
 SCORE_COLUMN = 'score'
 
-# Extended CSV column names - Disambiguate evaluation
+# Disambiguation defaults
+DISAMBIGUATION_OUT_FILENAME = 'test-out_disambiguation.csv'
+DISAMBIGUATION_THRESHOLD_DEFAULT = 55
+DISAMBIGUATION_MAX_INTENTS_DEFAULT = 5
+
+# Disambiguation CSV column names - Disambiguate evaluation
 DISAMBIGUATION_THRESHOLD_COLUMN = 'disambiguation threshold'
 DISAMBIGUATION_INTENT_COLUMN = 'disambiguate intent'
 DISAMBIGUATION_BENEFIT_COLUMN = 'disambiguation benefit?'
+DISAMBIGUATION_NEGATIVE_COLUMN = 'disambiguation negative?'
+DISAMBIGUATION_NO_HELP_COLUMN = 'disambiguation no help?'
 
 WCS_IAM_APIKEY_ITEM = 'iam_apikey'
 WCS_BASEURL_ITEM = 'url'
@@ -66,6 +74,7 @@ WORKSPACE_PARSER_PATH = os.path.join(root_path,
                                      'workspaceParser.py')
 INTENT_METRICS_PATH = os.path.join(root_path, 'intentmetrics.py')
 CONFUSION_MATRIX_PATH = os.path.join(root_path, 'confusionmatrix.py')
+DISAMBIGUATION_PATH = os.path.join(root_path, 'disambiguationanalysis.py')
 
 # MODE
 KFOLD = 'kfold'

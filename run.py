@@ -26,7 +26,7 @@ import pandas as pd
 from ibm_watson import AssistantV1
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 from utils import TRAIN_FILENAME, TEST_FILENAME, UTTERANCE_COLUMN, \
-                  GOLDEN_INTENT_COLUMN, TEST_OUT_FILENAME, WORKSPACE_ID_TAG, \
+                  GOLDEN_INTENT_COLUMN, TEST_OUT_FILENAME, TEST_EXTENDED_OUT_FILENAME, WORKSPACE_ID_TAG, \
                   WA_API_VERSION_ITEM, DEFAULT_WA_VERSION, UTF_8, INTENT_JUDGE_COLUMN, BOOL_MAP, \
                   DEFAULT_TEST_RATE, POPULATION_WEIGHT_MODE, DEFAULT_TEMP_DIR, FOLD_NUM_DEFAULT, \
                   DEFAULT_CONF_THRES, WCS_IAM_APIKEY_ITEM, WCS_BASEURL_ITEM, \
@@ -35,7 +35,8 @@ from utils import TRAIN_FILENAME, TEST_FILENAME, UTTERANCE_COLUMN, \
                   CREATE_PRECISION_CURVE_PATH, SPEC_FILENAME, \
                   delete_workspaces, KFOLD, BLIND_TEST, STANDARD_TEST, \
                   INTENT_METRICS_PATH, CONFUSION_MATRIX_PATH, \
-                  WORKSPACE_PARSER_PATH, WORKSPACE_BASE_FILENAME, BASE_URL
+                  WORKSPACE_PARSER_PATH, WORKSPACE_BASE_FILENAME, BASE_URL, \
+                  DISAMBIGUATION_PATH, DISAMBIGUATION_OUT_FILENAME, DISAMBIGUATION_THRESHOLD_DEFAULT, DISAMBIGUATION_MAX_INTENTS_DEFAULT
 
 # SECTIONS
 DEFAULT_SECTION = 'DEFAULT'
@@ -58,6 +59,11 @@ CONF_THRES_ITEM = 'conf_thres'
 WORKSPACE_BASE_ITEM = 'workspace_base'
 PARTIAL_CREDIT_TABLE_ITEM = 'partial_credit_table'
 BLIND_FIGURE_TITLE = 'blind_figure_title'
+
+# Disambiguation 
+DISAMBIGUATION_OUT_PATH_ITEM = 'test_output_path'
+DISAMBIGUATION_THRESHOLD_ITEM = 'disambiguation_threshold'
+DISAMBIGUATION_MAX_INTENTS_ITEM = 'disambiguation_max_intents'
 
 # Max test request rate
 MAX_TEST_RATE = DEFAULT_TEST_RATE
@@ -85,12 +91,14 @@ def list_workspaces(iam_apikey, version, url):
 
 def kfold(fold_num, out_dir, intent_train_file, workspace_base_file,
           figure_path, keep_workspace, iam_apikey, url, version, weight_mode,
-          conf_thres, partial_credit_table):
+          conf_thres, partial_credit_table,disambiguation_threshold,disambiguation_max_intents):
     FOLD_TRAIN = 'fold_train'
     FOLD_TEST = 'fold_test'
     WORKSPACE_SPEC = 'fold_workspace'
     WORKSPACE_NAME = 'workspace_name'
     TEST_OUT = 'test_out'
+    EXTENDED_TEST_OUT = 'test_extended_out'
+    DISAMBIGUATION_TEST_OUT = 'disambiguation_test_out'
 
     print('Begin {} with following details:'.format(KFOLD.upper()))
     print('{}={}'.format(INTENT_FILE_ITEM, intent_train_file))
@@ -104,6 +112,8 @@ def kfold(fold_num, out_dir, intent_train_file, workspace_base_file,
     print('{}={}'.format(WCS_BASEURL_ITEM, url))
     print('{}={}'.format(WA_API_VERSION_ITEM, version))
     print('{}={}'.format(PARTIAL_CREDIT_TABLE_ITEM, partial_credit_table))
+    print('{}={}'.format(DISAMBIGUATION_THRESHOLD_ITEM, disambiguation_threshold))
+    print('{}={}'.format(DISAMBIGUATION_MAX_INTENTS_ITEM, disambiguation_max_intents))
 
     working_dir = os.path.join(out_dir, KFOLD)
     if not os.path.exists(working_dir):
@@ -125,6 +135,10 @@ def kfold(fold_num, out_dir, intent_train_file, workspace_base_file,
                                             TEST_FILENAME),
                     TEST_OUT: os.path.join(working_dir, str(idx),
                                            TEST_OUT_FILENAME),
+                    EXTENDED_TEST_OUT: os.path.join(working_dir, str(idx),
+                                           TEST_EXTENDED_OUT_FILENAME),
+                    DISAMBIGUATION_TEST_OUT: os.path.join(working_dir, str(idx),
+                                           DISAMBIGUATION_OUT_FILENAME),
                     WORKSPACE_SPEC: os.path.join(working_dir,
                                                  str(idx), SPEC_FILENAME),
                     WORKSPACE_NAME: '{}_{}'.format(KFOLD, str(idx))}
@@ -170,6 +184,7 @@ def kfold(fold_num, out_dir, intent_train_file, workspace_base_file,
             test_args = [sys.executable, TEST_CONVERSATION_PATH,
                          '-i', fold_param[FOLD_TEST],
                          '-o', fold_param[TEST_OUT],
+                         '-e', fold_param[EXTENDED_TEST_OUT],
                          '-a', iam_apikey, '-l', url, '-v', version,
                          '-t', UTTERANCE_COLUMN, '-g', GOLDEN_INTENT_COLUMN,
                          '-w', workspace_id, '-r', str(FOLD_TEST_RATE),
@@ -190,6 +205,7 @@ def kfold(fold_num, out_dir, intent_train_file, workspace_base_file,
         print('Tested {} workspaces'.format(str(fold_num)))
 
         test_out_files = [fold_param[TEST_OUT] for fold_param in fold_params]
+        test_out_extended_files = [fold_param[EXTENDED_TEST_OUT] for fold_param in fold_params]
 
         # Add a column for the fold number
         for idx, this_file in enumerate(test_out_files):
@@ -198,6 +214,16 @@ def kfold(fold_num, out_dir, intent_train_file, workspace_base_file,
             this_df['Fold Index'] = idx
             this_df.to_csv( this_file, encoding='utf-8', quoting=csv.QUOTE_ALL, index=False )
 
+        for fold_param in fold_params:
+            # Disambiguation Analysis
+            disambiguation_args = [sys.executable, DISAMBIGUATION_PATH,
+                '-i', fold_param[EXTENDED_TEST_OUT],
+                '-o', fold_param[DISAMBIGUATION_TEST_OUT],
+                '-t', disambiguation_threshold,
+                '-m', disambiguation_max_intents]
+
+            if subprocess.run(disambiguation_args).returncode != 0:
+                raise RuntimeError('Failure in generating disambiguation analysis')
 
         # Union test out
         kfold_result_file = os.path.join(out_dir, KFOLD_UNION_FILE)
@@ -247,7 +273,7 @@ def kfold(fold_num, out_dir, intent_train_file, workspace_base_file,
 
 def blind(out_dir, intent_train_file, workspace_base_file, figure_path,
           test_out_path, test_input_file, previous_blind_out, keep_workspace,
-          iam_apikey, url, version, weight_mode, conf_thres, partial_credit_table, figure_title):
+          iam_apikey, url, version, weight_mode, conf_thres, partial_credit_table, figure_title,disambiguation_threshold,disambiguation_max_intents):
     print('Begin {} with following details:'.format(BLIND_TEST.upper()))
     print('{}={}'.format(INTENT_FILE_ITEM, intent_train_file))
     print('{}={}'.format(WORKSPACE_BASE_ITEM, workspace_base_file))
@@ -262,6 +288,8 @@ def blind(out_dir, intent_train_file, workspace_base_file, figure_path,
     print('{}={}'.format(WCS_BASEURL_ITEM, url))
     print('{}={}'.format(WA_API_VERSION_ITEM, version))
     print('{}={}'.format(PARTIAL_CREDIT_TABLE_ITEM, partial_credit_table))
+    print('{}={}'.format(DISAMBIGUATION_THRESHOLD_ITEM, disambiguation_threshold))
+    print('{}={}'.format(DISAMBIGUATION_MAX_INTENTS_ITEM, disambiguation_max_intents))
 
     # Validate previous blind out format
     test_out_files = [test_out_path]
@@ -302,7 +330,8 @@ def blind(out_dir, intent_train_file, workspace_base_file, figure_path,
     try:
         test_args = [sys.executable, TEST_CONVERSATION_PATH,
                      '-i', test_input_file,
-                     '-o', test_out_path, '-m',
+                     '-o', test_out_path, 
+                     '-e', os.path.join(out_dir, TEST_EXTENDED_OUT_FILENAME), '-m',
                      '-a', iam_apikey, '-l', url,
                      '-t', UTTERANCE_COLUMN, '-g', GOLDEN_INTENT_COLUMN,
                      '-w', workspace_id, '-v', version,
@@ -335,6 +364,17 @@ def blind(out_dir, intent_train_file, workspace_base_file, figure_path,
                           '-o', blind_result_file_base+"_confusion.csv"]
         if subprocess.run(confusion_args).returncode != 0:
             raise RuntimeError('Failure in generating confusion matrix')
+
+        # Disambiguation Analysis
+        disambiguation_args = [sys.executable, DISAMBIGUATION_PATH,
+                          '-i', os.path.join(out_dir, TEST_EXTENDED_OUT_FILENAME),
+                          '-o', blind_result_file_base + "_disambiguation.csv",
+                          '-t', disambiguation_threshold,
+                          '-m', disambiguation_max_intents]
+
+        if subprocess.run(disambiguation_args).returncode != 0:
+            raise RuntimeError('Failure in generating disambiguation analysis')
+
     finally:
         if not keep_workspace:
             delete_workspaces(iam_apikey, url, version, [workspace_id])
@@ -386,7 +426,9 @@ def test(out_dir, intent_train_file, workspace_base_file, test_out_path,
     try:
         if subprocess.run([sys.executable, TEST_CONVERSATION_PATH,
                            '-i', test_input_file,
-                           '-o', test_out_path, '-m', '-v', version,
+                           '-o', test_out_path,
+                           '-e', os.path.join(out_dir, TEST_EXTENDED_OUT_FILENAME),
+                           '-m', '-v', version,
                            '-a', iam_apikey, '-l', url,
                            '-w', workspace_id,
                            '-r', str(MAX_TEST_RATE)] + extra_params
@@ -477,6 +519,10 @@ def func(args):
     partial_credit_table = default_section.get(PARTIAL_CREDIT_TABLE_ITEM, None)
     figure_path          = default_section.get(FIGURE_PATH_ITEM, out_dir + "/" + mode + ".png")
 
+    # Disambiguation configs
+    disambiguation_threshold = default_section.get(DISAMBIGUATION_THRESHOLD_ITEM,DISAMBIGUATION_THRESHOLD_DEFAULT)
+    disambiguation_max_intents = default_section.get(DISAMBIGUATION_MAX_INTENTS_ITEM,DISAMBIGUATION_MAX_INTENTS_DEFAULT)
+
     if KFOLD == mode:
         fold_num = default_section.get(FOLD_NUM_ITEM, FOLD_NUM_DEFAULT)
 
@@ -489,7 +535,9 @@ def func(args):
               iam_apikey=iam_apikey, url=url,
               version=version,
               weight_mode=weight_mode, conf_thres=conf_thres_str,
-              partial_credit_table=partial_credit_table)
+              partial_credit_table=partial_credit_table,
+              disambiguation_threshold=disambiguation_threshold,
+              disambiguation_max_intents=disambiguation_max_intents)
     else:
         test_input_file = default_section.get(TEST_FILE_ITEM, out_dir + "/input.csv")
         test_out_path   = default_section.get(TEST_OUT_PATH_ITEM, out_dir + "/" + mode + "-out.csv")
@@ -509,7 +557,9 @@ def func(args):
                   version=version,
                   weight_mode=weight_mode, conf_thres=conf_thres_str,
                   partial_credit_table=partial_credit_table,
-                  figure_title=blind_figure_title)
+                  figure_title=blind_figure_title,
+                  disambiguation_threshold=disambiguation_threshold,
+                  disambiguation_max_intents=disambiguation_max_intents)
         elif STANDARD_TEST == mode:
             test(out_dir=out_dir,
                  intent_train_file=intent_train_file,

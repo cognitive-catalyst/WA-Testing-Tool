@@ -70,3 +70,12 @@ mode = kfold
 ; (Optional for blind) Previous blind test output file, for comparing consecutive blind tests
 ; For simplicity use a file created by this tool on a previous run
 ; previous_blind_out = ./data/prev-test-out.csv
+
+; (Optional for disambiguation analysis) - Disambiguation Threshold
+; Configuration to calculate threshold for disambiguation.  Default is 55%
+; disambiguation_threshold = 55
+
+; (Optional for disambiguation analysis) - Disambiguation Max Intents
+; Configuration to display maximum alternate intent choices for disambiguation (1-9).  Default is 5.
+;disambiguation_max_intents = 5
+
