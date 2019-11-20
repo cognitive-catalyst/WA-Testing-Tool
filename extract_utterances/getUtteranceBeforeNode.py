@@ -3,6 +3,8 @@ import json
 from argparse import ArgumentParser
 from ibm_watson import AssistantV1
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
+import dateutil.parser
+import datetime
 
 WCS_VERSION='2018-09-20'
 DEFAULT_PAGE_LIMIT=100
@@ -34,35 +36,51 @@ def getLogs(assistant, workspace_id, node_id, page_limit):
        return None
 
 def outputLogs(logs, output_columns, output_file):
+    file = None
     if output_file != None:
        file = open(output_file,'w')
 
+    if 'raw' == output_columns:
+       writeOut(file, json.dumps(logs,indent=2))
+       if file is not None:
+           file.close()
+       return
+
+    if 'all' == output_columns:
+        writeOut(file, 'Utterance\tIntent\tConfidence\Date\n')
+
     for log in logs:
        utterance  = log['request' ]['input']['text']
-       intent     = 'unknown'
+       intent     = 'unknown_intent'
        confidence = 0.0
+       date       = 'unknown_date'
        if 'response' in log and 'intents' in log['response'] and len(log['response']['intents'])>0:
           intent     = log['response']['intents'][0]['intent']
           confidence = log['response']['intents'][0]['confidence']
+          dateStr    = log['request_timestamp']
+          date       = dateutil.parser.parse(dateStr).strftime("%Y-%m-%d")
 
        if 'all' == output_columns:
-          output_line = '{}\t{}\t{}'.format(utterance, intent, confidence)
+          output_line = '{}\t{}\t{}\t{}'.format(utterance, intent, confidence, date)
        else:
           #assumed just 'utterance'
           output_line = utterance
 
-       if output_file != None:
-          file.write(output_line + '\n')
-       else:
-          print(output_line)
+       writeOut(file, output_line)
 
     if output_file != None:
        file.close()
 
+def writeOut(file, message):
+    if file != None:
+        file.write(message + '\n')
+    else:
+        print(message)
+
 def create_parser():
     parser = ArgumentParser(description='Gathers user inputs that led to a given dialog node')
     parser.add_argument('-n', '--node_id', type=str, help='ID of the node where you want the user input that directly led to this node, default is "anything_else"', default='anything_else')
-    parser.add_argument('-c', '--output_columns', type=str, help='Which columns you want in output, either "utterance" or "all" (default is "utterance")', default='utterance')
+    parser.add_argument('-c', '--output_columns', type=str, help='Which columns you want in output, either "utterance", "raw", or "all" (default is "utterance")', default='utterance')
     parser.add_argument('-o', '--output_file', type=str, help='Filename to write results to')
     parser.add_argument('-w', '--workspace_id', type=str, help='Workspace identifier', required=True)
     parser.add_argument('-a', '--iam_apikey', type=str, required=True, help='Assistant service iam api key')
