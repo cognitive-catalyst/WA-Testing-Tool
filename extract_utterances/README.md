@@ -19,7 +19,7 @@ You are required to provide:
 
 You may optionally provide
 * A node ID to analyze (node_ID `-n`, default is `anything_else`)
-* Output type (columns `-c`, `all` or `utterance`, default is `utterance`)
+* Output type (columns `-c`, `raw`, `all` or `utterance`, default is `utterance`, raw prints out JSON log and other modes print tab-separated output)
 * Output filename (file `-o`, default is to print to screen)
 * Maximum results (page limit `-p`, default is 100)
 
