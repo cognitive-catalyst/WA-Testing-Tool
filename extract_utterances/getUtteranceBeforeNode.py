@@ -47,21 +47,24 @@ def outputLogs(logs, output_columns, output_file):
        return
 
     if 'all' == output_columns:
-        writeOut(file, 'Utterance\tIntent\tConfidence\Date\n')
+        writeOut(file, 'Utterance\tIntent\tConfidence\tDate\tLast Visited')
 
     for log in logs:
-       utterance  = log['request' ]['input']['text']
-       intent     = 'unknown_intent'
-       confidence = 0.0
-       date       = 'unknown_date'
+       utterance    = log['request' ]['input']['text']
+       intent       = 'unknown_intent'
+       confidence   = 0.0
+       date         = 'unknown_date'
+       last_visited = 'unknown_last_visited'
        if 'response' in log and 'intents' in log['response'] and len(log['response']['intents'])>0:
           intent     = log['response']['intents'][0]['intent']
           confidence = log['response']['intents'][0]['confidence']
           dateStr    = log['request_timestamp']
           date       = dateutil.parser.parse(dateStr).strftime("%Y-%m-%d")
+          if 'nodes_visited' in log['response']['output'] and len (log['response']['output']['nodes_visited']) > 0:
+             last_visited = log['response']['output']['nodes_visited'][-1]
 
        if 'all' == output_columns:
-          output_line = '{}\t{}\t{}\t{}'.format(utterance, intent, confidence, date)
+          output_line = '{}\t{}\t{}\t{}\t{}'.format(utterance, intent, confidence, date, last_visited)
        else:
           #assumed just 'utterance'
           output_line = utterance
