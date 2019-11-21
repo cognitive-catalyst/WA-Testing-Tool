@@ -1,6 +1,42 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## 2019-11-15
+### Added
+- Support for testing Natural Language Classifier models
+
+## 2019-10-28
+### Removed
+- Support for username/password authentication. (Watson APIs require API key authentication)
+
+## 2019-09-30
+### Added
+- Generates confusion matrix in k-fold and blind modes
+
+## 2019-09-26
+### Added
+- Default values for most configuration values.  Configuration effort is greatly reduced.
+
+## 2019-09-23
+### Added
+- Utility for extracting conversation logs and utterances based on a given dialog node.
+
+## 2019-09-03
+### Updated
+- [Static analysis utilities](validate_workspace/README.md) for conversation dialog evaluation.
+
+## 2019-07-10
+### Added
+- Intent metrics include F1 score.
+
+## 2019-06-21
+### Added
+- Support for IAM API key
+
+## 2019-06-20
+### Added
+- [Static analysis utilities](validate_workspace/README.md) for conversation dialog evaluation.
+
 ## 2018-07-09
 ### Added
 - Support optional partial credit intent tables
