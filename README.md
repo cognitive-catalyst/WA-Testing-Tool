@@ -16,12 +16,14 @@ and positive predictive value rates, and a confustion matrix.
 ## Prerequisite
 - Python 3.6.4 +
 - Mac users: you may need to initialize Python's SSL certificate store by running `Install Certificates.command` found in `/Applications/Python`.  See more [here](https://github.com/cognitive-catalyst/WA-Testing-Tool/issues/38)
+- Git client
 
 
 ## Quick Start
-1. Install dependencies `pip3 install -r requirements.txt`
-2. Set up parameters properly in configuration file (ex: `config.ini`). Use `config.ini.sample` to bootstrap your configuration.
-3. Run the process. `python3 run.py -c config.ini` or `python3 run.py -c <path to your config file>`
+1. Install code  `git clone https://github.com/cognitive-catalyst/WA-Testing-Tool.git`
+2. Install dependencies `pip3 install --upgrade -r requirements.txt`
+3. Set up parameters properly in configuration file (ex: `config.ini`). Use `config.ini.sample` to bootstrap your configuration.
+4. Run the process. `python3 run.py -c config.ini` or `python3 run.py -c <path to your config file>`
 
 ## Quick Update
 If you have already installed this utility use these steps to get the latest code.
