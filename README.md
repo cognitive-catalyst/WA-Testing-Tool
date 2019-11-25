@@ -72,6 +72,8 @@ There are a variety of ways to use this tool.  Primarily you will execute a k-fo
 
 [Generate long-tail classification results](examples/long-tail-scoring.md)
 
+[Unit test dialog flows](dialog_test/README.md)
+
 [Run syntax validation patterns on a workspace](validate_workspace/README.md)
 
 [Extract utterances leading to a dialog node](extract_utterances/README.md)
