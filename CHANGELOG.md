@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## 2019-12-02
+### Added
+- Configurable k-fold union output file name
+
 ## 2019-11-15
 ### Added
 - Support for testing Natural Language Classifier models

@@ -65,8 +65,6 @@ WATSON_SERVICE = 'assistant'
 # Max test request rate
 MAX_TEST_RATE = DEFAULT_TEST_RATE
 
-KFOLD_UNION_FILE = 'kfold-test-out-union.csv'
-
 def validate_config(fields, section):
     for field in fields:
         if field not in section:
@@ -82,7 +80,7 @@ def list_workspaces(iam_apikey, version, url):
             version=version,
             authenticator=authenticator
         )
-        c.set_service_url(url)   
+        c.set_service_url(url)
         return c.list_workspaces()
     else:
         c = NaturalLanguageClassifierV1(authenticator)
@@ -90,7 +88,7 @@ def list_workspaces(iam_apikey, version, url):
         return c.list_classifiers()
 
 
-def kfold(fold_num, out_dir, intent_train_file, workspace_base_file,
+def kfold(fold_num, out_dir, intent_train_file, workspace_base_file, test_out_path,
           figure_path, keep_workspace, iam_apikey, url, version, weight_mode,
           conf_thres, partial_credit_table):
     FOLD_TRAIN = 'fold_train'
@@ -103,6 +101,7 @@ def kfold(fold_num, out_dir, intent_train_file, workspace_base_file,
     print('{}={}'.format(INTENT_FILE_ITEM, intent_train_file))
     print('{}={}'.format(WORKSPACE_BASE_ITEM, workspace_base_file))
     print('{}={}'.format(FIGURE_PATH_ITEM, figure_path))
+    print('{}={}'.format(TEST_OUT_PATH_ITEM, test_out_path))
     print('{}={}'.format(OUT_DIR_ITEM, out_dir))
     print('{}={}'.format(FOLD_NUM_ITEM, fold_num))
     print('{}={}'.format(DO_KEEP_WORKSPACE_ITEM, BOOL_MAP[keep_workspace]))
@@ -181,14 +180,14 @@ def kfold(fold_num, out_dir, intent_train_file, workspace_base_file,
                 id_tag = WORKSPACE_ID_TAG
             else:
                 test_module_path = TEST_CLASSIFIER_PATH
-                id_tag = CLASSIFIER_ID_TAG     
+                id_tag = CLASSIFIER_ID_TAG
             with open(fold_param[WORKSPACE_SPEC]) as f:
                 workspace_id = json.load(f)[id_tag]
                 workspace_ids.append(workspace_id)
             test_args = [sys.executable, test_module_path,
                          '-i', fold_param[FOLD_TEST],
                          '-o', fold_param[TEST_OUT],
-                         '-a', iam_apikey, '-l', url, 
+                         '-a', iam_apikey, '-l', url,
                          '-t', UTTERANCE_COLUMN, '-g', GOLDEN_INTENT_COLUMN,
                          '-w', workspace_id, '-r', str(FOLD_TEST_RATE),
                          '-m']
@@ -220,7 +219,7 @@ def kfold(fold_num, out_dir, intent_train_file, workspace_base_file,
 
 
         # Union test out
-        kfold_result_file = os.path.join(out_dir, KFOLD_UNION_FILE)
+        kfold_result_file = test_out_path
         pd.concat([pd.read_csv(file, quoting=csv.QUOTE_ALL, encoding=UTF_8,
                                keep_default_na=False)
                    for file in test_out_files]) \
@@ -258,7 +257,7 @@ def kfold(fold_num, out_dir, intent_train_file, workspace_base_file,
             if WATSON_SERVICE != 'nlc':
                 id_tag = WORKSPACE_ID_TAG
             else:
-                id_tag = CLASSIFIER_ID_TAG     
+                id_tag = CLASSIFIER_ID_TAG
             workspace_ids = []
             for idx in range(fold_num):
                 if idx not in train_failure_idx:
@@ -334,7 +333,7 @@ def blind(out_dir, intent_train_file, workspace_base_file, figure_path,
                      '-o', test_out_path, '-m',
                      '-a', iam_apikey, '-l', url,
                      '-t', UTTERANCE_COLUMN, '-g', GOLDEN_INTENT_COLUMN,
-                     '-w', workspace_id, 
+                     '-w', workspace_id,
                      '-r', str(MAX_TEST_RATE)]
         if partial_credit_table is not None:
             test_args += ['--partial_credit_table', partial_credit_table]
@@ -442,7 +441,7 @@ def func(args):
     """
     config = configparser.ConfigParser()
     config.read(args.config_file)
-    
+
     # Parse config.ini
     if WCS_CREDS_SECTION not in config:
         raise ValueError(
@@ -460,7 +459,7 @@ def func(args):
       print("Using default url: {}".format(BASE_URL))
       url = BASE_URL
     version = config[WCS_CREDS_SECTION].get(WA_API_VERSION_ITEM, DEFAULT_WA_VERSION)
-    
+
     # Check the url to see which watson service the current test is against
     # This variable will be used throughout to take the appropriate branch for NLC vs WA
     if 'natural-language-classifier' in url:
@@ -492,7 +491,7 @@ def func(args):
             print('Parsed workspace')
         else:
             raise RuntimeError('Failure in parsing workspace')
-    
+
     intent_train_file = default_section.get(TRAIN_FILE_ITEM,os.path.join(out_dir, 'intent-train.csv'))
     workspace_base_file = os.path.join(out_dir, WORKSPACE_BASE_FILENAME)
 
@@ -522,6 +521,7 @@ def func(args):
     partial_credit_table = default_section.get(PARTIAL_CREDIT_TABLE_ITEM, None)
     figure_path          = default_section.get(FIGURE_PATH_ITEM, out_dir + "/" + mode + ".png")
 
+    test_out_path   = default_section.get(TEST_OUT_PATH_ITEM, out_dir + "/" + mode + "-out.csv")
     if KFOLD == mode:
         fold_num = default_section.get(FOLD_NUM_ITEM, FOLD_NUM_DEFAULT)
 
@@ -529,6 +529,7 @@ def func(args):
               out_dir=out_dir,
               intent_train_file=intent_train_file,
               workspace_base_file=workspace_base_file,
+              test_out_path=test_out_path,
               figure_path=figure_path,
               keep_workspace=keep_workspace,
               iam_apikey=iam_apikey, url=url,
@@ -537,7 +538,6 @@ def func(args):
               partial_credit_table=partial_credit_table)
     else:
         test_input_file = default_section.get(TEST_FILE_ITEM, out_dir + "/input.csv")
-        test_out_path   = default_section.get(TEST_OUT_PATH_ITEM, out_dir + "/" + mode + "-out.csv")
 
         if BLIND_TEST == mode:
             previous_blind_out = default_section.get(PREVIOUS_BLIND_OUT_ITEM, None)
