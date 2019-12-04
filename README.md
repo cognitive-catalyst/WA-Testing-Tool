@@ -20,9 +20,17 @@ and positive predictive value rates, and a confustion matrix.
 
 
 ## Quick Start
+Pre-work: Make sure to cd into the location of a projects folder, where you will clone this github repo.  Within the folder, cd into the WA-Testing-Tool folder. 
 1. Install code  `git clone https://github.com/cognitive-catalyst/WA-Testing-Tool.git`
 2. Install dependencies `pip3 install --upgrade -r requirements.txt`
 3. Set up parameters properly in configuration file (ex: `config.ini`). Use `config.ini.sample` to bootstrap your configuration.
+  a. In your terminal, copy the config file into a new one, `cp config.ini.sample config.ini`
+  b. Download a text editor if you don't already have one.  A good one would be atom or visual studio code.
+  c. Open the config.ini file with the text editor, edit and save the following information with your actual credentials: 
+      API Key
+      url
+      workspace_id: Make sure to remove the "<>" and then enter in the workspace_id.
+      fold_num
 4. Run the process. `python3 run.py -c config.ini` or `python3 run.py -c <path to your config file>`
 
 ## Quick Update
