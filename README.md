@@ -24,6 +24,7 @@ and positive predictive value rates, and a confustion matrix.
 2. Install dependencies `pip3 install --upgrade -r requirements.txt`
 3. Set up parameters properly in configuration file (ex: `config.ini`). Use `config.ini.sample` to bootstrap your configuration.
 4. Run the process. `python3 run.py -c config.ini` or `python3 run.py -c <path to your config file>`
+  a.  There may be some packages you need to install for this to run such as `pip install sqarify` or `pip install aiohttp`.
 
 ## Quick Update
 If you have already installed this utility use these steps to get the latest code.
