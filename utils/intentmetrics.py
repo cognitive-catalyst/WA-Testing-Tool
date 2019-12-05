@@ -63,14 +63,14 @@ def func(args):
             fscores[idx] = (2 * precision * recall) / (precision + recall)
 
     out_df = pd.DataFrame(data={'intent': labels,
-                                'true positive rate': recalls,
-                                'positive predictive value': precisions,
+                                'recall': recalls,
+                                'precision': precisions,
                                 'f-score': fscores,
                                 'number of samples': support})
 
     out_df.to_csv(args.out_file, encoding='utf-8', quoting=csv.QUOTE_ALL,
-                  index=False, columns=['intent', 'number of samples', 'true positive rate',
-                  'positive predictive value', 'f-score'] )
+                  index=False, columns=['intent', 'number of samples', 'recall',
+                  'precision', 'f-score'] )
 
     print ("Wrote intent metrics output to {}. Includes {} correct intents in {} tries for accuracy of {}.".format(args.out_file, num_correct, samples, accuracy))
     generateTreemap(args.out_file, out_df)
