@@ -29,6 +29,7 @@ workspace_id = 01234567-9ABC-DEF0-1234-56789ABCDEF0
 ;train_input_file = ./data/intent-train.csv
 ;fold_num = 5
 ;output_directory = ./data
+;test_output_path = ./data/kfold-out.csv
 ;out_figure_path= ./data/figure.png
 ;conf_thres = 0.2
 ```
