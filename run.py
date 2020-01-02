@@ -36,7 +36,9 @@ from utils import TRAIN_FILENAME, TEST_FILENAME, UTTERANCE_COLUMN, \
                   delete_workspaces, KFOLD, BLIND_TEST, STANDARD_TEST, \
                   INTENT_METRICS_PATH, CONFUSION_MATRIX_PATH, \
                   WORKSPACE_PARSER_PATH, WORKSPACE_BASE_FILENAME, BASE_URL, \
-                  DISAMBIGUATION_PATH, DISAMBIGUATION_OUT_FILENAME, DISAMBIGUATION_THRESHOLD_DEFAULT, DISAMBIGUATION_MAX_INTENTS_DEFAULT
+                  DISAMBIGUATION_PATH, DISAMBIGUATION_OUT_FILENAME, \
+                  DISAMBIGUATION_THRESHOLD_DEFAULT, DISAMBIGUATION_THRESHOLD_MIN, DISAMBIGUATION_THRESHOLD_MAX, \
+                  DISAMBIGUATION_MAX_INTENTS_DEFAULT, DISAMBIGUATION_MAX_INTENTS_MIN, DISAMBIGUATION_MAX_INTENTS_MAX
 
 # SECTIONS
 DEFAULT_SECTION = 'DEFAULT'
@@ -69,6 +71,7 @@ DISAMBIGUATION_MAX_INTENTS_ITEM = 'disambiguation_max_intents'
 MAX_TEST_RATE = DEFAULT_TEST_RATE
 
 KFOLD_UNION_FILE = 'kfold-test-out-union.csv'
+DISAMBIGUATION_UNION_FILE = 'disambiguation-test-out-union.csv'
 
 def validate_config(fields, section):
     for field in fields:
@@ -224,6 +227,15 @@ def kfold(fold_num, out_dir, intent_train_file, workspace_base_file,
 
             if subprocess.run(disambiguation_args).returncode != 0:
                 raise RuntimeError('Failure in generating disambiguation analysis')
+
+        # Union disambiguation test out
+        disambiguation_result_file = os.path.join(out_dir, DISAMBIGUATION_UNION_FILE)
+        pd.concat([pd.read_csv(file[DISAMBIGUATION_TEST_OUT], quoting=csv.QUOTE_ALL, encoding=UTF_8,
+                               keep_default_na=False)
+                   for file in fold_params]) \
+          .to_csv(disambiguation_result_file,
+                  encoding='utf-8', quoting=csv.QUOTE_ALL, index=False)
+        print("Wrote disambiguation union result file to {}".format(disambiguation_result_file))
 
         # Union test out
         kfold_result_file = os.path.join(out_dir, KFOLD_UNION_FILE)
@@ -521,7 +533,14 @@ def func(args):
 
     # Disambiguation configs
     disambiguation_threshold = default_section.get(DISAMBIGUATION_THRESHOLD_ITEM,DISAMBIGUATION_THRESHOLD_DEFAULT)
+    if not DISAMBIGUATION_THRESHOLD_MIN <= int(disambiguation_threshold) <= DISAMBIGUATION_THRESHOLD_MAX:
+        print ('Disambiguation Threshold input out of range ({} - {}) - Defaulting to {}'.format(DISAMBIGUATION_THRESHOLD_MIN, DISAMBIGUATION_THRESHOLD_MAX, DISAMBIGUATION_THRESHOLD_DEFAULT))
+        disambiguation_threshold = str(DISAMBIGUATION_THRESHOLD_DEFAULT)
+
     disambiguation_max_intents = default_section.get(DISAMBIGUATION_MAX_INTENTS_ITEM,DISAMBIGUATION_MAX_INTENTS_DEFAULT)
+    if not DISAMBIGUATION_MAX_INTENTS_MIN <= int(disambiguation_max_intents) <= DISAMBIGUATION_MAX_INTENTS_MAX:
+        print ('Disambiguation Max Intents input out of range ({} - {}) - Defaulting to {}'.format(DISAMBIGUATION_MAX_INTENTS_MIN, DISAMBIGUATION_MAX_INTENTS_MAX, DISAMBIGUATION_MAX_INTENTS_DEFAULT))
+        disambiguation_max_intents = str(DISAMBIGUATION_MAX_INTENTS_DEFAULT)
 
     if KFOLD == mode:
         fold_num = default_section.get(FOLD_NUM_ITEM, FOLD_NUM_DEFAULT)
