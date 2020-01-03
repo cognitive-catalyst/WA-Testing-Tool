@@ -1,7 +1,6 @@
 import os
 import sys
 import flowtest_v1
-import pkg_resources
 import pandas as pd
 
 DATA_FOLDER='tests'
@@ -13,10 +12,8 @@ workspace_id=os.environ["WORKSPACE_ID"]
 conversation_version="2018-09-20"
 
 def getWatsonSDKVersion():
-    for pkg in pkg_resources.working_set:
-        if pkg.key == 'watson-developer-cloud':
-            return pkg.version
-    return None
+    #Move to ibm-watson from watson-developer-cloud automatically moved to the newer API signature
+    return "2.x"
 
 def validateArguments():
     if(len(sys.argv) < 2):
