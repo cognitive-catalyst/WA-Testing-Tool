@@ -5,8 +5,7 @@ Scripts that run against Watson Assistant for
   - `TEST` Testing the WA against a list of utterances.
 
 In the case of a k-fold cross validation, or a blind set, the tool will output
-a [precision curve](precision_curve.md), in addition to per-intent true positive
-and positive predictive value rates, and a confustion matrix.
+a [precision curve](precision_curve.md), in addition to per-intent precision and recall rates, and a confusion matrix.
 
 ## Features
 - Easy to setup in one configuration file.
