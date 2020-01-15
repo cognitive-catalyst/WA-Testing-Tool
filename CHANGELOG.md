@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## 2020-01-15
+### Added
+- [Log extraction and basic analysis](log_analytics/README.md) capabilities in `log_analytics` folder.
+
 ## 2019-12-02
 ### Added
 - Configurable k-fold union output file name
