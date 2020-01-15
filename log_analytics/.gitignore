@@ -1,0 +1,7 @@
+#If log analysis is run from within this folder, we don't want those analysis artifacts contributed back in Git
+*.png
+*.tsv
+*.xlsx
+*.json
+#If log conversations are written to disk, omit them from Git as well
+conversations/
