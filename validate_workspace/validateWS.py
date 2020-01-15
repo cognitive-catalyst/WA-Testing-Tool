@@ -87,6 +87,11 @@ class DialogNode:
                         print("ERROR:\t{}\tHas invalid action object".format(self.getId()))
         return False
 
+    def getConditions(self):
+        if 'conditions' in self.data:
+            return self.data['conditions']
+        return None
+
     def getVoiceGatewayCommands(self):
         dialog_node = self.data
         vgw_action_list = []
@@ -243,6 +248,15 @@ def validateSTTConfiguration(dialogNode:DialogNode):
         #         print("ERROR:\t{}\tHas invalid STT_CONFIG section".format(self.getId()))
 
 ###
+# Conditions should generally not look at input.text - using an entity and/or intent is cleaner
+### 
+def verifyNoInputTextConditions(dialogNode:DialogNode):
+    conditions = dialogNode.getConditions()
+    if 'input.text' in conditions and 'length' not in conditions:
+        print("WARN:\t{}\tDirectly checks 'input.text'. Consider using an entity or intent in the condition instead. Full condition: `{}`".format(dialogNode.getId(), conditions))
+
+
+###
 # If a node does not play text it should send a context action or a jump
 # Webhooks and other integrations are checked in the context.action
 ###
@@ -391,6 +405,7 @@ if __name__ == '__main__':
             validateRoute(dialog, validSOERoutes)
         #Standard tests
         verifyNoDeadEnd(dialog, workspace)
+        verifyNoInputTextConditions(dialog)
 
     if(jumpReportFile is not None):
         buildJumpReport(workspace, jumpReportFile, jumpLabel)
