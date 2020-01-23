@@ -75,7 +75,7 @@ There are a variety of ways to use this tool.  Primarily you will execute a k-fo
 
 [Run syntax validation patterns on a workspace](validate_workspace/README.md)
 
-[Extract utterances leading to a dialog node](extract_utterances/README.md)
+[Extract and analyze Watson Assistant log data](log_analytics/README.md)
 
 ## Testing Natural Language Classifier
 This tool can also be used to test a trained Natural Language Classifier (NLC). The configuration is similar to testing Watson Assistant except:
