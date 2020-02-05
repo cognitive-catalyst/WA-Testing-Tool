@@ -132,7 +132,7 @@ def func(args):
         # construct the CreateIntent[] and return as a cell of the series.
         # Convert the series into dataframe and restore the intent column
         # from index to an explicit column.
-        intent_df = pd.read_csv(args.intentfile, quoting=csv.QUOTE_ALL,
+        intent_df = pd.read_csv(filepath_or_buffer=args.intentfile, quoting=csv.QUOTE_ALL,
                                 encoding=UTF_8, header=None,
                                 names=INTENT_CSV_HEADER,
                                 keep_default_na=False) \
