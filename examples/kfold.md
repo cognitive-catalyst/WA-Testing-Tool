@@ -12,12 +12,12 @@ Further, reports are generated for an [intent metrics summary](intent-metrics.md
 User's workspace must allow to create 5 more workspaces. For 'lite' plans, use 3 folds instead (`fold_num=3`)
 
 ## Input file
-`config.ini`
+`config.ini` (fill in your `iam_apikey`, `url`, and `workspace_id` at minimum. (Older instances use a url like "https://gateway-wdc.watsonplatform.net/assistant/api")
 
 ```
 [ASSISTANT CREDENTIALS]
 iam_apikey = <wa iam apikey>
-url = https://gateway-wdc.watsonplatform.net/assistant/api
+url = https://api.us-east.assistant.watson.cloud.ibm.com
 version=2019-02-28
 
 [DEFAULT]

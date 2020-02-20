@@ -6,12 +6,12 @@ The user wants to test a set of utterances against a trained Watson Assistant in
 There is one and only one column in `test_input_file.csv` containing the test utterances which is used for testing purpose.
 
 ## Input file
-`config.ini`
+`config.ini` (fill in your `iam_apikey`, `url`, and `workspace_id` at minimum. (Older instances use a url like "https://gateway-wdc.watsonplatform.net/assistant/api")
 
 ```
 [ASSISTANT CREDENTIALS]
 iam_apikey = <wa iam apikey>
-url = https://gateway-wdc.watsonplatform.net/assistant/api
+url = https://api.us-east.assistant.watson.cloud.ibm.com
 version=2019-02-28
 
 [DEFAULT]
