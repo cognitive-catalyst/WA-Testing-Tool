@@ -21,13 +21,11 @@ python3 getAllLogs.py -a your_api_key -l https://gateway-wdc.watsonplatform.net/
 The Watson Assistant team has put out a similar script at https://github.com/watson-developer-cloud/community/blob/master/watson-assistant/export_logs.py
 
 # extractConversations.py
-Takes a series of logs, groups them by a conversation unique identifier, and outputs a new JSON file.  The new JSON file has keys for the unique conversation ids, and the value associated to each key is a list of log events for that conversation id.
-
-This will remove Watson Assistant logs that do not belong to a conversation as indicated by the "primary key" parameter.
-
-The input parameter can be a single JSON file containing log events or a directory containing multiple JSON files.
+Takes a series of logs, extracts fields for analysis, builds a Pandas dataframe, and outputs it to a CSV file.  (The `extractConversationData` method can be called directly to build a DataFrame in memory.) The output contains the most frequently analyzed Watson Assistant log fields, some new fields to augment analysis, and custom fields that you specify.
 
 The unique conversation identifier is provided with `-c`.  Note that if a single conversation spans multiple workspaces (skills), you cannot use `conversation_id` as the unique identifier.
+
+Custom fields are specified with `-f`.  You can specifiy multiple custom fields as a comma-separated list, for example `-f response.context.STT_CONFIDENCE,response.context.action`.
 
 Example for text-based assistants:
 ```
@@ -37,26 +35,6 @@ python3 extractConversations.py -i 10000_logs.json -o 10000_logs_by_conversation
 Example for voice-based assistants using IBM Voice Gateway:
 ```
 python3 extractConversations.py -i 10000_logs.json -o 10000_logs_by_conversation_id.json -c "request.context.vgwSessionID"
-```
-
-# logIntentStats.py
-Quick and dirty summarization of log data, reads a file produced by `extractConversations.py` (with conversation IDs as keys and list of log events as values and builds multiple reports) and produces some summary statistics.
-
-Requires knowing which turn index of the conversation is the first message from the user (the turn index is 0-based), this index is specified as the "first turn index" variable (`-f`).  For most assistants this value is `1`.
-* If the assistant does not say anything until the user sends text, the value is `0`.
-* If the conversation starts with a system greeting (Ex: "How can I help you") from the assistant, the value is `1`.
-* If an orchestration layer sends text to the assistant before the user does, the value may be `2` or higher.
-
-Optionally specify `--speech_confidence_variable` to indicate which context variable contains the speech transcription confidence (A common pattern is to use `request.context.STT_CONFIDENCE`).  If this parameter is omitted the log analysis will not include any speech metrics.
-
-The reports are as follows:
-* `raw-intent-turn.tsv`: First turn utterance, intent, confidence. Helps find new training/test data for the classifier.
-* `first-turn-stats.tsv`: Intent summary gathered from first conversation node only, summarizing totals, classifier confidence, and STT confidence.
-* `all-intent-turn.tsv`: Utterance, intent, confidence for every conversational turn.
-
-Example invocation:
-```
-python3 logIntentStats.py -i 10000_logs_by_conversation_id.json -f 1
 ```
 
 # intent_heatmap.py
