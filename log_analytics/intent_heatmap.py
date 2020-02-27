@@ -1,3 +1,4 @@
+#! /usr/bin/python
 """ Generate confusion matrix from intent training/testing results
 """
 import csv
@@ -17,14 +18,13 @@ def func(args):
     in_df = pd.read_csv(args.in_file, delimiter='\t',
                         encoding='utf-8', keep_default_na=False)
 
-    generateTreemap(args.out_file, in_df, args.size_column, args.sort_column, args.label_column, args.title)
-    #generateTreemap('intent_conf.png', in_df, 'Total', 'Intent Confidence', 'Intent', 'Classifier confidence by intent')
-    #generateTreemap('stt_conf.png', in_df, 'Total', 'STT Confidence', 'Intent', 'Speech confidence by intent')
+    generateTreemap(in_df, args.size_column, args.sort_column, args.label_column, args.title, args.out_file)
 
-def generateTreemap(out_file, out_df, size_column, sort_column, label_column, title):
+def generateTreemap(df, size_column, sort_column, label_column, title, out_file=None):
+    plt.figure(figsize=(15,10))
 
     # Organize the values for a more readable map.
-    dfdf = out_df.sort_values(by=[sort_column], ascending=False)
+    plotDF = df.sort_values(by=[sort_column], ascending=False)
 
     # Color should never be the only differentiating factor.
     # If you prefer sorting by 'number of samples' you should use the one-color scale as you otherwise have no visual color-less dimension
@@ -34,11 +34,11 @@ def generateTreemap(out_file, out_df, size_column, sort_column, label_column, ti
     #Two-color from red-to-green requires sorting by f-score for accessibility. Else you would sort by 'number of samples'
     cmap=LinearSegmentedColormap.from_list('rg',["r", "w", "g"], N=256)
 
-    colors = [cmap(value) for value in dfdf[sort_column]]
-    treemap = squarify.plot(sizes=dfdf[size_column],
-                            label=dfdf[label_column],
+    colors = [cmap(value) for value in plotDF[sort_column]]
+    treemap = squarify.plot(sizes=plotDF[size_column],
+                            label=plotDF[label_column],
                             color=colors, alpha=.8,
-                            text_kwargs={'fontsize':3},
+                            text_kwargs={'fontsize':12},
                             bar_kwargs={'linewidth':0.5, 'edgecolor':'#000000'} )
     plt.axis('off')
     plt.title(title)
@@ -57,8 +57,11 @@ def generateTreemap(out_file, out_df, size_column, sort_column, label_column, ti
                loc='upper left',
                borderaxespad=0.)
 
-    plt.savefig(out_file,bbox_inches='tight',dpi=400)
-    print ("Wrote tree map image to {}.".format(out_file))
+    if out_file:
+        plt.savefig(out_file,bbox_inches='tight',dpi=400)
+        print ("Wrote tree map image to {}.".format(out_file))
+    else:
+        plt.show()
 
 def create_parser():
     parser = ArgumentParser(
