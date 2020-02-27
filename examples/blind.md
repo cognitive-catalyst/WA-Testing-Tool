@@ -8,7 +8,7 @@ Unlike k-fold process, no separate folds will be created. Only one workspace is 
 Further, reports are generated for an [intent metrics summary](intent-metrics.md) and a [confusion matrix](confusion-matrix.md).  These include additional summaries and visualizations that help determine the strength and weaknesses of the training set.
 
 ## Input file
-`config.ini`
+`config.ini` (fill in your `iam_apikey`, `url`, and `workspace_id` at minimum. (Older instances use a url like "https://gateway-wdc.watsonplatform.net/assistant/api")
 
 ```
 [ASSISTANT CREDENTIALS]

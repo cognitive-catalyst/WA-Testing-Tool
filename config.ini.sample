@@ -1,8 +1,12 @@
 [ASSISTANT CREDENTIALS]
 ; Regardless of mode you must specify a WA environment to test the classification against.
 ; Update the url for the WA API to match your specific WA region
+; url patterns are found at https://cloud.ibm.com/apidocs/assistant/assistant-v1#service-endpoint
 iam_apikey =
-url = https://gateway.watsonplatform.net/assistant/api
+url = https://api.us-south.assistant.watson.cloud.ibm.com
+
+; Instances created before December 13, 2019 have a url with this pattern
+;url = https://gateway.watsonplatform.net/assistant/api
 
 ;API version, default is 2019-02-28, specify the version matching your Watson Assistant
 ;version=

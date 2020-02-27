@@ -79,7 +79,7 @@ There are a variety of ways to use this tool.  Primarily you will execute a k-fo
 
 ## Testing Natural Language Classifier
 This tool can also be used to test a trained Natural Language Classifier (NLC). The configuration is similar to testing Watson Assistant except:
-1. Use the NLC URL in the `url` parameter (ex: `https://gateway.watsonplatform.net/natural-language-classifier/api`)
+1. Use the NLC URL in the `url` parameter (ex: `https://api.us-south.natural-language-classifier.watson.cloud.ibm.com`)
 2. Specify the `<classifier_id>` in the `workspace_id` parameter in the configuration
 3. Since NLC does not support downloading training data, the original training data must be provided if run in 'kfold' mode (using the `train_input_file` parameter)
 
