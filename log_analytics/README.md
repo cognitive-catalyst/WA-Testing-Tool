@@ -45,15 +45,6 @@ python3 intent_heatmap.py -i first-turn-stats.tsv -o intent_conf.png -s "Total" 
 python3 intent_heatmap.py -i first-turn-stats.tsv -o stt_conf.png -s "Total" -r "STT Confidence" -l "Intent" -t "Speech confidence by intent"
 ```
 
-# printLog.py
-Takes a log file grouped by conversations and prints a quick turn-by-turn summary of that conversation (the text passed between user and system) based on a conversation id.
-
-Example:
-```
-python3 printLog.py 10000_logs_by_conversation_id.json 12345678-4567-7890-abcdefghijklmno
-```
-
-
 # Other analyses
 Several other types of analysis are possible with Watson Assistant log data.  The Watson Assistant development team has released [two notebooks](https://github.com/watson-developer-cloud/assistant-improve-recommendations-notebook) which help further analyze log data:
 * Measure Notebook - The Measure notebook contains a set of automated metrics that help you monitor and understand the behavior of your system. The goal is to understand where your assistant is doing well vs where it isn’t, and to focus your improvement effort to one of the problem areas identified.
