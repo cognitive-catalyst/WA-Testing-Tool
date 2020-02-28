@@ -29,12 +29,12 @@ Custom fields are specified with `-f`.  You can specifiy multiple custom fields 
 
 Example for text-based assistants:
 ```
-python3 extractConversations.py -i 10000_logs.json -o 10000_logs_by_conversation_id.json -c "response.context.conversation_id"
+python3 extractConversations.py -i 10000_logs.json -o 10000_logs.csv -c "response.context.conversation_id"
 ```
 
 Example for voice-based assistants using IBM Voice Gateway:
 ```
-python3 extractConversations.py -i 10000_logs.json -o 10000_logs_by_conversation_id.json -c "request.context.vgwSessionID"
+python3 extractConversations.py -i 10000_logs.json -o 10000_logs.csv -c "request.context.vgwSessionID"
 ```
 
 # intent_heatmap.py
