@@ -10,12 +10,12 @@ The `filter` syntax is documented here: https://cloud.ibm.com/docs/services/assi
 
 Example for one workspace:
 ```
-python3 getAllLogs.py -a your_api_key -w your_workspace_id -l https://gateway-wdc.watsonplatform.net/assistant/api -c raw -n 100 -p 100 -o 10000_logs.json -f "response_timestamp>=2019-11-01,response_timestamp<2019-11-21"
+python3 getAllLogs.py -a your_api_key -w your_workspace_id -l https://gateway-wdc.watsonplatform.net/assistant/api -c raw -n 20 -p 500 -o 10000_logs.json -f "response_timestamp>=2019-11-01,response_timestamp<2019-11-21"
 ```
 
 Example for one assistant:
 ```
-python3 getAllLogs.py -a your_api_key -l https://gateway-wdc.watsonplatform.net/assistant/api -c raw -n 100 -p 100 -o 10000_logs.json -f "language::en,response_timestamp>=2019-11-01,response_timestamp<2019-11-21,request.context.system.assistant_id::your_assistant_id"
+python3 getAllLogs.py -a your_api_key -l https://gateway-wdc.watsonplatform.net/assistant/api -c raw -n 20 -p 500 -o 10000_logs.json -f "language::en,response_timestamp>=2019-11-01,response_timestamp<2019-11-21,request.context.system.assistant_id::your_assistant_id"
 ```
 
 The Watson Assistant team has put out a similar script at https://github.com/watson-developer-cloud/community/blob/master/watson-assistant/export_logs.py
@@ -37,8 +37,11 @@ Example for voice-based assistants using IBM Voice Gateway:
 python3 extractConversations.py -i 10000_logs.json -o 10000_logs.csv -c "request.context.vgwSessionID"
 ```
 
+# ConversationAnalysisRecipes.ipynb
+This notebook demonstrates several log analytic functions, starting with downloading logs (via `getAllLogs.py`) and extracting fields of interest (via `extractConversations.py`), then demonstrating basic and intermediate analytic capabilities.
+
 # intent_heatmap.py
-Takes a tab-separated file (ie from `logIntentStats.py`) and builds heat maps to help visualize the intent metrics.
+Takes a tab-separated file (ie exported data frame from `ConversationAnalysisRecipes.ipynb`) and builds heat maps to help visualize the intent metrics.
 
 ```
 python3 intent_heatmap.py -i first-turn-stats.tsv -o intent_conf.png -s "Total" -r "Intent Confidence" -l "Intent" -t "Classifier confidence by intent"
