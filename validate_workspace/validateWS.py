@@ -40,6 +40,11 @@ class DialogNode:
     def getId(self):
         return self.data['dialog_node']
 
+    def getPreviousSibling(self):
+        if 'previous_sibling' in self.data:
+            return self.data['previous_sibling']
+        return None
+
     def getParent(self):
         if 'parent' in self.data:
             return self.data['parent']
@@ -49,7 +54,10 @@ class DialogNode:
        try:
            return self.data['title']
        except:
-           return DialogNode.getId(self)
+           try:
+                return self.data['conditions']
+           except:
+                return DialogNode.getId(self)
 
     def getContext(self):
         return self.data.get('context')
@@ -156,15 +164,18 @@ class Workspace:
         self.data = jsonData
         self.nodeMap = {}
 
-    def getParentNode(self, node):
-        if node.getParent() is None:
-            return None
-
+    def lazyInitNodeMap(self):
         #Lazy init for future calls
         if self.nodeMap == {}:
             node_list = self.getDialogNodes()
             for node in node_list:
                 self.nodeMap[node.getId()] = node
+
+    def getParentNode(self, node):
+        if node.getParent() is None:
+            return None
+
+        self.lazyInitNodeMap()
 
         parent = self.nodeMap.get(node.getParent(), None)
         return parent
@@ -172,14 +183,21 @@ class Workspace:
     def getTitle(self):
         return self.data['name']
 
+    def getDialogNode(self, nodeId):
+        self.lazyInitNodeMap()
+        if nodeId in self.nodeMap:
+            return self.nodeMap[nodeId]
+        return None
+
     def getDialogNodes(self):
         enabled_node_list = []
         dialog_node_list = self.data['dialog_nodes']
         for dialog_node in dialog_node_list:
             if dialog_node.get('disabled') == True or dialog_node.get('disabled') == 'true':
                 continue
-            if 'type' not in dialog_node or dialog_node.get('type') != 'standard':
-                continue
+# Commented out lines prevent extraction of folders
+#             if 'type' not in dialog_node or dialog_node.get('type') != 'standard':
+#                 continue
             enabled_node_list.append(DialogNode(dialog_node))
         return enabled_node_list
 
@@ -249,10 +267,10 @@ def validateSTTConfiguration(dialogNode:DialogNode):
 
 ###
 # Conditions should generally not look at input.text - using an entity and/or intent is cleaner
-### 
+###
 def verifyNoInputTextConditions(dialogNode:DialogNode):
     conditions = dialogNode.getConditions()
-    if 'input.text' in conditions and 'length' not in conditions:
+    if conditions is not None and 'input.text' in conditions and 'length' not in conditions:
         print("WARN:\t{}\tDirectly checks 'input.text'. Consider using an entity or intent in the condition instead. Full condition: `{}`".format(dialogNode.getId(), conditions))
 
 
