@@ -102,3 +102,5 @@ This tool can also be used to test a trained Natural Language Classifier (NLC). 
 5. SSL: [CERTIFICATE_VERIFY_FAILED] on Mac means you may need to initialize Python's SSL certificate store by running `Install Certificates.command` found in `/Applications/Python`.  See more [here](https://github.com/cognitive-catalyst/WA-Testing-Tool/issues/38)
 
 6. "This utility used to work and now it doesn't." Upgrade to latest dependencies with `pip3 install --upgrade -r requirements.txt` and latest code with `git pull`.
+
+7. If you get a Python module loading error, confirm that you are using matching pip and python version, ie `pip3` and `python3` or `pip` and `python`.
