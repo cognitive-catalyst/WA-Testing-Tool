@@ -24,7 +24,6 @@ and positive predictive value rates, and a confustion matrix.
 2. Install dependencies `pip3 install --upgrade -r requirements.txt`
 3. Set up parameters properly in configuration file (ex: `config.ini`). Use `config.ini.sample` to bootstrap your configuration.
 4. Run the process. `python3 run.py -c config.ini` or `python3 run.py -c <path to your config file>`
-  a. If you get a Python module loading error, confirm that you are using matching pip and python version, ie `pip3` and `python3` or `pip` and `python`.
 
 ## Quick Update
 If you have already installed this utility use these steps to get the latest code.
@@ -97,3 +96,5 @@ This tool can also be used to test a trained Natural Language Classifier (NLC). 
 5. SSL: [CERTIFICATE_VERIFY_FAILED] on Mac means you may need to initialize Python's SSL certificate store by running `Install Certificates.command` found in `/Applications/Python`.  See more [here](https://github.com/cognitive-catalyst/WA-Testing-Tool/issues/38)
 
 6. "This utility used to work and now it doesn't." Upgrade to latest dependencies with `pip3 install --upgrade -r requirements.txt` and latest code with `git pull`.
+
+7. If you get a Python module loading error, confirm that you are using matching pip and python version, ie `pip3` and `python3` or `pip` and `python`.
