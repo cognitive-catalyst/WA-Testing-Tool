@@ -7,10 +7,10 @@ import datetime
 import time
 
 DEFAULT_WCS_VERSION='2018-09-20'
-DEFAULT_PAGE_SIZE=100
-DEFAULT_NUMBER_OF_PAGES=100
+DEFAULT_PAGE_SIZE=500
+DEFAULT_NUMBER_OF_PAGES=20
 
-def getAssistant(iam_apikey, url, version):
+def getAssistant(iam_apikey, url, version=DEFAULT_WCS_VERSION):
     authenticator = IAMAuthenticator(iam_apikey)
     c = AssistantV1(
         version=version,
@@ -19,8 +19,11 @@ def getAssistant(iam_apikey, url, version):
     c.set_service_url(url)
     return c
 
+def getLogs(iam_apikey, url, workspace_id, filter, page_size_limit=DEFAULT_PAGE_SIZE, page_num_limit=DEFAULT_NUMBER_OF_PAGES, version=DEFAULT_WCS_VERSION):
+    service = getAssistant(iam_apikey, url, version)
+    return getLogsInternal(service, workspace_id, filter, page_size_limit, page_num_limit)
 
-def getLogs(assistant, workspace_id, filter, page_size_limit, page_num_limit):
+def getLogsInternal(assistant, workspace_id, filter, page_size_limit=DEFAULT_PAGE_SIZE, page_num_limit=DEFAULT_NUMBER_OF_PAGES):
     cursor = None
     pages_retrieved = 0
     allLogs = []
@@ -59,12 +62,13 @@ def getLogs(assistant, workspace_id, filter, page_size_limit, page_num_limit):
     
     return allLogs
 
-def outputLogs(logs, output_columns, output_file):
+def writeLogs(logs, output_file, output_columns="raw"):
     file = None
     if output_file != None:
        file = open(output_file,'w')
+       print("Writing logs to", output_file)   
 
-    if 'raw' == output_columns:
+    if 'raw' == output_columns: 
        writeOut(file, json.dumps(logs,indent=2))
        if file is not None:
            file.close()
@@ -123,5 +127,5 @@ if __name__ == '__main__':
    ARGS = create_parser().parse_args()
 
    service = getAssistant(ARGS.iam_apikey,ARGS.url,ARGS.version)
-   logs    = getLogs(service, ARGS.workspace_id, ARGS.filter, ARGS.page_limit, ARGS.number_of_pages)
-   outputLogs(logs, ARGS.output_columns, ARGS.output_file)
+   logs    = getLogsInternal(service, ARGS.workspace_id, ARGS.filter, ARGS.page_limit, ARGS.number_of_pages)
+   writeLogs(logs, ARGS.output_file, ARGS.output_columns)

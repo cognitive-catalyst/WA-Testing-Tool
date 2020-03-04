@@ -10,71 +10,43 @@ The `filter` syntax is documented here: https://cloud.ibm.com/docs/services/assi
 
 Example for one workspace:
 ```
-python3 getAllLogs.py -a your_api_key -w your_workspace_id -l https://gateway-wdc.watsonplatform.net/assistant/api -c raw -n 100 -p 100 -o 10000_logs.json -f "response_timestamp>=2019-11-01,response_timestamp<2019-11-21"
+python3 getAllLogs.py -a your_api_key -w your_workspace_id -l https://gateway.watsonplatform.net/assistant/api -c raw -n 20 -p 500 -o 10000_logs.json -f "response_timestamp>=2019-11-01,response_timestamp<2019-11-21"
 ```
 
 Example for one assistant:
 ```
-python3 getAllLogs.py -a your_api_key -l https://gateway-wdc.watsonplatform.net/assistant/api -c raw -n 100 -p 100 -o 10000_logs.json -f "language::en,response_timestamp>=2019-11-01,response_timestamp<2019-11-21,request.context.system.assistant_id::your_assistant_id"
+python3 getAllLogs.py -a your_api_key -l https://gateway.watsonplatform.net/assistant/api -c raw -n 20 -p 500 -o 10000_logs.json -f "language::en,response_timestamp>=2019-11-01,response_timestamp<2019-11-21,request.context.system.assistant_id::your_assistant_id"
 ```
 
 The Watson Assistant team has put out a similar script at https://github.com/watson-developer-cloud/community/blob/master/watson-assistant/export_logs.py
 
 # extractConversations.py
-Takes a series of logs, groups them by a conversation unique identifier, and outputs a new JSON file.  The new JSON file has keys for the unique conversation ids, and the value associated to each key is a list of log events for that conversation id.
-
-This will remove Watson Assistant logs that do not belong to a conversation as indicated by the "primary key" parameter.
-
-The input parameter can be a single JSON file containing log events or a directory containing multiple JSON files.
+Takes a series of logs, extracts fields for analysis, builds a Pandas dataframe, and outputs it to a CSV file.  (The `extractConversationData` method can be called directly to build a DataFrame in memory.) The output contains the most frequently analyzed Watson Assistant log fields, some new fields to augment analysis, and custom fields that you specify.
 
 The unique conversation identifier is provided with `-c`.  Note that if a single conversation spans multiple workspaces (skills), you cannot use `conversation_id` as the unique identifier.
 
+Custom fields are specified with `-f`.  You can specifiy multiple custom fields as a comma-separated list, for example `-f response.context.STT_CONFIDENCE,response.context.action`.
+
 Example for text-based assistants:
 ```
-python3 extractConversations.py -i 10000_logs.json -o 10000_logs_by_conversation_id.json -c "response.context.conversation_id"
+python3 extractConversations.py -i 10000_logs.json -o 10000_logs.csv -c "response.context.conversation_id"
 ```
 
 Example for voice-based assistants using IBM Voice Gateway:
 ```
-python3 extractConversations.py -i 10000_logs.json -o 10000_logs_by_conversation_id.json -c "request.context.vgwSessionID"
+python3 extractConversations.py -i 10000_logs.json -o 10000_logs.csv -c "request.context.vgwSessionID"
 ```
 
-# logIntentStats.py
-Quick and dirty summarization of log data, reads a file produced by `extractConversations.py` (with conversation IDs as keys and list of log events as values and builds multiple reports) and produces some summary statistics.
-
-Requires knowing which turn index of the conversation is the first message from the user (the turn index is 0-based), this index is specified as the "first turn index" variable (`-f`).  For most assistants this value is `1`.
-* If the assistant does not say anything until the user sends text, the value is `0`.
-* If the conversation starts with a system greeting (Ex: "How can I help you") from the assistant, the value is `1`.
-* If an orchestration layer sends text to the assistant before the user does, the value may be `2` or higher.
-
-Optionally specify `--speech_confidence_variable` to indicate which context variable contains the speech transcription confidence (A common pattern is to use `request.context.STT_CONFIDENCE`).  If this parameter is omitted the log analysis will not include any speech metrics.
-
-The reports are as follows:
-* `raw-intent-turn.tsv`: First turn utterance, intent, confidence. Helps find new training/test data for the classifier.
-* `first-turn-stats.tsv`: Intent summary gathered from first conversation node only, summarizing totals, classifier confidence, and STT confidence.
-* `all-intent-turn.tsv`: Utterance, intent, confidence for every conversational turn.
-
-Example invocation:
-```
-python3 logIntentStats.py -i 10000_logs_by_conversation_id.json -f 1
-```
+# ConversationAnalysisRecipes.ipynb
+This notebook demonstrates several log analytic functions, starting with downloading logs (via `getAllLogs.py`) and extracting fields of interest (via `extractConversations.py`), then demonstrating basic and intermediate analytic capabilities.
 
 # intent_heatmap.py
-Takes a tab-separated file (ie from `logIntentStats.py`) and builds heat maps to help visualize the intent metrics.
+Takes a tab-separated file (ie exported data frame from `ConversationAnalysisRecipes.ipynb`) and builds heat maps to help visualize the intent metrics.
 
 ```
 python3 intent_heatmap.py -i first-turn-stats.tsv -o intent_conf.png -s "Total" -r "Intent Confidence" -l "Intent" -t "Classifier confidence by intent"
 python3 intent_heatmap.py -i first-turn-stats.tsv -o stt_conf.png -s "Total" -r "STT Confidence" -l "Intent" -t "Speech confidence by intent"
 ```
-
-# printLog.py
-Takes a log file grouped by conversations and prints a quick turn-by-turn summary of that conversation (the text passed between user and system) based on a conversation id.
-
-Example:
-```
-python3 printLog.py 10000_logs_by_conversation_id.json 12345678-4567-7890-abcdefghijklmno
-```
-
 
 # Other analyses
 Several other types of analysis are possible with Watson Assistant log data.  The Watson Assistant development team has released [two notebooks](https://github.com/watson-developer-cloud/assistant-improve-recommendations-notebook) which help further analyze log data:
