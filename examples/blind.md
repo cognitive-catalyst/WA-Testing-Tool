@@ -39,3 +39,6 @@ workspace_id = 01234567-9ABC-DEF0-1234-56789ABCDEF0
 
 ## Sample output
 ![Blind curves](../resources/blind-curves.png)
+
+## Additional options
+[Partial credit scoring](partial-credit.md) may be configured when intents are intentionally similar or overlapping, especially in the case of multi-intent statements.
