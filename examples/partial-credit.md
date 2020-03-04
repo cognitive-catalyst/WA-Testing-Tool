@@ -3,6 +3,7 @@
 ## Story
 A user wants more than one predicted intent to be considered as correct in the blind or k-fold tests. An input file is used where the correct golden intent is mapped to other intents that are partially or fully correct.
 
+This is primarily true in the case of similar or overlapping intents. Users may wish to give the system "credit" for picking one intent out of a multi-intent utterance.
 
 ## Prerequisite
 
@@ -26,17 +27,19 @@ The input file format:
 "intent1","intent7",".5"
 "intent2","intent10",".5"
 "intent3","intent12",".75"
+"intent1_and_intent2","intent1","1.0"
+"intent1_and_intent2","intent2","1.0"
 ```
 
-The user must set the partial credit input file in the configuration file config.ini.
+The user must set the path to the partial credit input file in their configuration file (ie config.ini).
 
 ```
 ; (Optional for blind and kfold) Path to Partial Credit Table
 partial_credit_table = partial-credit-table.csv
 ```
 
-Sample output
-If the partial credit input file is configured the score value in range 0 to 1 is given to the utterances. If partial credit input file is not used then the values are 1 and 0s. 
+Sample output (ie <mode>-out.csv)
+If the partial credit input file is configured the score value in range 0 to 1 is given to the utterances. If partial credit input file is not used then the values are 1 and 0s.  Note that utterances 3, 4, 7, and 9 have different scoring due to use of partial credit.
 
 ```
 "utterance","golden intent","predicted intent","score","does intent match"
