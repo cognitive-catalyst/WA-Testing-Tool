@@ -48,3 +48,6 @@ Performing a k-fold cross-validation on your training set is a technique that ca
 It is important not to misuse the score produced from a cross-validation.  A cross-validation score is a metric that measures ground truth consistency – i.e., how much confusion there is in your ground truth.  It is not a predictor of how well your ground truth will do when applied to real users.  As a simple illustration of this:  you can improve a cross validation score by removing all training that is difficult to handle, leaving only training that is very easy to classify into the correct intent.  This may produce a high cross-validation score such as 95%, but will perform very badly when applied to real customer utterances.
 
 Thus cross-validation should only be used for identifying opportunities for improving the consistency in the ground truth.   For a pre-deploy metric of overall quality, a properly created and maintained test set must be used.
+
+## Additional options
+[Partial credit scoring](partial-credit.md) may be configured when intents are intentionally similar or overlapping, especially in the case of multi-intent statements.
