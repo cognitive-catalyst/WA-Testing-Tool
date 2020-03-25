@@ -1,5 +1,10 @@
 ## Scripts to extract and analyze Watson Assistant logs
-These scripts are intended to form a data pipeline
+These scripts are intended to form a data pipeline for Watson Assistant log analysis.
+
+For more information on Watson Assistant log analysis, check out the blog series "Analyzing and Improving a Watson Assistant Solution":
+* [Part 1: Analytics Personas and Existing Solutions](https://medium.com/ibm-watson/analyzing-and-improving-a-watson-assistant-solution-part-1-analytics-personas-and-existing-9fbd2f0b7478)
+* [Part 2: Foundational Components of Watson Assistant analysis](https://medium.com/ibm-watson/analyzing-and-improving-a-watson-assistant-solution-part-2-foundational-components-of-watson-6596518e7a28)
+* [Part 3: Recipes for common analytic patterns](https://medium.com/ibm-watson/analyzing-and-improving-a-watson-assistant-solution-part-3-recipes-for-common-analytic-patterns-1edb4b1f2ef2)
 
 # getAllLogs.py
 Using a filter argument grabs a set of logs from Watson Assistant.  Specify the maximum number of log pages (`-n`) to retrieve and the maximum number of log entries per page (`-p`).
