@@ -11,6 +11,7 @@ DEFAULT_PAGE_SIZE=500
 DEFAULT_NUMBER_OF_PAGES=20
 
 def getAssistant(iam_apikey, url, version=DEFAULT_WCS_VERSION):
+    '''Retrieve Watson Assistant SDK object'''
     authenticator = IAMAuthenticator(iam_apikey)
     c = AssistantV1(
         version=version,
@@ -20,10 +21,12 @@ def getAssistant(iam_apikey, url, version=DEFAULT_WCS_VERSION):
     return c
 
 def getLogs(iam_apikey, url, workspace_id, filter, page_size_limit=DEFAULT_PAGE_SIZE, page_num_limit=DEFAULT_NUMBER_OF_PAGES, version=DEFAULT_WCS_VERSION):
+    '''Public API for script, connects to Watson Assistant and downloads all logs'''
     service = getAssistant(iam_apikey, url, version)
     return getLogsInternal(service, workspace_id, filter, page_size_limit, page_num_limit)
 
 def getLogsInternal(assistant, workspace_id, filter, page_size_limit=DEFAULT_PAGE_SIZE, page_num_limit=DEFAULT_NUMBER_OF_PAGES):
+    '''Fetches `page_size_limit` logs at a time through Watson Assistant log API, a maximum of `page_num_limit` times, and returns array of log events'''
     cursor = None
     pages_retrieved = 0
     allLogs = []
@@ -63,6 +66,12 @@ def getLogsInternal(assistant, workspace_id, filter, page_size_limit=DEFAULT_PAG
     return allLogs
 
 def writeLogs(logs, output_file, output_columns="raw"):
+    '''
+    Writes log output to file system or screen.  Includes three modes:
+    `raw`: logs are written in JSON format
+    `all`: all log columns useful for intent training are written in CSV format
+    `utterance`: only the `input.text` column is written (one per line)
+    '''
     file = None
     if output_file != None:
        file = open(output_file,'w')
