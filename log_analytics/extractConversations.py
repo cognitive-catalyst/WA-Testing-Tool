@@ -45,14 +45,6 @@ def deep_get(dct, keys, default=None):
         except TypeError:
             return default
     return dct
-    
-    
- #   for key in keys:
- #       try:
-#            dct = dct[key]
- #       except KeyError:
-  #          return default
-  #  return dct
 
 def getFieldShortName(field_name):
     """ Simplifies `field_name` in the exported dataframe by removing Watson Assistant prefixes """
@@ -128,6 +120,8 @@ def extractConversationData(logs, conversation_id_key='response.context.conversa
     df['request_timestamp']  = pd.to_datetime(df['request_timestamp'])
     df['response_timestamp'] = pd.to_datetime(df['response_timestamp'])
     df['intent_confidence'] = pd.to_numeric(df["intent_confidence"], errors='coerce')
+    df['intent_confidence'] = df['intent_confidence'].fillna(0.0)
+    df[df['intent_confidence']=='']=0.0
 
     # Lastly sort by conversation ID, and then request, so that the logs become readable. 
     df = df.sort_values([primarySortField, 'request_timestamp'], ascending=[True, True]).reset_index(drop=True)
@@ -186,9 +180,9 @@ def augment_conversation_and_message_times(inputDF:pd.DataFrame, conversation_so
     #TurnStart == LastTurnEnd except for the first turn of each conversation, which uses conversation_start
     df['absolute_message_start'] = df[['conversation_start','last_message_end']].max(axis=1)
 
-    #The arithmetic we were actually interested in
-    df['message_start'] = (df['absolute_message_start'] - df['conversation_start'])#.apply(lambda x:str(x)[7:18])
-    df['message_end']   = (df['request_timestamp'] - df['conversation_start'])#.apply(lambda x:str(x)[7:18])
+    #The arithmetic we were actually interested in. Optionally add `.apply(lambda x:str(x)[7:18])` at end for cleaner formatting
+    df['message_start'] = (df['absolute_message_start'] - df['conversation_start'])
+    df['message_end']   = (df['request_timestamp'] - df['conversation_start'])
 
     #rounding  the time delta columns
     
