@@ -38,7 +38,7 @@ def readLogsFromFile(filename):
 
 def deep_get(dct, keys, default=None):
     for key in keys:
-        try: 
+        try:
             dct = dct[key]
         except KeyError:
             return default
@@ -180,12 +180,10 @@ def augment_conversation_and_message_times(inputDF:pd.DataFrame, conversation_so
     #TurnStart == LastTurnEnd except for the first turn of each conversation, which uses conversation_start
     df['absolute_message_start'] = df[['conversation_start','last_message_end']].max(axis=1)
 
-    #The arithmetic we were actually interested in. Optionally add `.apply(lambda x:str(x)[7:18])` at end for cleaner formatting
-    df['message_start'] = (df['absolute_message_start'] - df['conversation_start'])
-    df['message_end']   = (df['request_timestamp'] - df['conversation_start'])
+    #The arithmetic we were actually interested in. Optionally add `.apply(lambda x:str(x)[7:18])` at on each result for cleaner formatting
+    df['message_start'] = df['absolute_message_start'] - df['conversation_start']
+    df['message_end']   = df['request_timestamp'] - df['conversation_start']
 
-    #rounding  the time delta columns
-    
     return df.drop(['last_message_end', 'absolute_message_start'], axis=1)
 
 def augment_sequence_numbers(inputDF:pd.DataFrame, conversation_sort_key:str) -> pd.DataFrame:
