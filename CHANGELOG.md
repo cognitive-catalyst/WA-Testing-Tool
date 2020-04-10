@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## 2020-04-10
+### Changed
+- validateWS.py is now moved to `log_analytics` folder.
+- `waObjects.py` is extracted from that module to provide workspace parsing logic, usable in other modules including analytics
+
 ## 2020-01-15
 ### Added
 - [Log extraction and basic analysis](log_analytics/README.md) capabilities in `log_analytics` folder.
