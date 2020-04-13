@@ -66,8 +66,7 @@ def func(args):
             # handling edge case where precision and recall are 0. Avoids DivideByZeroError
             if precision != 0.0 and recall != 0.0:
                 fscores[idx] = (2 * precision * recall) / (precision + recall)
-      
-      
+
     out_df = pd.DataFrame(data={'intent': labels,
                                 'recall': recalls,
                                 'precision': precisions,
