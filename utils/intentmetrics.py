@@ -55,14 +55,19 @@ def func(args):
             retrieved_doc_num = len(in_df[retrieved_doc_indx])
             relevant_doc_num  = len(in_df[relevant_doc_indx])
 
-            # Sets precision and recall to 0 if retrieved and relevant docs are 0
+            # precision and recall are 0 if retrieved and revelvant doc numbers are 0
             precision = in_df[retrieved_doc_indx]['score'].sum() / retrieved_doc_num if retrieved_doc_num != 0 else 0
-            recall = in_df[relevant_doc_indx]['score'].sum()/ relevant_doc_num if relevant_doc_num else 0
-            
+            recall = in_df[relevant_doc_indx]['score'].sum()/ relevant_doc_num if relevant_doc_num != 0 else 0
+
             precisions[idx] = precision
             recalls[idx] = recall
-            fscores[idx] = (2 * precision * recall) / (precision + recall)
-
+            fscores[idx] = 0
+            
+            # handling edge case where precision and recall are 0. Avoids DivideByZeroError
+            if precision != 0.0 and recall != 0.0:
+                fscores[idx] = (2 * precision * recall) / (precision + recall)
+      
+      
     out_df = pd.DataFrame(data={'intent': labels,
                                 'recall': recalls,
                                 'precision': precisions,
