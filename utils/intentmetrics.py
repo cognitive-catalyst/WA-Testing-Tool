@@ -75,7 +75,9 @@ def func(args):
     print ("Wrote intent metrics output to {}. Includes {} correct intents in {} tries for accuracy of {}.".format(args.out_file, num_correct, samples, accuracy))
 
     # Fill f-score column with the recall when the precision is undefined.  Produces a more actionable tree map especially in partial-credit scenarios.
-    out_df.loc[out_df['precision'].isnull(),'f-score'] = out_df['recall']
+    if args.partial_credit_on is not None:
+        out_df.loc[out_df['precision'] == 0.0,'f-score'] = out_df['recall']
+    
     generateTreemap(args.out_file, out_df)
 
 def generateTreemap(base_out_file, out_df):
