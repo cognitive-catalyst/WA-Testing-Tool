@@ -17,6 +17,7 @@
 """ Generate per intent metrics on True Positive/False Positives
 """
 import csv
+import math
 import pandas as pd
 from argparse import ArgumentParser
 from sklearn.metrics import precision_recall_fscore_support
@@ -37,10 +38,12 @@ def func(args):
 
     labels = in_df[args.golden_column].drop_duplicates().sort_values()
 
+    # if there are no True Positives then set the precision, recall, and f-score to 0
     precisions, recalls, fscores, support = \
         precision_recall_fscore_support(y_true=in_df[args.golden_column],
                                         y_pred=in_df[args.test_column],
-                                        labels=labels)
+                                        labels=labels,
+                                        zero_division=0)
 
     #Raw accuracy as well
     in_df['correct'] = (in_df[args.golden_column] == in_df[args.test_column])
@@ -55,12 +58,16 @@ def func(args):
             retrieved_doc_num = len(in_df[retrieved_doc_indx])
             relevant_doc_num  = len(in_df[relevant_doc_indx])
 
-            precision = in_df[retrieved_doc_indx]['score'].sum() / retrieved_doc_num
-            recall = in_df[relevant_doc_indx]['score'].sum()/ relevant_doc_num
+            precision = in_df[retrieved_doc_indx]['score'].sum() / retrieved_doc_num if retrieved_doc_num != 0 else 0
+            recall = in_df[relevant_doc_indx]['score'].sum()/ relevant_doc_num if relevant_doc_num else 0
 
             precisions[idx] = precision
             recalls[idx] = recall
-            fscores[idx] = (2 * precision * recall) / (precision + recall)
+            fscores[idx] = 0
+
+            # handling edge case where precision and recall are 0. Avoids DivideByZeroError
+            if precision != 0.0 and recall != 0.0:
+                fscores[idx] = (2 * precision * recall) / (precision + recall)
 
     out_df = pd.DataFrame(data={'intent': labels,
                                 'recall': recalls,
@@ -75,7 +82,9 @@ def func(args):
     print ("Wrote intent metrics output to {}. Includes {} correct intents in {} tries for accuracy of {}.".format(args.out_file, num_correct, samples, accuracy))
 
     # Fill f-score column with the recall when the precision is undefined.  Produces a more actionable tree map especially in partial-credit scenarios.
-    out_df.loc[out_df['precision'].isnull(),'f-score'] = out_df['recall']
+    if args.partial_credit_on is not None:
+        out_df.loc[out_df['precision'] == 0.0,'f-score'] = out_df['recall']
+    
     generateTreemap(args.out_file, out_df)
 
 def generateTreemap(base_out_file, out_df):

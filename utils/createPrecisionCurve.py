@@ -52,7 +52,7 @@ def func(args):
     classifier_stat_list = []
     cf_frames = []
     confidences_list = []
-    intents_in_results = pd.Series()
+    intents_in_results = pd.Series(dtype=float)
 
     classifier_num = len(args.classifiers_results)
 
