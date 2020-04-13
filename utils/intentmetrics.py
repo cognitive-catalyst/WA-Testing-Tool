@@ -58,8 +58,9 @@ def func(args):
             retrieved_doc_num = len(in_df[retrieved_doc_indx])
             relevant_doc_num  = len(in_df[relevant_doc_indx])
 
+            # precision and recall are 0 if retrieved and revelvant doc numbers are 0
             precision = in_df[retrieved_doc_indx]['score'].sum() / retrieved_doc_num if retrieved_doc_num != 0 else 0
-            recall = in_df[relevant_doc_indx]['score'].sum()/ relevant_doc_num if relevant_doc_num else 0
+            recall = in_df[relevant_doc_indx]['score'].sum()/ relevant_doc_num if relevant_doc_num != 0 else 0
 
             precisions[idx] = precision
             recalls[idx] = recall
