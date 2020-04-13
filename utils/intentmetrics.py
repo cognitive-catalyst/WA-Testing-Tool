@@ -17,7 +17,6 @@
 """ Generate per intent metrics on True Positive/False Positives
 """
 import csv
-import math
 import pandas as pd
 from argparse import ArgumentParser
 from sklearn.metrics import precision_recall_fscore_support
@@ -38,12 +37,10 @@ def func(args):
 
     labels = in_df[args.golden_column].drop_duplicates().sort_values()
 
-    # if there are no True Positives then set the precision, recall, and f-score to 0
     precisions, recalls, fscores, support = \
         precision_recall_fscore_support(y_true=in_df[args.golden_column],
                                         y_pred=in_df[args.test_column],
-                                        labels=labels,
-                                        zero_division=0)
+                                        labels=labels)
 
     #Raw accuracy as well
     in_df['correct'] = (in_df[args.golden_column] == in_df[args.test_column])
@@ -65,11 +62,12 @@ def func(args):
             precisions[idx] = precision
             recalls[idx] = recall
             fscores[idx] = 0
-
+            
             # handling edge case where precision and recall are 0. Avoids DivideByZeroError
             if precision != 0.0 and recall != 0.0:
                 fscores[idx] = (2 * precision * recall) / (precision + recall)
-
+      
+      
     out_df = pd.DataFrame(data={'intent': labels,
                                 'recall': recalls,
                                 'precision': precisions,
