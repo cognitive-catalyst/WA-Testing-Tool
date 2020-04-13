@@ -40,7 +40,8 @@ def func(args):
     precisions, recalls, fscores, support = \
         precision_recall_fscore_support(y_true=in_df[args.golden_column],
                                         y_pred=in_df[args.test_column],
-                                        labels=labels)
+                                        labels=labels,
+                                        zero_division=0)
 
     #Raw accuracy as well
     in_df['correct'] = (in_df[args.golden_column] == in_df[args.test_column])
