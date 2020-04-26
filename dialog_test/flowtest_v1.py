@@ -194,7 +194,10 @@ class FlowTestV1:
                 if 'text' in r['output']:
                   innerText = r['output']['text']
                 if row['Match Output'] != '':
-                    matchedOutput = bool(re.search(row['Match Output'], '\n'.join(innerText)))
+                    row['Match Output'] = '<br>'.join(row['Match Output'].splitlines())
+                    ouput_pattern = row['Match Output']
+                    ouput_pattern = re.escape(ouput_pattern) if not ouput_pattern.startswith('/') else ouput_pattern[1:-1]
+                    matchedOutput = bool(re.search(ouput_pattern, '<br>'.join(innerText), re.MULTILINE))
                     if matchedOutput == False:
                       self.reportFailure()
                 else:
@@ -226,7 +229,7 @@ class FlowTestV1:
 
                 record = { 
                     'User Input': row['User Input'],
-                    'Output Text': '\n'.join(r['output']['text']),
+                    'Output Text': '<br>'.join(r['output']['text']),
                     'Alternate Intents': ai,
                     'Conversation ID': r['context']['conversation_id'],
                     'Context': r['context'],

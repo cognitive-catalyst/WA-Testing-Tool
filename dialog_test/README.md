@@ -30,6 +30,6 @@ The columns are
 
 All fields are optional
 
-* Match Output indicates a substring that must be present in the Watson Assistant response. It is not necessary to provide the full input string.
+* Match Output indicates a substring that must be present in the Watson Assistant response. It is not necessary to provide the full output string. Regular Expressions can be enclosed with forward slashes (e.g. `/The reservation is for *. PM/`). `<br>` can be used to join lines when specifyig multiline ouputs (e.g. `The reservation is for 6 guests<br>What day would you like to come in?`).
 
 If the User Input column is exactly 'NEWCONVERSATION' (no quotes) then a new conversation is started.  This allows multiple tests in the same file.
