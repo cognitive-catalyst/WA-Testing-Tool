@@ -95,6 +95,7 @@ async def fill_df(utterance, row_idx, out_df, workspace_id, conversation, sem):
             response_text = ''
             response_text_list = resp['output']['text']
             if len(response_text_list) != 0:
+                response_text_list = [text for text in response_text_list if type(text) == str]
                 response_text = ' '.join(response_text_list)
 
             out_df.loc[row_idx, DIALOG_RESPONSE_COLUMN] = response_text

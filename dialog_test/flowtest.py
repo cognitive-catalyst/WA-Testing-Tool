@@ -44,9 +44,10 @@ def processPath(inputPath:str):
         print('Cannot read test(s) from path: {}'.format(inputPath))
         sys.exit(-5)
 
+    success = True
     if(os.path.isfile(inputPath)):
         print('Processing single input file {}'.format(inputPath))
-        processFile(inputPath, watsonSDKVersion)
+        success = processFile(inputPath, watsonSDKVersion)
 
     if(os.path.isdir(inputPath)):
         print('Processing input directory {}'.format(inputPath))
@@ -55,7 +56,10 @@ def processPath(inputPath:str):
                     if file.endswith('.tsv'):
                         testFile = os.path.join(root, file)
                         print(testFile)
-                        processFile(testFile, watsonSDKVersion)
+                        success = processFile(testFile, watsonSDKVersion) and success
+
+    rc = 0 if success else -1
+    sys.exit(rc)
 
 
 def processFile(flowfile:str, watsonSDKVersion:str):
@@ -115,6 +119,9 @@ def processFile(flowfile:str, watsonSDKVersion:str):
 
     #print('Report in by intent structure')
     #print(ft.convertReportToIntentPerRow(results,input_all_lines=False))
+
+    success = results[['Matched Output', 'Matched Intent', 'Matched Entity']].replace(to_replace=['', 'n/a'], value=True)
+    return success.all().all()
 
 def main():
     scrapeConversation(sys.argv[2], sys.argv[1])
