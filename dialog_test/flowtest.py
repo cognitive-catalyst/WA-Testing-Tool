@@ -71,7 +71,7 @@ def processFile(flowfile:str, watsonSDKVersion:str):
     #print(flow)
     #print()
 
-    ft = flowtest_v1.FlowTestV1(password=PASSWORD, version=conversation_version, url=url_default)
+    ft = flowtest_v1.FlowTestV1(password=PASSWORD, version=conversation_version, url=WA_URL)
 
     # print('Creating blank template: ')
     # blank_flow = ft.createBlankTemplate()
