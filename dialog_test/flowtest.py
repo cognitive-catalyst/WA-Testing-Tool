@@ -1,3 +1,4 @@
+import json
 import os
 import sys
 import flowtest_v1
@@ -112,9 +113,10 @@ def processFile(flowfile:str, watsonSDKVersion:str):
 
     # Json is a list. So you save differently.
     filename = os.path.join(OUTPUT_FOLDER, '{}_report.json'.format(basefilename))
-    with open(filename, 'w') as file_handler:
-            for item in results:
-                    file_handler.write("{}\n".format(item))
+    with open(filename, 'w', encoding='utf-8') as file_handler:
+        compact = results.to_json(orient='records')
+        readable = json.dumps(json.loads(compact), indent=2)
+        file_handler.write(readable)
 
 
     #print('Report in by intent structure')
