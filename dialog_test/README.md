@@ -23,10 +23,27 @@ Check the `results` folder for test output.  If any MATCH column has a 'FALSE' v
 Additionally, each test will print a single PASS or FAIL marker to standard out upon completion.
 
 ## Building tests with configuration
-Build test files in the tests subfolder.  Each test should be a tab separated file.
+Build test files in the tests subfolder.  Each test should be a tab separated file or a JSON file.
 
-The columns are
+For a tab-separated file, the column headers are the following ("Turn number" is NOT specified as a column header)
 (Turn number) User Input      Match Output    Match Intent    Match Entity    Alternate Intents       Intents Object  Entities Object Context Variables       System Object
+
+For a JSON test file, the file contents are an array of JSON objects.  For example:
+```
+[
+  {
+    "Turn": "0",
+    "Context Variables": {
+      "user_type": "GOLD"
+    }
+  },
+  {
+    "Turn": "1",
+    "User Input": "I need to reset my password",
+    "Match Output": "I can help you reset your password"
+  }
+]
+```
 
 All fields are optional
 
