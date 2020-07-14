@@ -66,7 +66,11 @@ def processPath(inputPath:str):
 def processFile(flowfile:str, watsonSDKVersion:str):
     basefilename = os.path.basename(flowfile).split('.')[0]
 
-    flow = pd.read_csv(flowfile, delimiter='\t' )
+    if flowfile.endswith("json"):
+       flow = json.load(open(flowfile))
+       flow = pd.DataFrame(flow)
+    else:
+       flow = pd.read_csv(flowfile, delimiter='\t' )
 
     # This bit widens the output on screen.
     pd.set_option('display.max_columns', 10000)
@@ -89,7 +93,8 @@ def processFile(flowfile:str, watsonSDKVersion:str):
     # print()
 
     print()
-    print('Running Conversational Flow: {} ({})'.format(flowfile, flow.shape[0]))
+    #print('Running Conversational Flow: {} ({})'.format(flowfile, flow.shape[0]))
+    print('Running Conversational Flow: {} ({})'.format(flowfile, len(flow)))
     results = ft.runFlowTest(workspace_id=workspace_id, flow=flow, show_progress=True, version=watsonSDKVersion)
     print()
     #Full esults are hard to read, instead we let step by step progress report failures as they happen
