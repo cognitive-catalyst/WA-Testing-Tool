@@ -93,7 +93,6 @@ def processFile(flowfile:str, watsonSDKVersion:str):
     # print()
 
     print()
-    #print('Running Conversational Flow: {} ({})'.format(flowfile, flow.shape[0]))
     print('Running Conversational Flow: {} ({})'.format(flowfile, len(flow)))
     results = ft.runFlowTest(workspace_id=workspace_id, flow=flow, show_progress=True, version=watsonSDKVersion)
     print()
