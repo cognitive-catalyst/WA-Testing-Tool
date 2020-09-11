@@ -54,6 +54,7 @@ def func(args):
     #Plot a normalized confusion matrix as a heatmap
     plt.figure(figsize = (10,10))
     df_cm = pd.DataFrame(output_matrix, index=index_labels, columns=column_labels)
+    df_cm = df_cm.to_numpy()
     df_cm = df_cm.astype('float') / df_cm.sum(axis=1)[:, np.newaxis]
     sns.set(font_scale=1)
     # Add 'annot=True' to the list of options for heatmap if you want to print the numbers, ideal only for small maps
