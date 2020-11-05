@@ -24,7 +24,8 @@ import pandas as pd
 from argparse import ArgumentParser
 import aiohttp
 from ibm_watson import AssistantV1
-from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
+
+from utils.choose_auth import choose_auth
 
 from __init__ import UTF_8, CONFIDENCE_COLUMN, \
     UTTERANCE_COLUMN, PREDICTED_INTENT_COLUMN, \
@@ -139,7 +140,8 @@ def func(args):
     sem = asyncio.Semaphore(args.rate_limit)
     loop = asyncio.get_event_loop()
 
-    authenticator = IAMAuthenticator(args.iam_apikey)
+    authenticator = choose_auth(args)
+
     conv = AssistantV1(
         version=args.version,
         authenticator=authenticator
@@ -211,6 +213,8 @@ def create_parser():
                         help='Partial credit table')
     parser.add_argument('-v', '--version', type=str, default=DEFAULT_WA_VERSION,
                         help='Watson Assistant API version in YYYY-MM-DD form')
+    parser.add_argument('--auth-type', type=str, choices=['iam', 'bearer'], default='iam',
+                        help='Type of authentication. CP4D requires bearer.')
     return parser
 
 

@@ -27,9 +27,11 @@ import csv
 import pandas as pd
 from argparse import ArgumentParser
 from ibm_watson import AssistantV1
-from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
+from ibm_cloud_sdk_core.authenticators import IAMAuthenticator, BearerTokenAuthenticator
 import sys
 import traceback
+
+from utils.choose_auth import choose_auth
 
 from __init__ import UTF_8, DEFAULT_WA_VERSION,\
                   UTTERANCE_COLUMN, INTENT_COLUMN, \
@@ -170,7 +172,8 @@ def func(args):
                      'values': row[ENTITY_VALUES_ARR_COLUMN]}
                     for _, row in entity_df.iterrows()]
 
-    authenticator = IAMAuthenticator(args.iam_apikey)
+    authenticator = choose_auth(args)
+
     conv = AssistantV1(
         version=args.version,
         authenticator=authenticator
@@ -234,6 +237,8 @@ def create_parser():
                         help='URL to Watson Assistant. Ex: https://gateway-wdc.watsonplatform.net/assistant/api')
     parser.add_argument('-v', '--version', type=str, default=DEFAULT_WA_VERSION,
                         help='Watson Assistant API version in YYYY-MM-DD form')
+    parser.add_argument('--auth-type', type=str, required=True, choices=['iam', 'bearer'], default='iam',
+                        help='Type of authenticator. CP4D requires bearer.')
 
     return parser
 

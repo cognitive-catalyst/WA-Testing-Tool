@@ -18,12 +18,13 @@
 """ Parse workspace into artifacts for training
 """
 import os
+import sys
 import csv
 import json
 import os.path
 from argparse import ArgumentParser
 from ibm_watson import AssistantV1
-from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
+from ibm_cloud_sdk_core.authenticators import IAMAuthenticator, BearerTokenAuthenticator
 from __init__ import TRAIN_INTENT_FILENAME, DEFAULT_WA_VERSION, \
                      TRAIN_ENTITY_FILENAME, WORKSPACE_BASE_FILENAME, UTF_8
 
@@ -31,7 +32,12 @@ from __init__ import TRAIN_INTENT_FILENAME, DEFAULT_WA_VERSION, \
 def func(args):
     workspace = None
     if not os.path.isfile(args.input):
-        authenticator = IAMAuthenticator(args.iam_apikey)
+        if args.auth_type == 'iam':
+            authenticator = IAMAuthenticator(args.iam_apikey)
+        elif args.auth_type == 'bearer':
+            authenticator = BearerTokenAuthenticator(args.iam_apikey)
+        else:
+            raise ValueError(f'Invalid auth_type: "{args.auth_type}"')
         conv = AssistantV1(
             version=args.version,
             authenticator=authenticator
@@ -101,6 +107,8 @@ def create_parser():
                         default=os.getcwd())
     parser.add_argument('-v', '--version', type=str, default=DEFAULT_WA_VERSION,
                         help='Watson Assistant API version in YYYY-MM-DD form')
+    parser.add_argument('--auth-type', type=str, default='iam',
+                        help='Authentication type, IAM is default, bearer is required for CP4D.', choices=['iam', 'bearer'])
     return parser
 
 

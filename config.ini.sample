@@ -5,6 +5,9 @@
 iam_apikey =
 url = https://api.us-south.assistant.watson.cloud.ibm.com
 
+; Cloud Pak 4 Data requires the "bearer" auth_type. "iam" is default.
+; auth_type = bearer
+
 ; Instances created before December 13, 2019 have a url with this pattern
 ;url = https://gateway.watsonplatform.net/assistant/api
 
