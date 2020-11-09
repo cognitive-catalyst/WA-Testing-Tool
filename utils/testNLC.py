@@ -26,7 +26,7 @@ import aiohttp
 from ibm_watson import NaturalLanguageClassifierV1
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator, BearerTokenAuthenticator
 
-from utils.choose_auth import choose_auth
+from choose_auth import choose_auth
 
 from __init__ import UTF_8, CONFIDENCE_COLUMN, \
     UTTERANCE_COLUMN, PREDICTED_INTENT_COLUMN, \

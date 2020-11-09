@@ -24,6 +24,7 @@ import json
 import os.path
 from argparse import ArgumentParser
 from ibm_watson import AssistantV1
+from choose_auth import choose_auth
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator, BearerTokenAuthenticator
 from __init__ import TRAIN_INTENT_FILENAME, DEFAULT_WA_VERSION, \
                      TRAIN_ENTITY_FILENAME, WORKSPACE_BASE_FILENAME, UTF_8
@@ -32,12 +33,8 @@ from __init__ import TRAIN_INTENT_FILENAME, DEFAULT_WA_VERSION, \
 def func(args):
     workspace = None
     if not os.path.isfile(args.input):
-        if args.auth_type == 'iam':
-            authenticator = IAMAuthenticator(args.iam_apikey)
-        elif args.auth_type == 'bearer':
-            authenticator = BearerTokenAuthenticator(args.iam_apikey)
-        else:
-            raise ValueError(f'Invalid auth_type: "{args.auth_type}"')
+        authenticator = choose_auth(args)
+
         conv = AssistantV1(
             version=args.version,
             authenticator=authenticator

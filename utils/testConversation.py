@@ -25,7 +25,7 @@ from argparse import ArgumentParser
 import aiohttp
 from ibm_watson import AssistantV1
 
-from utils.choose_auth import choose_auth
+from choose_auth import choose_auth
 
 from __init__ import UTF_8, CONFIDENCE_COLUMN, \
     UTTERANCE_COLUMN, PREDICTED_INTENT_COLUMN, \

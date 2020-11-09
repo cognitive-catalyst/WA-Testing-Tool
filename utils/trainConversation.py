@@ -31,7 +31,7 @@ from ibm_cloud_sdk_core.authenticators import IAMAuthenticator, BearerTokenAuthe
 import sys
 import traceback
 
-from utils.choose_auth import choose_auth
+from choose_auth import choose_auth
 
 from __init__ import UTF_8, DEFAULT_WA_VERSION,\
                   UTTERANCE_COLUMN, INTENT_COLUMN, \
