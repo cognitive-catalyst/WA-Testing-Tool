@@ -237,8 +237,8 @@ def create_parser():
                         help='URL to Watson Assistant. Ex: https://gateway-wdc.watsonplatform.net/assistant/api')
     parser.add_argument('-v', '--version', type=str, default=DEFAULT_WA_VERSION,
                         help='Watson Assistant API version in YYYY-MM-DD form')
-    parser.add_argument('--auth-type', type=str, required=True, choices=['iam', 'bearer'], default='iam',
-                        help='Type of authenticator. CP4D requires bearer.')
+    parser.add_argument('--auth-type', type=str, default='iam',
+                        help='Authentication type, IAM is default, bearer is required for CP4D.', choices=['iam', 'bearer'])
 
     return parser
 

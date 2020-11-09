@@ -193,8 +193,8 @@ def create_parser():
                         help='Maximum number of requests per second')
     parser.add_argument('-c', '--partial_credit_table', type=str,
                         help='Partial credit table')
-    parser.add_argument('--auth-type', choices=['iam', 'bearer'], default='iam',
-                        help='Choose the authentication type. CP4D requires bearer, default is IAM.')
+    parser.add_argument('--auth-type', type=str, default='iam',
+                        help='Authentication type, IAM is default, bearer is required for CP4D.', choices=['iam', 'bearer'])
     return parser
 
 

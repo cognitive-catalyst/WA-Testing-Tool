@@ -213,8 +213,8 @@ def create_parser():
                         help='Partial credit table')
     parser.add_argument('-v', '--version', type=str, default=DEFAULT_WA_VERSION,
                         help='Watson Assistant API version in YYYY-MM-DD form')
-    parser.add_argument('--auth-type', type=str, choices=['iam', 'bearer'], default='iam',
-                        help='Type of authentication. CP4D requires bearer.')
+    parser.add_argument('--auth-type', type=str, default='iam',
+                        help='Authentication type, IAM is default, bearer is required for CP4D.', choices=['iam', 'bearer'])
     return parser
 
 

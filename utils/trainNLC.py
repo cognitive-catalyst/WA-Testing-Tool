@@ -95,8 +95,8 @@ def create_parser():
                         help='Classifier name')
     parser.add_argument('-l', '--url', type=str, default='https://gateway.watsonplatform.net/natural_language_classifier/api',
                         help='URL to Watson NLC. Ex: https://gateway.watsonplatform.net/natural_language_classifier/api')
-    parser.add_argument('--auth-type', choices=['iam', 'bearer'], default='iam',
-                        help='Choose between iam (default) and bearer token')
+    parser.add_argument('--auth-type', type=str, default='iam',
+                        help='Authentication type, IAM is default, bearer is required for CP4D.', choices=['iam', 'bearer'])
     return parser
 
 if __name__ == '__main__':
