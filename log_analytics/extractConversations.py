@@ -5,10 +5,10 @@ from argparse import ArgumentParser
 
 # Reading Watson Assistant log files in .json format, each log event is a JSON record.
 # Return a list of Watson Assistant log events.
-def readLogs(inputPath):
+def readLogs(inputPath, conversation_id_key='response.context.conversation_id', custom_field_names_comma_separated=None):
     """Reads all log event .json files in `inputPath` and its subdirectories."""
     if(os.path.isdir(inputPath)):
-        data = []
+        data = pd.DataFrame()
         print('Processing input directory {}'.format(inputPath))
         for root, dirs, files in os.walk(inputPath):
             dirs.sort()
@@ -16,19 +16,23 @@ def readLogs(inputPath):
             for file in files:
                 if file.endswith('.json'):
                     logFile = os.path.join(root, file)
-                    fileData = readLogsFromFile(logFile)
-                    data.extend(fileData)
+                    fileData = readLogsFromFile(logFile, conversation_id_key, custom_field_names_comma_separated)
+                    if fileData is not None and len(fileData) > 0:
+                        data = data.append(fileData)
         return data
     else:
         return readLogsFromFile(inputPath)
 
-def readLogsFromFile(filename):
+def readLogsFromFile(filename, conversation_id_key='response.context.conversation_id', custom_field_names_comma_separated=None):
     """Reads all log events from JSON file `filename`."""
     print('Processing input file {}'.format(filename))
     with open(filename) as json_file:
         data = json.load(json_file)
 
-    return data
+    if data is not None and len(data) > 0:
+       return extractConversationData(data, conversation_id_key, custom_field_names_comma_separated)
+    else:
+       return None
 
 #------------------------------------------------------------------------
 
@@ -223,6 +227,5 @@ def create_parser():
 if __name__ == '__main__':
    ARGS = create_parser().parse_args()
 
-   logs       = readLogs(ARGS.input_file)
-   logRecords = extractConversationData(logs, ARGS.conversation_id, ARGS.custom_fields)
+   logRecords  = readLogs(ARGS.input_file, ARGS.conversation_id, ARGS.custom_fields)
    writeFrameToFile(logRecords, ARGS.output_file)
