@@ -21,7 +21,7 @@ def readLogs(inputPath, conversation_id_key='response.context.conversation_id', 
                         data = data.append(fileData)
         return data
     else:
-        return readLogsFromFile(inputPath)
+        return readLogsFromFile(inputPath, conversation_id_key, custom_field_names_comma_separated)
 
 def readLogsFromFile(filename, conversation_id_key='response.context.conversation_id', custom_field_names_comma_separated=None):
     """Reads all log events from JSON file `filename`."""
