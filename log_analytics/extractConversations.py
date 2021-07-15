@@ -70,7 +70,12 @@ def getCustomFields(custom_field_names):
 def logToRecord(log, customFields):
         record = {}
         record['conversation_id']          = log['response']['context']['conversation_id']
-        record['dialog_turn_counter']      = log['response']['context']['system']['dialog_turn_counter']
+        #Location of dialog_turn_counter varies by WA version
+        if 'dialog_turn_counter' in log['response']['context']['system']:
+            record['dialog_turn_counter']  = log['response']['context']['system']['dialog_turn_counter']
+        else:
+            record['dialog_turn_counter']  = log['request']['context']['system']['dialog_turn_counter']
+
         record['request_timestamp']        = log['request_timestamp']
         record['response_timestamp']       = log['response_timestamp']
 
