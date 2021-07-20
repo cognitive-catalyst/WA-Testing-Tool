@@ -92,7 +92,10 @@ def logToRecord(log, customFields):
         if 'entities' in log['response'] and len(log['response']['entities']) > 0:
             record['entities']             = tuple ( log['response']['entities'] )
 
-        record['nodes_visited']            = tuple (log['response']['output']['nodes_visited'])
+        if 'nodes_visited' in log['response']['output']:
+            record['nodes_visited']        = tuple (log['response']['output']['nodes_visited'])
+        else:
+            record['nodes_visited']        = tuple (log['response']['output']['debug']['nodes_visited'])
         
         if 'branch_exited_reason' in log['response']['context']['system']:
             record['branch_exited_reason'] = log['response']['context']['system']['branch_exited_reason']
