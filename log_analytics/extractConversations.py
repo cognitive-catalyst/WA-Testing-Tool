@@ -83,7 +83,7 @@ def logToRecord(log, customFields):
             record['input.text']           = log['request']['input']['text']
 
         if 'text' in log['response']['output']:
-            record['output.text']          = ' '.join(log['response']['output']['text']).replace('\r','').replace('\n','')
+            record['output.text']          = ' '.join(filter(None,log['response']['output']['text'])).replace('\r','').replace('\n','')
 
         if 'intents' in log['response'] and (len(log['response']['intents']) > 0):
             record['intent']               = log['response']['intents'][0]['intent']
