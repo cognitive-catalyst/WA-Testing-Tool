@@ -216,6 +216,9 @@ def augment_sequence_numbers(inputDF:pd.DataFrame, conversation_sort_key:str) ->
     # Sets the length of the conversation
     df['conversation_length'] = df.groupby(conversation_sort_key)['dialog_turn_number'].transform('max')
 
+    # Marks if a turn is the last in the conversation
+    df['is_final_turn'] = df['dialog_turn_number']  == df.groupby(conversation_sort_key)['dialog_turn_number'].transform('max')
+
     return df
 
 def writeFrameToFile(df, output_file):
