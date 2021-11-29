@@ -30,6 +30,9 @@ def readLogsFromFile(filename, conversation_id_key='response.context.conversatio
         data = json.load(json_file)
 
     if data is not None and len(data) > 0:
+       #If using `getAllLogs.py` you just get the array, the raw Watson API produces a field called 'logs' which contains the array
+       if 'logs' in data:
+           data = data['logs']
        return extractConversationData(data, conversation_id_key, custom_field_names_comma_separated)
     else:
        return None
