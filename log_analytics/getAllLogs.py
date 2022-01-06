@@ -56,7 +56,7 @@ def getLogsInternal(assistant, workspace_id, filter, page_size_limit=DEFAULT_PAG
         if 'logs' in logs:
            allLogs.extend(logs['logs'])
            pages_retrieved = pages_retrieved + 1
-           print("Fetched {} log pages".format(pages_retrieved))
+           print("Fetched {} log pages with {} total logs".format(pages_retrieved, len(allLogs)))
         else:
            return None
 
@@ -75,7 +75,7 @@ def writeLogs(logs, output_file, output_columns="raw"):
     file = None
     if output_file != None:
        file = open(output_file,'w')
-       print("Writing logs to", output_file)   
+       print("Writing {} logs to {}".format(len(logs), output_file))
 
     if 'raw' == output_columns: 
        writeOut(file, json.dumps(logs,indent=2))
