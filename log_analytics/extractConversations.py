@@ -226,7 +226,10 @@ def augment_sequence_numbers(inputDF:pd.DataFrame, conversation_sort_key:str) ->
 
 def writeFrameToFile(df, output_file):
     print("Writing output file {}".format(output_file))
-    df.to_csv(output_file,index=False)
+    if(output_file.endswith(".pkl")):
+        df.to_pickle(output_file)
+    else:
+        df.to_csv(output_file,index=False)
     print("Wrote output file {}".format(output_file))
 
 ##------------------------------------------------------------------------
