@@ -38,7 +38,7 @@ test_out_header = [PREDICTED_INTENT_COLUMN, CONFIDENCE_COLUMN,
                    SCORE_COLUMN]
 
 MAX_RETRY_LIMIT = 5
-
+g_tested_utterances = 0
 
 async def message(service, workspace_id, utterance):
     # Include user_id in request body for Plus and Premium plans
@@ -53,6 +53,12 @@ async def message(service, workspace_id, utterance):
                 'user_id': 'test'
             }
         })
+
+    global g_tested_utterances
+    g_tested_utterances += 1
+    if g_tested_utterances % 10 == 0:
+        print("Tested",g_tested_utterances, "utterances...")
+        
     return response.get_result()
 
 async def post(service, workspace_id, utterance, sem):
@@ -150,10 +156,12 @@ def func(args):
                      row_idx, out_df, args.workspace_id, conv,
                      sem)
              for row_idx in range(out_df.shape[0]))
+    print("Testing",len(out_df),"utterances...")
     loop.run_until_complete(asyncio.gather(*tasks))
 
     loop.close()
 
+    print("Aggregating output...")
     if args.golden_intent_column is not None:
         golden_intent_column = args.golden_intent_column
         if golden_intent_column not in in_df.columns:
@@ -181,7 +189,7 @@ def func(args):
                     credit_tables[golden_intent][predict_intent]
 
     save_dataframe_as_csv(df=out_df, file=args.outfile)
-    print("Wrote standard test result file to {}".format(args.outfile))
+    print("Wrote result file to {}".format(args.outfile))
 
 
 def create_parser():
