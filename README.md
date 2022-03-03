@@ -73,6 +73,8 @@ There are a variety of ways to use this tool.  Primarily you will execute a k-fo
 
 [Generate confusion matrix for classification test](examples/confusion-matrix.md)
 
+[Compare two different blind test results](examples/compare-blind.md)
+
 ### Extended modes
 [Generate description for intents](examples/intent-description.md)
 
