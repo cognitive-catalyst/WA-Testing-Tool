@@ -20,8 +20,6 @@ import csv
 import pandas as pd
 import math
 from argparse import ArgumentParser
-from __init__ import UTF_8
-
 
 def results_file_to_dataframe(filename:str):
     in_df = pd.read_csv(filename, quoting=csv.QUOTE_ALL,
@@ -152,8 +150,8 @@ def create_parser():
     parser.add_argument('-p', '--previous_file', type=str, required=True,
                         help='File that contains previous blind test results')
     parser.add_argument('-o', '--out_file', type=str,
-                        help='Output file path',
-                        default='confusion-matrix.csv')
+                        help='Output file base pathname, will be modified to create different reports',
+                        default='compare.csv')
     return parser
 
 
