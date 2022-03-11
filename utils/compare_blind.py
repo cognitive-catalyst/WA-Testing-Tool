@@ -19,6 +19,7 @@
 import csv
 import pandas as pd
 import math
+from __init__ import UTF_8
 from argparse import ArgumentParser
 
 def results_file_to_dataframe(filename:str):
