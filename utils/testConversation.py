@@ -109,6 +109,10 @@ async def fill_df(utterance, row_idx, out_df, workspace_id, conversation, sem):
         except KeyError:
             print("intent key does not exist!")
 
+async def gather_all_tasks(tasks):
+    task_set = await asyncio.gather(*tasks)
+    return task_set
+
 def func(args):
     in_df = None
     out_df = None
@@ -143,7 +147,6 @@ def func(args):
 
     # Applied coroutines
     sem = asyncio.Semaphore(args.rate_limit)
-    loop = asyncio.get_event_loop()
 
     authenticator = IAMAuthenticator(args.iam_apikey)
     conv = AssistantV1(
@@ -157,9 +160,7 @@ def func(args):
                      sem)
              for row_idx in range(out_df.shape[0]))
     print("Testing",len(out_df),"utterances...")
-    loop.run_until_complete(asyncio.gather(*tasks))
-
-    loop.close()
+    asyncio.run(gather_all_tasks(tasks))
 
     print("Aggregating output...")
     if args.golden_intent_column is not None:
