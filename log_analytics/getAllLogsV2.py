@@ -6,7 +6,7 @@ import dateutil.parser
 import datetime
 import time
 
-DEFAULT_WCS_VERSION='2018-09-20'
+DEFAULT_WCS_VERSION='2021-06-14'
 DEFAULT_PAGE_SIZE=500
 DEFAULT_NUMBER_OF_PAGES=20
 
