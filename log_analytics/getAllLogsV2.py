@@ -20,12 +20,12 @@ def getAssistant(iam_apikey, url, version=DEFAULT_WCS_VERSION):
     c.set_service_url(url)
     return c
 
-def getLogs(iam_apikey, url, workspace_id, filter, page_size_limit=DEFAULT_PAGE_SIZE, page_num_limit=DEFAULT_NUMBER_OF_PAGES, version=DEFAULT_WCS_VERSION):
+def getLogs(iam_apikey, url, workspace_id, assistant_id, filter, page_size_limit=DEFAULT_PAGE_SIZE, page_num_limit=DEFAULT_NUMBER_OF_PAGES, version=DEFAULT_WCS_VERSION):
     '''Public API for script, connects to Watson Assistant and downloads all logs'''
     service = getAssistant(iam_apikey, url, version)
-    return getLogsInternal(service, workspace_id, filter, page_size_limit, page_num_limit)
+    return getLogsInternal(service, workspace_id, assistant_id, filter, page_size_limit, page_num_limit)
 
-def getLogsInternal(assistant, workspace_id, filter, page_size_limit=DEFAULT_PAGE_SIZE, page_num_limit=DEFAULT_NUMBER_OF_PAGES):
+def getLogsInternal(assistant, workspace_id, assistant_id, filter, page_size_limit=DEFAULT_PAGE_SIZE, page_num_limit=DEFAULT_NUMBER_OF_PAGES):
     '''Fetches `page_size_limit` logs at a time through Watson Assistant log API, a maximum of `page_num_limit` times, and returns array of log events'''
     cursor = None
     pages_retrieved = 0
@@ -37,10 +37,10 @@ def getLogsInternal(assistant, workspace_id, filter, page_size_limit=DEFAULT_PAG
             #all - requires a workspace_id, assistant id, or deployment id in the filter
             output = assistant.list_all_logs(sort='-request_timestamp', filter=filter, page_limit=page_size_limit, cursor=cursor)
         else:
-            output = assistant.list_logs.get_result()(workspace_id=workspace_id, sort='-request_timestamp', filter=filter, page_limit=page_size_limit, cursor=cursor)
-
+            output = assistant.list_logs(assistant_id=assistant_id, sort='-request_timestamp', filter=filter, page_limit=page_size_limit, cursor=cursor)
         #Hack for API compatibility between v1 and v2 of the API - v2 adds a 'result' property on the response.  v2 simplest form is list_logs().get_result()
         output = json.loads(str(output))
+
         if 'result' in output:
            logs = output['result']
         else:
@@ -122,6 +122,7 @@ def create_parser():
     parser.add_argument('-c', '--output_columns', type=str, help='Which columns you want in output, either "utterance", "raw", or "all" (default is "raw")', default='raw')
     parser.add_argument('-o', '--output_file', type=str, help='Filename to write results to')
     parser.add_argument('-w', '--workspace_id', type=str, help='Workspace identifier')
+    parser.add_argument('-i', '--assistant_id', type=str, help='Assistant identifier')
     parser.add_argument('-a', '--iam_apikey', type=str, required=True, help='Assistant service iam api key')
     parser.add_argument('-f', '--filter', type=str, required=True, help='Watson Assistant log query filter')
     parser.add_argument('-v', '--version', type=str, default=DEFAULT_WCS_VERSION, help="Watson Assistant version in YYYY-MM-DD form.")
@@ -136,5 +137,5 @@ if __name__ == '__main__':
    ARGS = create_parser().parse_args()
 
    service = getAssistant(ARGS.iam_apikey,ARGS.url,ARGS.version)
-   logs    = getLogsInternal(service, ARGS.workspace_id, ARGS.filter, ARGS.page_limit, ARGS.number_of_pages)
+   logs    = getLogsInternal(service, ARGS.workspace_id, ARGS.assistant_id, ARGS.filter, ARGS.page_limit, ARGS.number_of_pages)
    writeLogs(logs, ARGS.output_file, ARGS.output_columns)
