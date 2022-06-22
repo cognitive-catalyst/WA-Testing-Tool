@@ -73,14 +73,12 @@ def getCustomFields(custom_field_names):
 def logToRecord(log, customFields):
         record = {}
         record['conversation_id']          = log['response']['context']['conversation_id']
-        #Location of dialog_turn_counter varies by WA version
-
-        if 'system' in log['response']['context']:
-            if 'dialog_turn_counter' in log['response']['context']['system']:
-                record['dialog_turn_counter']  = log['response']['context']['system']['dialog_turn_counter']
-        elif 'system' in log['request']['context']:
-            if 'dialog_turn_counter' in log['request']['context']:
-                record['dialog_turn_counter']  = log['request']['context']['system']['dialog_turn_counter']
+        
+        # Location of dialog_turn_counter varies by WA version
+        if 'system' in log['response']['context'] and 'dialog_turn_counter' in log['response']['context']['system']:
+            record['dialog_turn_counter']  = log['response']['context']['system']['dialog_turn_counter']
+        elif 'system' in log['request']['context'] and 'dialog_turn_counter' in log['request']['context']:
+            record['dialog_turn_counter']  = log['request']['context']['system']['dialog_turn_counter']
 
         record['request_timestamp']        = log['request_timestamp']
         record['response_timestamp']       = log['response_timestamp']
@@ -91,18 +89,15 @@ def logToRecord(log, customFields):
         if 'text' in log['response']['output']:
             record['output.text']          = ' '.join(filter(None,log['response']['output']['text'])).replace('\r','').replace('\n','')
 
-        if log['response']:
-            if log['response']['output']:
-                if log['response']['output']['intents'] and (len(log['response']['output']['intents']) > 0):
-                    record['intent']               = log['response']['output']['intents'][0]['intent']
-                    record['intent_confidence']    = log['response']['output']['intents'][0]['confidence']
-            elif log['response']['intents']:
-                if (len(log['response']['intents']) > 0):
-                    record['intent']               = log['response']['intents'][0]['intent']
-                    record['intent_confidence']    = log['response']['intents'][0]['confidence']
-            else:
-                print("intents not logged")
-
+        # Location of intent and intent_confidence varies by WA version
+        if log['response']['output']:
+            if log['response']['output']['intents'] and (len(log['response']['output']['intents']) > 0):
+                record['intent']               = log['response']['output']['intents'][0]['intent']
+                record['intent_confidence']    = log['response']['output']['intents'][0]['confidence']
+        elif log['response'] and log['response']['intents']:
+            if (len(log['response']['intents']) > 0):
+                record['intent']               = log['response']['intents'][0]['intent']
+                record['intent_confidence']    = log['response']['intents'][0]['confidence']
 
         if 'entities' in log['response'] and len(log['response']['entities']) > 0:
             record['entities']             = tuple ( log['response']['entities'] )
@@ -147,22 +142,15 @@ def extractConversationData(logs, conversation_id_key='response.context.conversa
     conversation_records_list = [logToRecord(log, customFields) for log in logs]
     df = pd.DataFrame(conversation_records_list)
 
-     #converting date fields. 
-    # print dataframe
-    print(df.head(5))
-    
-    
+    # Converting date fields. 
     df['request_timestamp']  = pd.to_datetime(df['request_timestamp'])
+    
     df['response_timestamp'] = pd.to_datetime(df['response_timestamp'])
-    # left off here
-    try:
-        df['intent_confidence'] = pd.to_numeric(df["intent_confidence"], errors='coerce')
-        df['intent_confidence'] = df['intent_confidence'].fillna(0.0)
-        df[df['intent_confidence']=='']=0.0
-    except KeyError:
-        print("keyError for intent_confidence")
-        
+    df['intent_confidence'] = pd.to_numeric(df["intent_confidence"], errors='coerce')
+    df['intent_confidence'] = df['intent_confidence'].fillna(0.0)
+    df[df['intent_confidence']=='']=0.0
 
+        
     # Lastly sort by conversation ID, and then request, so that the logs become readable. 
     df = df.sort_values([primarySortField, 'request_timestamp'], ascending=[True, True]).reset_index(drop=True)
     
