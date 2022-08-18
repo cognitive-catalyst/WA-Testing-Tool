@@ -318,6 +318,7 @@ def blind(out_dir, intent_train_file, workspace_base_file, figure_path,
         os.makedirs(working_dir)
 
     if WATSON_SERVICE != 'nlc':
+        print('Training blind workspace...')
         workspace_spec_json = os.path.join(working_dir, SPEC_FILENAME)
         train_args = [sys.executable, TRAIN_CONVERSATION_PATH,
                       '-i', intent_train_file, '-n', 'blind test',
@@ -413,6 +414,7 @@ def test(out_dir, intent_train_file, workspace_base_file, test_out_path,
         os.makedirs(working_dir)
 
     if WATSON_SERVICE != 'nlc':
+        print('Training standard test workspace...')
         workspace_spec_json = os.path.join(working_dir, SPEC_FILENAME)
         train_args = [sys.executable, TRAIN_CONVERSATION_PATH,
                       '-i', intent_train_file,

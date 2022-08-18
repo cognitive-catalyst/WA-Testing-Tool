@@ -1,6 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## 2022-03-03
+### Added
+- Optionally compare two separate blind test runs and compute comparison metrics with `compare_results.py`
+
+## 2020-11-12
+### Changed
+- Pass Watson Assistant system_settings to test workspaces
+
 ## 2020-04-10
 ### Changed
 - validateWS.py is now moved to `log_analytics` folder.
