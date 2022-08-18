@@ -5,10 +5,10 @@ from argparse import ArgumentParser
 
 # Reading Watson Assistant log files in .json format, each log event is a JSON record.
 # Return a list of Watson Assistant log events.
-def readLogs(inputPath):
+def readLogs(inputPath, conversation_id_key='response.context.conversation_id', custom_field_names_comma_separated=None):
     """Reads all log event .json files in `inputPath` and its subdirectories."""
     if(os.path.isdir(inputPath)):
-        data = []
+        data = pd.DataFrame()
         print('Processing input directory {}'.format(inputPath))
         for root, dirs, files in os.walk(inputPath):
             dirs.sort()
@@ -16,19 +16,26 @@ def readLogs(inputPath):
             for file in files:
                 if file.endswith('.json'):
                     logFile = os.path.join(root, file)
-                    fileData = readLogsFromFile(logFile)
-                    data.extend(fileData)
+                    fileData = readLogsFromFile(logFile, conversation_id_key, custom_field_names_comma_separated)
+                    if fileData is not None and len(fileData) > 0:
+                        data = data.append(fileData)
         return data
     else:
-        return readLogsFromFile(inputPath)
+        return readLogsFromFile(inputPath, conversation_id_key, custom_field_names_comma_separated)
 
-def readLogsFromFile(filename):
+def readLogsFromFile(filename, conversation_id_key='response.context.conversation_id', custom_field_names_comma_separated=None):
     """Reads all log events from JSON file `filename`."""
     print('Processing input file {}'.format(filename))
     with open(filename) as json_file:
         data = json.load(json_file)
 
-    return data
+    if data is not None and len(data) > 0:
+       #If using `getAllLogs.py` you just get the array, the raw Watson API produces a field called 'logs' which contains the array
+       if 'logs' in data:
+           data = data['logs']
+       return extractConversationData(data, conversation_id_key, custom_field_names_comma_separated)
+    else:
+       return None
 
 #------------------------------------------------------------------------
 
@@ -66,7 +73,12 @@ def getCustomFields(custom_field_names):
 def logToRecord(log, customFields):
         record = {}
         record['conversation_id']          = log['response']['context']['conversation_id']
-        record['dialog_turn_counter']      = log['response']['context']['system']['dialog_turn_counter']
+        #Location of dialog_turn_counter varies by WA version
+        if 'dialog_turn_counter' in log['response']['context']['system']:
+            record['dialog_turn_counter']  = log['response']['context']['system']['dialog_turn_counter']
+        else:
+            record['dialog_turn_counter']  = log['request']['context']['system']['dialog_turn_counter']
+
         record['request_timestamp']        = log['request_timestamp']
         record['response_timestamp']       = log['response_timestamp']
 
@@ -74,7 +86,7 @@ def logToRecord(log, customFields):
             record['input.text']           = log['request']['input']['text']
 
         if 'text' in log['response']['output']:
-            record['output.text']          = ' '.join(log['response']['output']['text']).replace('\r','').replace('\n','')
+            record['output.text']          = ' '.join(filter(None,log['response']['output']['text'])).replace('\r','').replace('\n','')
 
         if 'intents' in log['response'] and (len(log['response']['intents']) > 0):
             record['intent']               = log['response']['intents'][0]['intent']
@@ -83,7 +95,12 @@ def logToRecord(log, customFields):
         if 'entities' in log['response'] and len(log['response']['entities']) > 0:
             record['entities']             = tuple ( log['response']['entities'] )
 
-        record['nodes_visited']            = tuple (log['response']['output']['nodes_visited'])
+        if 'nodes_visited' in log['response']['output']:
+            record['nodes_visited']        = tuple (log['response']['output']['nodes_visited'])
+        elif 'debug' in log['response']['output'] and 'nodes_visited' in log['response']['output']['debug']:
+            record['nodes_visited']        = tuple (log['response']['output']['debug']['nodes_visited'])
+        else:
+            record['nodes_visited']        = ()
         
         if 'branch_exited_reason' in log['response']['context']['system']:
             record['branch_exited_reason'] = log['response']['context']['system']['branch_exited_reason']
@@ -202,11 +219,17 @@ def augment_sequence_numbers(inputDF:pd.DataFrame, conversation_sort_key:str) ->
     # Sets the length of the conversation
     df['conversation_length'] = df.groupby(conversation_sort_key)['dialog_turn_number'].transform('max')
 
+    # Marks if a turn is the last in the conversation
+    df['is_final_turn'] = df['dialog_turn_number']  == df.groupby(conversation_sort_key)['dialog_turn_number'].transform('max')
+
     return df
 
 def writeFrameToFile(df, output_file):
     print("Writing output file {}".format(output_file))
-    df.to_csv(output_file,index=False)
+    if(output_file.endswith(".pkl")):
+        df.to_pickle(output_file)
+    else:
+        df.to_csv(output_file,index=False)
     print("Wrote output file {}".format(output_file))
 
 ##------------------------------------------------------------------------
@@ -223,6 +246,5 @@ def create_parser():
 if __name__ == '__main__':
    ARGS = create_parser().parse_args()
 
-   logs       = readLogs(ARGS.input_file)
-   logRecords = extractConversationData(logs, ARGS.conversation_id, ARGS.custom_fields)
+   logRecords  = readLogs(ARGS.input_file, ARGS.conversation_id, ARGS.custom_fields)
    writeFrameToFile(logRecords, ARGS.output_file)

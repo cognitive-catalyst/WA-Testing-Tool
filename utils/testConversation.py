@@ -39,7 +39,7 @@ test_out_header = [PREDICTED_INTENT_COLUMN, CONFIDENCE_COLUMN,
                    SCORE_COLUMN]
 
 MAX_RETRY_LIMIT = 5
-
+g_tested_utterances = 0
 
 async def message(service, workspace_id, utterance):
     # Include user_id in request body for Plus and Premium plans
@@ -54,6 +54,12 @@ async def message(service, workspace_id, utterance):
                 'user_id': 'test'
             }
         })
+
+    global g_tested_utterances
+    g_tested_utterances += 1
+    if g_tested_utterances % 10 == 0:
+        print("Tested",g_tested_utterances, "utterances...")
+        
     return response.get_result()
 
 async def post(service, workspace_id, utterance, sem):
@@ -104,6 +110,10 @@ async def fill_df(utterance, row_idx, out_df, workspace_id, conversation, sem):
         except KeyError:
             print("intent key does not exist!")
 
+async def gather_all_tasks(tasks):
+    task_set = await asyncio.gather(*tasks)
+    return task_set
+
 def func(args):
     in_df = None
     out_df = None
@@ -138,7 +148,6 @@ def func(args):
 
     # Applied coroutines
     sem = asyncio.Semaphore(args.rate_limit)
-    loop = asyncio.get_event_loop()
 
     authenticator = choose_auth(args)
 
@@ -153,10 +162,10 @@ def func(args):
                      row_idx, out_df, args.workspace_id, conv,
                      sem)
              for row_idx in range(out_df.shape[0]))
-    loop.run_until_complete(asyncio.gather(*tasks))
+    print("Testing",len(out_df),"utterances...")
+    asyncio.run(gather_all_tasks(tasks))
 
-    loop.close()
-
+    print("Aggregating output...")
     if args.golden_intent_column is not None:
         golden_intent_column = args.golden_intent_column
         if golden_intent_column not in in_df.columns:
@@ -184,7 +193,7 @@ def func(args):
                     credit_tables[golden_intent][predict_intent]
 
     save_dataframe_as_csv(df=out_df, file=args.outfile)
-    print("Wrote standard test result file to {}".format(args.outfile))
+    print("Wrote result file to {}".format(args.outfile))
 
 
 def create_parser():

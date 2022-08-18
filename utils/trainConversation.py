@@ -110,6 +110,7 @@ def func(args):
     counterexamples = []
     metadata = {}
     learning_opt_out = False
+    system_settings = {}
 
     if args.workspace_base_json is not None:
         with open(args.workspace_base_json, 'r') as f:
@@ -128,6 +129,8 @@ def func(args):
                 metadata = workspace_json['metadata']
             if 'learning_opt_out' in workspace_json:
                 learning_opt_out = workspace_json['learning_opt_out']
+            if 'system_settings' in workspace_json:
+                system_settings = workspace_json['system_settings']
 
     if args.intentfile is not None:
         # First, group utterances by INTENT_COLUMN. In each intent group,
@@ -193,7 +196,8 @@ def func(args):
                                  dialog_nodes=dialog_nodes,
                                  counterexamples=counterexamples,
                                  metadata=metadata,
-                                 learning_opt_out=learning_opt_out)
+                                 learning_opt_out=learning_opt_out,
+                                 system_settings=system_settings)
     try:
        #V2 API syntax
        resp = raw_resp.get_result()
