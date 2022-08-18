@@ -39,7 +39,7 @@ def func(args):
             version=args.version,
             authenticator=authenticator
         )
-        conv.set_disable_ssl_verification(args.disable_ssl)
+        conv.set_disable_ssl_verification(eval(args.disable_ssl))
         conv.set_service_url(args.url)
 
         raw_workspace = conv.get_workspace(workspace_id=args.input, export=True)
@@ -107,8 +107,8 @@ def create_parser():
                         help='Watson Assistant API version in YYYY-MM-DD form')
     parser.add_argument('--auth-type', type=str, default='iam',
                         help='Authentication type, IAM is default, bearer is required for CP4D.', choices=['iam', 'bearer'])
-    parser.add_argument('--disable_ssl', type=bool, default=False,
-                        help="Disables SSL verification. BE CAREFUL ENABILING THIS. Default is False", choices=[True, False])
+    parser.add_argument('--disable_ssl', type=str, default="False",
+                        help="Disables SSL verification. BE CAREFUL ENABILING THIS. Default is False", choices=["True", "False"])
     return parser
 
 

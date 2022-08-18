@@ -148,7 +148,7 @@ def delete_workspaces(iam_apikey, url, version, workspace_ids, auth_type, disabl
                     version=version,
                     authenticator=authenticator
                     )
-            c.set_disable_ssl_verification(disable_ssl)
+            c.set_disable_ssl_verification(eval(disable_ssl))
             c.set_service_url(url)
             c.delete_workspace(workspace_id=workspace_id)
 
