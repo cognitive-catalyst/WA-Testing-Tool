@@ -184,6 +184,7 @@ def getWorkspaceJson(args):
         version=VERSION,
         authenticator=authenticator
     )
+    #service.set_disable_ssl_verification(True) #TODO: pass disable_ssl parameter here
     service.set_service_url(args.url)
 
     #Note: export=True is rate-limited, see https://cloud.ibm.com/apidocs/assistant?code=python#get-information-about-a-workspace

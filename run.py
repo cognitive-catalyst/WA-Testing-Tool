@@ -31,7 +31,7 @@ from utils import TRAIN_FILENAME, TEST_FILENAME, UTTERANCE_COLUMN, \
                   WA_API_VERSION_ITEM, DEFAULT_WA_VERSION, UTF_8, INTENT_JUDGE_COLUMN, BOOL_MAP, \
                   DEFAULT_TEST_RATE, POPULATION_WEIGHT_MODE, DEFAULT_TEMP_DIR, FOLD_NUM_DEFAULT, \
                   DEFAULT_CONF_THRES, WCS_IAM_APIKEY_ITEM, WCS_BASEURL_ITEM, \
-                  WCS_CREDS_SECTION, CREATE_TEST_TRAIN_FOLDS_PATH, \
+                  WA_DISABLE_SSL, WCS_CREDS_SECTION, CREATE_TEST_TRAIN_FOLDS_PATH, \
                   TRAIN_CONVERSATION_PATH, TEST_CONVERSATION_PATH, \
                   TEST_CLASSIFIER_PATH, TRAIN_CLASSIFIER_PATH, CREATE_PRECISION_CURVE_PATH, SPEC_FILENAME, \
                   delete_workspaces, KFOLD, BLIND_TEST, STANDARD_TEST, \
@@ -73,7 +73,7 @@ def validate_config(fields, section):
                 format(field))
 
 
-def list_workspaces(auth_token, version, url, auth_type='iam'):
+def list_workspaces(auth_token, version, url, auth_type='iam', disable_ssl=False):
     if auth_type == 'iam':
         authenticator = IAMAuthenticator(auth_token)
     elif auth_type == 'bearer':
@@ -85,6 +85,7 @@ def list_workspaces(auth_token, version, url, auth_type='iam'):
             version=version,
             authenticator=authenticator
         )
+        c.set_disable_ssl_verification(disable_ssl)
         c.set_service_url(url)
         return c.list_workspaces()
     else:
@@ -95,7 +96,7 @@ def list_workspaces(auth_token, version, url, auth_type='iam'):
 
 def kfold(fold_num, out_dir, intent_train_file, workspace_base_file, test_out_path,
           figure_path, keep_workspace, iam_apikey, url, version, weight_mode,
-          conf_thres, partial_credit_table, auth_type):
+          conf_thres, partial_credit_table, auth_type, disable_ssl):
     FOLD_TRAIN = 'fold_train'
     FOLD_TEST = 'fold_test'
     WORKSPACE_SPEC = 'fold_workspace'
@@ -114,6 +115,7 @@ def kfold(fold_num, out_dir, intent_train_file, workspace_base_file, test_out_pa
     print('{}={}'.format(CONF_THRES_ITEM, conf_thres))
     print('{}={}'.format(WCS_BASEURL_ITEM, url))
     print('{}={}'.format(WA_API_VERSION_ITEM, version))
+    print('{}={}'.format(WA_DISABLE_SSL, disable_ssl))
     print('{}={}'.format(PARTIAL_CREDIT_TABLE_ITEM, partial_credit_table))
 
     working_dir = os.path.join(out_dir, KFOLD)
@@ -154,7 +156,8 @@ def kfold(fold_num, out_dir, intent_train_file, workspace_base_file, test_out_pa
                       '-n', fold_param[WORKSPACE_NAME],
                       '-a', iam_apikey,
                       '-l', url,
-                      '--auth-type', auth_type]
+                      '--auth-type', auth_type,
+                      '--disable_ssl', disable_ssl]
         if WATSON_SERVICE != 'nlc':
             train_args += ['-v', version,'-w', workspace_base_file]
         train_processes_specs[
@@ -196,7 +199,8 @@ def kfold(fold_num, out_dir, intent_train_file, workspace_base_file, test_out_pa
                          '-a', iam_apikey, '-l', url,
                          '-t', UTTERANCE_COLUMN, '-g', GOLDEN_INTENT_COLUMN,
                          '-w', workspace_id, '-r', str(FOLD_TEST_RATE),
-                         '-m', '--auth-type', auth_type]
+                         '-m', '--auth-type', auth_type,
+                         '--disable_ssl', disable_ssl]
             if partial_credit_table is not None:
                 test_args += ['--partial_credit_table', partial_credit_table]
             if WATSON_SERVICE != 'nlc':
@@ -271,12 +275,12 @@ def kfold(fold_num, out_dir, intent_train_file, workspace_base_file, test_out_pa
                         workspace_id = json.load(f)[id_tag]
                         workspace_ids.append(workspace_id)
 
-            delete_workspaces(iam_apikey, url, version, workspace_ids, auth_type)
+            delete_workspaces(iam_apikey, url, version, workspace_ids, auth_type, disable_ssl)
 
 
 def blind(out_dir, intent_train_file, workspace_base_file, figure_path,
           test_out_path, test_input_file, previous_blind_out, workspace_id, keep_workspace,
-          iam_apikey, url, version, weight_mode, conf_thres, partial_credit_table, figure_title, auth_type):
+          iam_apikey, url, version, weight_mode, conf_thres, partial_credit_table, figure_title, auth_type, disable_ssl):
     print('Begin {} with following details:'.format(BLIND_TEST.upper()))
     print('{}={}'.format(INTENT_FILE_ITEM, intent_train_file))
     print('{}={}'.format(WORKSPACE_BASE_ITEM, workspace_base_file))
@@ -320,7 +324,8 @@ def blind(out_dir, intent_train_file, workspace_base_file, figure_path,
                       '-a', iam_apikey,
                       '-l', url, '-v', version,
                       '-w', workspace_base_file,
-                      '--auth-type', auth_type]
+                      '--auth-type', auth_type,
+                      '--disable_ssl', disable_ssl]
         with open(workspace_spec_json, 'w') as f:
             if subprocess.run(train_args, stdout=f).returncode == 0:
                 print('Trained blind workspace')
@@ -342,7 +347,8 @@ def blind(out_dir, intent_train_file, workspace_base_file, figure_path,
                      '-t', UTTERANCE_COLUMN, '-g', GOLDEN_INTENT_COLUMN,
                      '-w', workspace_id,
                      '-r', str(MAX_TEST_RATE),
-                     '--auth-type', auth_type]
+                     '--auth-type', auth_type,
+                     '--disable_ssl', disable_ssl]
         if partial_credit_table is not None:
             test_args += ['--partial_credit_table', partial_credit_table]
         if WATSON_SERVICE != 'nlc':
@@ -375,11 +381,11 @@ def blind(out_dir, intent_train_file, workspace_base_file, figure_path,
             raise RuntimeError('Failure in generating confusion matrix')
     finally:
         if not keep_workspace and WATSON_SERVICE != 'nlc':
-            delete_workspaces(iam_apikey, url, version, [workspace_id], auth_type)
+            delete_workspaces(iam_apikey, url, version, [workspace_id], auth_type, disable_ssl)
 
 
 def test(out_dir, intent_train_file, workspace_base_file, test_out_path,
-         test_input_file, workspace_id, keep_workspace, iam_apikey, version, url, auth_type):
+         test_input_file, workspace_id, keep_workspace, iam_apikey, version, url, auth_type, disable_ssl):
     print('Begin {} with following details:'.format(STANDARD_TEST.upper()))
     print('{}={}'.format(INTENT_FILE_ITEM, intent_train_file))
     print('{}={}'.format(WORKSPACE_BASE_ITEM, workspace_base_file))
@@ -413,7 +419,8 @@ def test(out_dir, intent_train_file, workspace_base_file, test_out_path,
                       '-n', 'standard test', '-v', version,
                       '-a', iam_apikey, '-l', url,
                       '-w', workspace_base_file,
-                      '--auth-type', auth_type]
+                      '--auth-type', auth_type,
+                      '--disable_ssl', disable_ssl]
         with open(workspace_spec_json, 'w') as f:
             if subprocess.run(train_args, stdout=f).returncode == 0:
                 print('Trained standard test workspace')
@@ -436,14 +443,15 @@ def test(out_dir, intent_train_file, workspace_base_file, test_out_path,
                            '-a', iam_apikey, '-l', url,
                            '-w', workspace_id,
                            '-r', str(MAX_TEST_RATE),
-                           '--auth-type', auth_type] + extra_params
+                           '--auth-type', auth_type,
+                           '--disable_ssl', disable_ssl] + extra_params
                           ).returncode == 0:
             print('Tested workspace')
         else:
             raise RuntimeError('Failure in testing data')
     finally:
         if not keep_workspace and WATSON_SERVICE != 'nlc':
-            delete_workspaces(iam_apikey, url, version, [workspace_id])
+            delete_workspaces(iam_apikey, url, version, [workspace_id], auth_type=auth_type, disable_ssl=disable_ssl)
 
 
 def func(args):
@@ -473,6 +481,9 @@ def func(args):
     # Get auth type
     auth_type = config[WCS_CREDS_SECTION].get(WCS_AUTH_TYPE_ITEM, 'iam').lower()
 
+    # Determine SSL mode
+    disable_ssl = config[WCS_CREDS_SECTION].get(WA_DISABLE_SSL, False)
+
     # Check the url to see which watson service the current test is against
     # This variable will be used throughout to take the appropriate branch for NLC vs WA
     if 'natural-language-classifier' in url:
@@ -481,7 +492,7 @@ def func(args):
 
     # List workspaces to see whether the creds is valid.
     # SDK has no method for validation purpose
-    list_workspaces(iam_apikey, version, url, auth_type=auth_type)
+    list_workspaces(iam_apikey, version, url, auth_type=auth_type, disable_ssl=disable_ssl)
 
     print('Credentials are correct')
 
@@ -500,7 +511,8 @@ def func(args):
                            '-i', default_section[WORKSPACE_ID_ITEM],
                            '-o', out_dir, '-v', version,
                            '-a', iam_apikey, '-l', url,
-                           '--auth-type', auth_type],
+                           '--auth-type', auth_type,
+                           '--disable_ssl', disable_ssl],
                           stdout=subprocess.PIPE).returncode == 0:
             print('Parsed workspace')
         else:
@@ -550,7 +562,8 @@ def func(args):
               version=version,
               weight_mode=weight_mode, conf_thres=conf_thres_str,
               partial_credit_table=partial_credit_table,
-              auth_type=auth_type)
+              auth_type=auth_type,
+              disable_ssl=disable_ssl)
     else:
         test_input_file = default_section.get(TEST_FILE_ITEM, out_dir + "/input.csv")
 
@@ -571,7 +584,8 @@ def func(args):
                   weight_mode=weight_mode, conf_thres=conf_thres_str,
                   partial_credit_table=partial_credit_table,
                   figure_title=blind_figure_title,
-                  auth_type=auth_type)
+                  auth_type=auth_type,
+                  disable_ssl=disable_ssl)
         elif STANDARD_TEST == mode:
             test(out_dir=out_dir,
                  intent_train_file=intent_train_file,
@@ -583,7 +597,8 @@ def func(args):
                  iam_apikey=iam_apikey,
                  version=version,
                  url=url,
-                 auth_type=auth_type)
+                 auth_type=auth_type,
+                 disable_ssl=disable_ssl)
         else:
             raise ValueError("Unknown mode '{}'".format(mode))
 

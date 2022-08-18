@@ -45,6 +45,7 @@ WCS_AUTH_TYPE_ITEM = 'auth_type'
 WCS_BASEURL_ITEM = 'url'
 WCS_CREDS_SECTION = 'ASSISTANT CREDENTIALS'
 WA_API_VERSION_ITEM = 'version'
+WA_DISABLE_SSL = 'disable_ssl'
 
 SPEC_FILENAME = 'workspace.json'
 WORKSPACE_BASE_FILENAME = 'workspace_base.json'
@@ -125,7 +126,7 @@ def unmarshall_entity(entities_str):
     return entities
 
 
-def delete_workspaces(iam_apikey, url, version, workspace_ids, auth_type):
+def delete_workspaces(iam_apikey, url, version, workspace_ids, auth_type, disable_ssl):
     """ Delete workspaces
     """
     if auth_type == 'iam':
@@ -134,7 +135,7 @@ def delete_workspaces(iam_apikey, url, version, workspace_ids, auth_type):
         authenticator = BearerTokenAuthenticator(iam_apikey)
     else:
         raise ValueError(f'Unknown auth_type "{auth_type}"')
-    
+
     for workspace_id in workspace_ids:
         if 'natural-language-classifier' in url:
             c = NaturalLanguageClassifierV1(
@@ -147,9 +148,10 @@ def delete_workspaces(iam_apikey, url, version, workspace_ids, auth_type):
                     version=version,
                     authenticator=authenticator
                     )
+            c.set_disable_ssl_verification(disable_ssl)
             c.set_service_url(url)
             c.delete_workspace(workspace_id=workspace_id)
-            
+
     print('Cleaned up workspaces')
 
 def parse_partial_credit_table(file):

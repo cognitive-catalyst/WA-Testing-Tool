@@ -88,7 +88,7 @@ class WorkspaceParserTestCase(CommandLineTestCase):
 
         # workspace_ids = []
         # workspace_ids.append(workspace_id)
-        # delete_workspaces(apikey,config[WCS_CREDS_SECTION][WCS_BASEURL_ITEM], '2019-02-28', workspace_ids)
+        delete_workspaces(apikey,config[WCS_CREDS_SECTION][WCS_BASEURL_ITEM], '2019-02-28', workspace_ids)
 
         self.assertFalse(raised, 'Exception raised')
 
