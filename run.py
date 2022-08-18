@@ -85,7 +85,7 @@ def list_workspaces(auth_token, version, url, auth_type='iam', disable_ssl=False
             version=version,
             authenticator=authenticator
         )
-        c.set_disable_ssl_verification(eval(disable_ssl))
+        c.set_disable_ssl_verification(disable_ssl)
         c.set_service_url(url)
         return c.list_workspaces()
     else:
