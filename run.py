@@ -73,7 +73,7 @@ def validate_config(fields, section):
                 format(field))
 
 
-def list_workspaces(auth_token, version, url, auth_type='iam', disable_ssl=False):
+def list_workspaces(auth_token, version, url, auth_type='iam', disable_ssl="False"):
     if auth_type == 'iam':
         authenticator = IAMAuthenticator(auth_token)
     elif auth_type == 'bearer':
@@ -484,7 +484,7 @@ def func(args):
     auth_type = config[WCS_CREDS_SECTION].get(WCS_AUTH_TYPE_ITEM, 'iam').lower()
 
     # Determine SSL mode
-    disable_ssl = config[WCS_CREDS_SECTION].get(WA_DISABLE_SSL, False)
+    disable_ssl = config[WCS_CREDS_SECTION].get(WA_DISABLE_SSL, "False")
 
     # Check the url to see which watson service the current test is against
     # This variable will be used throughout to take the appropriate branch for NLC vs WA
