@@ -27,6 +27,8 @@ from argparse import ArgumentParser
 from ibm_watson import NaturalLanguageClassifierV1
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 
+from choose_auth import choose_auth
+
 from __init__ import UTF_8, \
                   UTTERANCE_COLUMN, INTENT_COLUMN, \
                   TIME_TO_WAIT, CLASSIFIER_ID_TAG
@@ -49,7 +51,8 @@ def func(args):
     metadata = {}
     learning_opt_out = False
 
-    authenticator = IAMAuthenticator(args.iam_apikey)
+    authenticator = choose_auth(args)
+
     nlc = NaturalLanguageClassifierV1(
         authenticator=authenticator
     )    
@@ -92,7 +95,10 @@ def create_parser():
                         help='Classifier name')
     parser.add_argument('-l', '--url', type=str, default='https://gateway.watsonplatform.net/natural_language_classifier/api',
                         help='URL to Watson NLC. Ex: https://gateway.watsonplatform.net/natural_language_classifier/api')
-
+    parser.add_argument('--auth-type', type=str, default='iam',
+                        help='Authentication type, IAM is default, bearer is required for CP4D.', choices=['iam', 'bearer'])
+    parser.add_argument('--disable_ssl', type=str, default="False",
+                        help="Disables SSL verification. BE CAREFUL ENABLING THIS. Default is False", choices=["True", "False"])
     return parser
 
 if __name__ == '__main__':

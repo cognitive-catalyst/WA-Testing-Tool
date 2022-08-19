@@ -18,12 +18,14 @@
 """ Parse workspace into artifacts for training
 """
 import os
+import sys
 import csv
 import json
 import os.path
 from argparse import ArgumentParser
 from ibm_watson import AssistantV1
-from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
+from choose_auth import choose_auth
+from ibm_cloud_sdk_core.authenticators import IAMAuthenticator, BearerTokenAuthenticator
 from __init__ import TRAIN_INTENT_FILENAME, DEFAULT_WA_VERSION, \
                      TRAIN_ENTITY_FILENAME, WORKSPACE_BASE_FILENAME, UTF_8
 
@@ -31,11 +33,13 @@ from __init__ import TRAIN_INTENT_FILENAME, DEFAULT_WA_VERSION, \
 def func(args):
     workspace = None
     if not os.path.isfile(args.input):
-        authenticator = IAMAuthenticator(args.iam_apikey)
+        authenticator = choose_auth(args)
+
         conv = AssistantV1(
             version=args.version,
             authenticator=authenticator
         )
+        conv.set_disable_ssl_verification(eval(args.disable_ssl))
         conv.set_service_url(args.url)
 
         raw_workspace = conv.get_workspace(workspace_id=args.input, export=True)
@@ -101,6 +105,10 @@ def create_parser():
                         default=os.getcwd())
     parser.add_argument('-v', '--version', type=str, default=DEFAULT_WA_VERSION,
                         help='Watson Assistant API version in YYYY-MM-DD form')
+    parser.add_argument('--auth-type', type=str, default='iam',
+                        help='Authentication type, IAM is default, bearer is required for CP4D.', choices=['iam', 'bearer'])
+    parser.add_argument('--disable_ssl', type=str, default="False",
+                        help="Disables SSL verification. BE CAREFUL ENABLING THIS. Default is False", choices=["True", "False"])
     return parser
 
 

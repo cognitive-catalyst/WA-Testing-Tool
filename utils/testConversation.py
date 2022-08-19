@@ -24,7 +24,8 @@ import pandas as pd
 from argparse import ArgumentParser
 import aiohttp
 from ibm_watson import AssistantV1
-from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
+
+from choose_auth import choose_auth
 
 from __init__ import UTF_8, CONFIDENCE_COLUMN, \
     UTTERANCE_COLUMN, PREDICTED_INTENT_COLUMN, \
@@ -148,11 +149,13 @@ def func(args):
     # Applied coroutines
     sem = asyncio.Semaphore(args.rate_limit)
 
-    authenticator = IAMAuthenticator(args.iam_apikey)
+    authenticator = choose_auth(args)
+
     conv = AssistantV1(
         version=args.version,
         authenticator=authenticator
     )
+    conv.set_disable_ssl_verification(eval(args.disable_ssl))
     conv.set_service_url(args.url)
 
     tasks = (fill_df(out_df.loc[row_idx, test_column],
@@ -220,6 +223,10 @@ def create_parser():
                         help='Partial credit table')
     parser.add_argument('-v', '--version', type=str, default=DEFAULT_WA_VERSION,
                         help='Watson Assistant API version in YYYY-MM-DD form')
+    parser.add_argument('--auth-type', type=str, default='iam',
+                        help='Authentication type, IAM is default, bearer is required for CP4D.', choices=['iam', 'bearer'])
+    parser.add_argument('--disable_ssl', type=str, default="False",
+                        help="Disables SSL verification. BE CAREFUL ENABLING THIS. Default is False", choices=["True", "False"])
     return parser
 
 

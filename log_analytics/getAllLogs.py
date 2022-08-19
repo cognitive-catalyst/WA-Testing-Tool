@@ -17,6 +17,7 @@ def getAssistant(iam_apikey, url, version=DEFAULT_WCS_VERSION):
         version=version,
         authenticator=authenticator
     )
+    #c.set_disable_ssl_verification(True) #TODO: pass disable_ssl parameter here
     c.set_service_url(url)
     return c
 
@@ -62,7 +63,7 @@ def getLogsInternal(assistant, workspace_id, filter, page_size_limit=DEFAULT_PAG
 
     #Analysis is easier when logs are in increasing timestamp order
     allLogs.reverse()
-    
+
     return allLogs
 
 def writeLogs(logs, output_file, output_columns="raw"):
@@ -75,9 +76,10 @@ def writeLogs(logs, output_file, output_columns="raw"):
     file = None
     if output_file != None:
        file = open(output_file,'w')
+
        print("Writing {} logs to {}".format(len(logs), output_file))
 
-    if 'raw' == output_columns: 
+    if 'raw' == output_columns:
        writeOut(file, json.dumps(logs,indent=2))
        if file is not None:
            file.close()

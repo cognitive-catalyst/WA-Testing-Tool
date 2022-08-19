@@ -39,6 +39,7 @@ def get_remote_workspace(args):
         version=WA_API_VERSION,
         authenticator=authenticator
     )
+    # conv.set_disable_ssl_verification(True) #TODO: pass disable_ssl parameter here
     conv.set_service_url(args.url)
 
     workspace = conv.get_workspace(args.workspace_id, export=True)

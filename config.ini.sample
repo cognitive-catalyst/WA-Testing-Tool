@@ -1,15 +1,23 @@
 [ASSISTANT CREDENTIALS]
+; IBM Cloud uses "iam" for authentication
+; Cloud Pak 4 Data (CP4D) requires the "bearer" authentication. 
+; "iam" is default. To use "bearer" authentication, set "auth_type" below to bearer 
+auth_type = iam
+; API version, default is 2019-02-28, specify the version matching your Watson Assistant
+;version=
+
 ; Regardless of mode you must specify a WA environment to test the classification against.
 ; Update the url for the WA API to match your specific WA region
 ; url patterns are found at https://cloud.ibm.com/apidocs/assistant/assistant-v1#service-endpoint
-iam_apikey =
-url = https://api.us-south.assistant.watson.cloud.ibm.com
+url = https://gateway.watsonplatform.net/assistant/api
+; if above auth_type is 'bearer' then the iam_apikey will be
+; interpreted as a bearer token instead. Put your bearer token below
+iam_apikey = 
 
-; Instances created before December 13, 2019 have a url with this pattern
-;url = https://gateway.watsonplatform.net/assistant/api
-
-;API version, default is 2019-02-28, specify the version matching your Watson Assistant
-;version=
+; BE CAREFUL ENABLING THIS PARAMETER. See the warnings here: https://cloud.ibm.com/apidocs/assistant/assistant-v1#endpoint-cloud
+; This disables SSL verification which is inherently less secure. 
+; Some Cloud Pak for Data installations may not use SSL and it may be necessary to enable this
+;disable_ssl = True
 
 [DEFAULT]
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
