@@ -245,7 +245,7 @@ def create_parser():
     parser.add_argument('--auth-type', type=str, default='iam',
                         help='Authentication type, IAM is default, bearer is required for CP4D.', choices=['iam', 'bearer'])
     parser.add_argument('--disable_ssl', type=str, default="False",
-                        help="Disables SSL verification. BE CAREFUL ENABILING THIS. Default is False", choices=["True", "False"])
+                        help="Disables SSL verification. BE CAREFUL ENABLING THIS. Default is False", choices=["True", "False"])
     return parser
 
 
