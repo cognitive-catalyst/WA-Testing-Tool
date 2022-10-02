@@ -42,6 +42,11 @@ Example for voice-based assistants using IBM Voice Gateway:
 python3 extractConversations.py -i 10000_logs.json -o 10000_logs.csv -c "request.context.vgwSessionID"
 ```
 
+Example for voice-based assistants that adds some useful phone-based fields
+```
+python3 extractConversations.py -i 10000_logs.json -o 10000_logs.csv -c "request.context.vgwSessionID" -f log_id,request.context.vgwPhoneUserPhoneNumber,request.context.vgwIsDTMF,request.context.vgwBargeInOccurred
+```
+
 # ConversationAnalysisRecipes.ipynb
 This notebook demonstrates several log analytic functions, starting with downloading logs (via `getAllLogs.py`) and extracting fields of interest (via `extractConversations.py`), then demonstrating basic and intermediate analytic capabilities.
 
