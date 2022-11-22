@@ -24,7 +24,7 @@ from argparse import ArgumentParser
 import csv
 import pandas as pd
 from ibm_watson import AssistantV1
-from ibm_watson import NaturalLanguageClassifierV1
+from ibm_watson import NaturalLanguageUnderstandingV1
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator, BearerTokenAuthenticator
 from utils import TRAIN_FILENAME, TEST_FILENAME, UTTERANCE_COLUMN, \
                   GOLDEN_INTENT_COLUMN, TEST_OUT_FILENAME, WORKSPACE_ID_TAG, CLASSIFIER_ID_TAG, \
@@ -80,6 +80,8 @@ def list_workspaces(auth_token, version, url, auth_type='iam', disable_ssl="Fals
         authenticator = BearerTokenAuthenticator(auth_token)
     else:
         raise Exception(f'Unknown auth type: "{auth_type}"')
+    if 'natural-language-understanding' in url:
+        WATSON_SERVICE = 'nlc'
     if WATSON_SERVICE != 'nlc':
         c = AssistantV1(
             version=version,
@@ -89,9 +91,9 @@ def list_workspaces(auth_token, version, url, auth_type='iam', disable_ssl="Fals
         c.set_service_url(url)
         return c.list_workspaces()
     else:
-        c = NaturalLanguageClassifierV1(authenticator)
+        c = NaturalLanguageUnderstandingV1(version=version,authenticator=authenticator)
         c.set_service_url(url)
-        return c.list_classifiers()
+        return c.list_classifications_models().get_result()
 
 
 def kfold(fold_num, out_dir, intent_train_file, workspace_base_file, test_out_path,
@@ -488,7 +490,7 @@ def func(args):
 
     # Check the url to see which watson service the current test is against
     # This variable will be used throughout to take the appropriate branch for NLC vs WA
-    if 'natural-language-classifier' in url:
+    if 'natural-language-understanding' in url:
         global WATSON_SERVICE
         WATSON_SERVICE = 'nlc'
 

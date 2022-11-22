@@ -86,11 +86,11 @@ There are a variety of ways to use this tool.  Primarily you will execute a k-fo
 
 [Extract and analyze Watson Assistant log data](log_analytics/README.md)
 
-## Testing Natural Language Classifier
-This tool can also be used to test a trained Natural Language Classifier (NLC). The configuration is similar to testing Watson Assistant except:
-1. Use the NLC URL in the `url` parameter (ex: `https://api.us-south.natural-language-classifier.watson.cloud.ibm.com`)
-2. Specify the `<classifier_id>` in the `workspace_id` parameter in the configuration
-3. Since NLC does not support downloading training data, the original training data must be provided if run in 'kfold' mode (using the `train_input_file` parameter)
+## Testing Natural Language Understanding Classifier
+This tool can also be used to test a trained Natural Language Understanding (NLU) Classifier. The configuration is similar to testing Watson Assistant except:
+1. Use the NLU URL in the `url` parameter (ex: `https://api.us-south.natural-language-understanding.watson.cloud.ibm.com`)
+2. Specify the `<model_id>` in the `workspace_id` parameter in the configuration
+3. Since NLU classifier does not support downloading training data, the original training data must be provided if run in 'kfold' mode (using the `train_input_file` parameter)
 
 ## General Caveats and Troubleshooting
 1. Due to different coverage among service plans, user may need to adjust `max_test_rate` accordingly to avoid network connection error.
