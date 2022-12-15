@@ -8,7 +8,7 @@ Unlike k-fold process, no separate folds will be created. Only one workspace is 
 Further, reports are generated for an [intent metrics summary](intent-metrics.md) and a [confusion matrix](confusion-matrix.md).  These include additional summaries and visualizations that help determine the strength and weaknesses of the training set.
 
 ## Input file
-`config.ini` (fill in your `iam_apikey`, `url`, and `workspace_id` at minimum. (Older instances use a url like "https://gateway-wdc.watsonplatform.net/assistant/api")
+`config.ini` (fill in your `iam_apikey`, `url`, and one of `workspace_id` or `assistant_id` at minimum. (Older instances use a url like "https://gateway-wdc.watsonplatform.net/assistant/api")
 
 ```
 [ASSISTANT CREDENTIALS]
@@ -19,6 +19,7 @@ version=2019-02-28
 [DEFAULT]
 mode = blind
 workspace_id = 01234567-9ABC-DEF0-1234-56789ABCDEF0
+;assistant_id=
 
 ; Provide when comparing to a previous blind test result
 ;previous_blind_out = ./data/previous_blind_out.csv
@@ -36,6 +37,7 @@ workspace_id = 01234567-9ABC-DEF0-1234-56789ABCDEF0
 
 `previous_blind_out` - (Optional) Test output from previous blind test result.
 
+Note: For Watson Assistant v2, the intent names returned are intent IDs rather than intent names.  These IDs can be discovered in the source code of the assistant JSON.
 
 ## Sample output
 ![Blind curves](../resources/blind-curves.png)

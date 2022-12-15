@@ -23,7 +23,7 @@ import asyncio
 import pandas as pd
 from argparse import ArgumentParser
 import aiohttp
-from ibm_watson import AssistantV1
+from ibm_watson import AssistantV1, AssistantV2
 
 from choose_auth import choose_auth
 
@@ -41,19 +41,35 @@ test_out_header = [PREDICTED_INTENT_COLUMN, CONFIDENCE_COLUMN,
 MAX_RETRY_LIMIT = 5
 g_tested_utterances = 0
 
-async def message(service, workspace_id, utterance):
+async def message(service, workspace_id, utterance, apiversion):
     # Include user_id in request body for Plus and Premium plans
-    response = service.message(
-        workspace_id=workspace_id,
-        input={
-            'text': utterance,
-            'alternate_intents': True
-        },
-        context={
-            'metadata': {
-                'user_id': 'test'
-            }
-        })
+    if apiversion == 'v1':
+        response = service.message(
+            workspace_id=workspace_id,
+            input={
+                'text': utterance,
+                'alternate_intents': True
+            },
+            context={
+                'metadata': {
+                    'user_id': 'test'
+                }
+            })
+    else:
+        response = service.message_stateless(
+            assistant_id=workspace_id,
+            input={
+                'message_type': 'text',
+                'text': utterance,
+                'options': {
+                    'alternate_intents': True
+                }
+            },
+            context={
+                'metadata': {
+                    'user_id': 'test'
+                }
+            })
 
     global g_tested_utterances
     g_tested_utterances += 1
@@ -62,14 +78,14 @@ async def message(service, workspace_id, utterance):
         
     return response.get_result()
 
-async def post(service, workspace_id, utterance, sem):
+async def post(service, workspace_id, utterance, apiversion, sem):
     """ Single post restrained by semaphore
     """
     counter = 0
     async with sem:
         while True:
             try:
-                res = await message(service, workspace_id, utterance)
+                res = await message(service, workspace_id, utterance, apiversion)
                 return res
             except Exception as e:
                 # Max retries reached, print out the response payload
@@ -77,18 +93,20 @@ async def post(service, workspace_id, utterance, sem):
                     print(e)
                     raise e
                 counter += 1
-                print("RETRY")
-                print(counter)
+                print(f"RETRY {counter}")
 
-async def fill_df(utterance, row_idx, out_df, workspace_id, conversation, sem):
+async def fill_df(utterance, row_idx, out_df, workspace_id, conversation, apiversion, sem):
         """ Send utterance to Assistant and save response to dataframe
         """
 #    async:
         # Replace newline chars before sending to WA
         utterance = utterance.replace('\n', ' ')
-        resp = await post(conversation, workspace_id, utterance, sem)
+        resp = await post(conversation, workspace_id, utterance, apiversion, sem)
         try:
-            intents = resp['intents']
+            if 'intents' in resp:
+                intents = resp['intents']
+            if 'output' in resp and 'intents' in resp['output']:
+                intents = resp['output']['intents']
 
             if len(intents) != 0:
                 out_df.loc[row_idx, PREDICTED_INTENT_COLUMN] = \
@@ -96,19 +114,30 @@ async def fill_df(utterance, row_idx, out_df, workspace_id, conversation, sem):
                 out_df.loc[row_idx, CONFIDENCE_COLUMN] = \
                     intents[0]['confidence']
 
-            out_df.loc[row_idx, DETECTED_ENTITY_COLUMN] = \
-                marshall_entity(resp['entities'])
+            if 'entities' in resp:
+                out_df.loc[row_idx, DETECTED_ENTITY_COLUMN] = \
+                    marshall_entity(resp['entities'])
+            if 'output' in resp and 'entities' in resp['output']:
+                out_df.loc[row_idx, DETECTED_ENTITY_COLUMN] = \
+                    marshall_entity(resp['output']['entities'])
 
             response_text = ''
-            response_text_list = resp['output']['text']
+            response_text_list = []
+            if 'text' in resp['output']:
+                response_text_list = resp['output']['text']
+            elif 'generic' in resp['output'] and len(resp['output']['generic']) != 0:
+                response_text_list = [ resp['output']['generic'][0]['text'] ]
+            else:
+                pass
+            
             if len(response_text_list) != 0:
                 response_text_list = [text for text in response_text_list if type(text) == str]
                 response_text = ' '.join(response_text_list)
 
             out_df.loc[row_idx, DIALOG_RESPONSE_COLUMN] = response_text
 
-        except KeyError:
-            print("intent key does not exist!")
+        except Error as e:
+            print("analysis error",e)
 
 async def gather_all_tasks(tasks):
     task_set = await asyncio.gather(*tasks)
@@ -151,15 +180,22 @@ def func(args):
 
     authenticator = choose_auth(args)
 
-    conv = AssistantV1(
-        version=args.version,
-        authenticator=authenticator
-    )
+    if(args.apiversion.lower() == 'v1'):
+        conv = AssistantV1(
+            version=args.version,
+            authenticator=authenticator
+        )
+    else:
+        conv = AssistantV2(
+            version=args.version,
+            authenticator=authenticator
+        )
     conv.set_disable_ssl_verification(eval(args.disable_ssl))
     conv.set_service_url(args.url)
 
     tasks = (fill_df(out_df.loc[row_idx, test_column],
                      row_idx, out_df, args.workspace_id, conv,
+                     args.apiversion.lower(),
                      sem)
              for row_idx in range(out_df.shape[0]))
     print("Testing",len(out_df),"utterances...")
@@ -204,8 +240,10 @@ def create_parser():
     parser.add_argument('-o', '--outfile', type=str,
                         help='Output file path',
                         default=os.path.join(os.getcwd(), TEST_OUT_FILENAME))
+    parser.add_argument('-p', '--apiversion', type=str,
+                        help='Watson Assistant API version ("v1" or "v2")', default='v1')
     parser.add_argument('-w', '--workspace_id', type=str, required=True,
-                        help='Workspace ID')
+                        help='Workspace ID (v1) or Assistant ID (v2)')
     parser.add_argument('-a', '--iam_apikey', type=str, required=True,
                         help='Assistant service IAM api key')
     parser.add_argument('-l', '--url', type=str, default='https://gateway.watsonplatform.net/assistant/api',

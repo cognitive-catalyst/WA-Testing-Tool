@@ -6,7 +6,7 @@ The user wants to test a set of utterances against a trained Watson Assistant in
 There is one and only one column in `test_input_file.csv` containing the test utterances which is used for testing purpose.
 
 ## Input file
-`config.ini` (fill in your `iam_apikey`, `url`, and `workspace_id` at minimum. (Older instances use a url like "https://gateway-wdc.watsonplatform.net/assistant/api")
+`config.ini` (fill in your `iam_apikey`, `url`, and one of `workspace_id` or `assistant_id` at minimum. (Older instances use a url like "https://gateway-wdc.watsonplatform.net/assistant/api")
 
 ```
 [ASSISTANT CREDENTIALS]
@@ -17,6 +17,7 @@ version=2019-02-28
 [DEFAULT]
 mode = test
 workspace_id = 01234567-9ABC-DEF0-1234-56789ABCDEF0
+;assistant_id=
 
 ; optional - defaults shown here
 ;output_directory = ./data
@@ -37,3 +38,5 @@ Sample `test_input_file.csv`
 | utterance   | predicted intent | confidence | detected entities                 | dialog response |
 | ----------- | ---------------- | ---------- | --------------------------------- | --------------- |
 | utterance 0 | intent 0         | 0.01       | entity 0:value 0;entity 1:value 1 | response 0      |
+
+Note: For Watson Assistant v2, the intent names returned are intent IDs rather than intent names.  These IDs can be discovered in the source code of the assistant JSON.
