@@ -21,10 +21,13 @@ import os
 import csv
 import asyncio
 import pandas as pd
+import json
 from argparse import ArgumentParser
 import aiohttp
-from ibm_watson import NaturalLanguageClassifierV1
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator, BearerTokenAuthenticator
+from ibm_watson import NaturalLanguageUnderstandingV1
+from ibm_watson.natural_language_understanding_v1 import ClassificationOptions
+from ibm_watson.natural_language_understanding_v1 import Features
 
 from choose_auth import choose_auth
 
@@ -44,9 +47,15 @@ MAX_RETRY_LIMIT = 5
 
 async def classify(service, workspace_id, utterance):
     # Include user_id in request body for Plus and Premium plans
-    response = service.classify(
+    response = service.analyze(
         classifier_id=workspace_id,
-        text=utterance)
+        text=utterance,
+        features=Features(
+            ClassificationOptions(
+                model=workspace_id
+            )
+        ))
+    #print(json.dumps(response.get_result(), indent=2))
     return response.get_result()
 
 async def post(service, workspace_id, utterance, sem):
@@ -67,13 +76,13 @@ async def post(service, workspace_id, utterance, sem):
                 print("RETRY")
                 print(counter)
 
-async def fill_df(utterance, row_idx, out_df, workspace_id, nlc, sem):
+async def fill_df(utterance, row_idx, out_df, workspace_id, nlu, sem):
         """ Send utterance to Assistant and save response to dataframe
         """
 #    async:
         # Replace newline chars before sending to WA
         utterance = utterance.replace('\n', ' ')
-        resp = await post(nlc, workspace_id, utterance, sem)
+        resp = await post(nlu, workspace_id, utterance, sem)
         try:
             classes = resp['classes']
 
@@ -104,7 +113,7 @@ def func(args):
         else:
             out_df = in_df[[test_column]].copy()
             out_df.columns = [test_column]
-
+    #add .squeeze('columbs') to end of function call 
     else:
         test_series = pd.read_csv(args.infile, quoting=csv.QUOTE_ALL,
                                   encoding=UTF_8, header=None, squeeze=True,
@@ -125,13 +134,16 @@ def func(args):
 
     authenticator = choose_auth(args)
 
-    nlc = NaturalLanguageClassifierV1(
+    nlu = NaturalLanguageUnderstandingV1(
+        version='2022-04-07',
         authenticator=authenticator
-    )
-    nlc.set_service_url(args.url)
+    ) 
+
+    nlu.set_service_url(args.url)
+    nlu.set_disable_ssl_verification(eval(args.disable_ssl))
 
     tasks = (fill_df(out_df.loc[row_idx, test_column],
-                     row_idx, out_df, args.workspace_id, nlc,
+                     row_idx, out_df, args.workspace_id, nlu,
                      sem)
              for row_idx in range(out_df.shape[0]))
     loop.run_until_complete(asyncio.gather(*tasks))
@@ -170,7 +182,7 @@ def func(args):
 
 def create_parser():
     parser = ArgumentParser(
-        description='Test NLC instance using utterance')
+        description='Test NLU instance using utterance')
     parser.add_argument('-i', '--infile', type=str, required=True,
                         help='File that contains test data')
     parser.add_argument('-o', '--outfile', type=str,
@@ -179,9 +191,9 @@ def create_parser():
     parser.add_argument('-w', '--workspace_id', type=str, required=True,
                         help='Classifier ID')
     parser.add_argument('-a', '--iam_apikey', type=str, required=True,
-                        help='NLC service IAM api key')
-    parser.add_argument('-l', '--url', type=str, default='https://gateway.watsonplatform.net/natural-language-classifier/api',
-                        help='URL to Watson NLC. Ex: https://gateway-wdc.watsonplatform.net/natural_language_classifier/api')
+                        help='NLU service IAM api key')
+    parser.add_argument('-l', '--url', type=str, default='https://api.us-east.natural-language-understanding.watson.cloud.ibm.com/instances/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
+                        help='URL to Watson NLU. Ex: https://api.us-east.natural-language-understanding.watson.cloud.ibm.com/instances/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx')
     parser.add_argument('-t', '--test_column', type=str,
                         help='Test column name in input file')
     parser.add_argument('-m', '--merge_input', action='store_true',
@@ -195,6 +207,8 @@ def create_parser():
                         help='Partial credit table')
     parser.add_argument('--auth-type', type=str, default='iam',
                         help='Authentication type, IAM is default, bearer is required for CP4D.', choices=['iam', 'bearer'])
+    parser.add_argument('--disable_ssl', type=str, default="False",
+                        help="Disables SSL verification. BE CAREFUL ENABLING THIS. Default is False", choices=["True", "False"])
     return parser
 
 

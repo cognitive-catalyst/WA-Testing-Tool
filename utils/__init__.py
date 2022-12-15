@@ -19,7 +19,7 @@ import csv
 import os
 import pandas as pd
 from ibm_watson import AssistantV1
-from ibm_watson import NaturalLanguageClassifierV1
+from ibm_watson import NaturalLanguageUnderstandingV1
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator, BearerTokenAuthenticator
 
 UTF_8 = 'utf-8'
@@ -77,7 +77,7 @@ STANDARD_TEST = 'test'
 FOLD_NUM_DEFAULT = 5
 DEFAULT_WA_VERSION = '2019-02-28'
 WORKSPACE_ID_TAG = 'workspace_id'
-CLASSIFIER_ID_TAG = 'classifier_id'
+CLASSIFIER_ID_TAG = 'model_id'
 TIME_TO_WAIT = 600
 BOOL_MAP = {True: 'yes', False: 'no'}
 DEFAULT_TEST_RATE = 100
@@ -137,12 +137,13 @@ def delete_workspaces(iam_apikey, url, version, workspace_ids, auth_type, disabl
         raise ValueError(f'Unknown auth_type "{auth_type}"')
 
     for workspace_id in workspace_ids:
-        if 'natural-language-classifier' in url:
-            c = NaturalLanguageClassifierV1(
+        if 'natural-language-understanding' in url:
+            c = NaturalLanguageUnderstandingV1(
+                    version=version,
                     authenticator=authenticator
                     )
             c.set_service_url(url)
-            c.delete_classifier(classifier_id=workspace_id)
+            c.delete_classifications_model(model_id=workspace_id)
         else:
             c = AssistantV1(
                     version=version,

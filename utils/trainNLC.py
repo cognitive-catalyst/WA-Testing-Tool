@@ -15,7 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-""" Train NLC instance
+""" Train NLU instance
     Classification input schema (headerless):
     | utterance | intent |
 """
@@ -24,7 +24,7 @@ from time import sleep
 import csv
 import pandas as pd
 from argparse import ArgumentParser
-from ibm_watson import NaturalLanguageClassifierV1
+from ibm_watson import NaturalLanguageUnderstandingV1
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 
 from choose_auth import choose_auth
@@ -44,63 +44,88 @@ class TrainTimeoutException(Exception):
 
 def func(args):
     classifier_name = ''
-    classifier_description = ''
-    classes = []
-    language = 'en'
-    counterexamples = []
-    metadata = {}
-    learning_opt_out = False
 
     authenticator = choose_auth(args)
 
-    nlc = NaturalLanguageClassifierV1(
+    nlu = NaturalLanguageUnderstandingV1(
+        version='2022-04-07',
         authenticator=authenticator
-    )    
-    nlc.set_service_url(args.url)
+    ) 
+    nlu.set_service_url(args.url)
+    nlu.set_disable_ssl_verification(eval(args.disable_ssl))
     
     classifier_name = "My Classifier"
     if args.classifier_name is not None:
         classifier_name = args.classifier_name
-    metadata = {"name": classifier_name ,"language": "en"}
-        
+
     if args.trainingFile is not None:
-        with open(args.trainingFile, 'rb') as training_data:
-            classifier = nlc.create_classifier(
+        #convert from csv to json 
+        training_data_file = get_training_data_json_file(args.trainingFile)
+    else:
+        exit(-1)
+    
+    with open(training_data_file, 'r') as training_data:
+        classifier = nlu.create_classifications_model(
+                language='en',
+                #default file format is json; should be able to use csv with the correct training_data_content_type parameter 
                 training_data=training_data,
-                training_metadata=json.dumps(metadata)
+                training_data_content_type='application/json',
+                name=classifier_name,
+                model_version="1.0.1"
                 ).get_result()
 
     resp = classifier
     # Poke the training status every SLEEP_INCRE secs
     sleep_counter = 0
     while sleep_counter < TIME_TO_WAIT:
-        raw_resp = nlc.get_classifier(classifier_id=resp[CLASSIFIER_ID_TAG])
+        raw_resp = nlu.get_classifications_model(model_id=resp['model_id'])
         resp = raw_resp.get_result()
-        if resp['status'] == 'Available':
+        #try status again 
+        if resp['status'] == 'available':
             print(json.dumps(resp, indent=4))  # double quoted valid JSON
             return
         sleep_counter += SLEEP_INCRE
         sleep(SLEEP_INCRE)
-    raise TrainTimeoutException('NLC training timeout')
+    raise TrainTimeoutException('NLU training timeout')
 
 
 def create_parser():
     parser = ArgumentParser(
-        description='Train NLC instance')
+        description='Train NLU instance')
     parser.add_argument('-i', '--trainingFile', type=str,
                         help='Training file')
     parser.add_argument('-a', '--iam_apikey', type=str, required=True,
-                        help='NLC service iam api key')
+                        help='NLU service iam api key')
     parser.add_argument('-n', '--classifier_name', type=str,
                         help='Classifier name')
-    parser.add_argument('-l', '--url', type=str, default='https://gateway.watsonplatform.net/natural_language_classifier/api',
-                        help='URL to Watson NLC. Ex: https://gateway.watsonplatform.net/natural_language_classifier/api')
+    parser.add_argument('-l', '--url', type=str, default='https://api.us-east.natural-language-understanding.watson.cloud.ibm.com/instances/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx',
+                        help='URL to Watson NLU. Ex: https://api.us-east.natural-language-understanding.watson.cloud.ibm.com/instances/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx')
     parser.add_argument('--auth-type', type=str, default='iam',
                         help='Authentication type, IAM is default, bearer is required for CP4D.', choices=['iam', 'bearer'])
     parser.add_argument('--disable_ssl', type=str, default="False",
                         help="Disables SSL verification. BE CAREFUL ENABLING THIS. Default is False", choices=["True", "False"])
     return parser
 
-if __name__ == '__main__':
+def get_training_data_json_file(csv_data_filename):
+    nlu_data = []
+
+    json_data_filename = csv_data_filename + ".json"
+    with open(csv_data_filename, 'r', encoding='utf-8') as csv_file:
+        csv_reader = csv.reader(csv_file, delimiter=',')
+        for row in csv_reader:
+            text = row[0]
+            labels = row[1:]
+            # Convert the text and label in NLU training data JSON object
+            data_dict = {
+                'text': text,
+                'labels': labels
+            }
+            nlu_data.append(data_dict)
+
+    with open(json_data_filename, 'w', encoding='utf-8') as json_file:
+        json.dump(nlu_data, json_file, indent=2)
+    return json_data_filename
+
+if __name__ == '__main__':  
     ARGS = create_parser().parse_args()
     func(ARGS)
