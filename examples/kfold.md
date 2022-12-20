@@ -20,7 +20,7 @@ Requires Watson Assistant v1 (dialog)
 [ASSISTANT CREDENTIALS]
 iam_apikey = <wa iam apikey>
 url = https://api.us-east.assistant.watson.cloud.ibm.com
-version=2019-02-28
+version=2021-06-14
 
 [DEFAULT]
 mode = kfold

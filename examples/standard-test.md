@@ -12,7 +12,7 @@ There is one and only one column in `test_input_file.csv` containing the test ut
 [ASSISTANT CREDENTIALS]
 iam_apikey = <wa iam apikey>
 url = https://api.us-east.assistant.watson.cloud.ibm.com
-version=2019-02-28
+version=2021-06-14
 
 [DEFAULT]
 mode = test

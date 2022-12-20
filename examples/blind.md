@@ -14,7 +14,7 @@ Further, reports are generated for an [intent metrics summary](intent-metrics.md
 [ASSISTANT CREDENTIALS]
 iam_apikey = <wa iam apikey>
 url = https://gateway-wdc.watsonplatform.net/assistant/api
-version=2019-02-28
+version=2021-06-14
 
 [DEFAULT]
 mode = blind
