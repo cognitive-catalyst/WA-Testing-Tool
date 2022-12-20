@@ -86,6 +86,21 @@ There are a variety of ways to use this tool.  Primarily you will execute a k-fo
 
 [Extract and analyze Watson Assistant log data](log_analytics/README.md)
 
+### More examples
+Long-form resources available in Article and Video form:
+
+Title | Article | Video
+-- | -- | --
+Testing a Chatbot with k-folds Cross Validation | https://medium.com/ibm-watson/testing-a-chatbot-with-k-folds-cross-validation-68dab111a6b | https://www.youtube.com/watch?v=FrhK68WyOK4
+Analyze chatbot classifier performance from logs | https://medium.com/ibm-watson/analyze-chatbot-classifier-performance-from-logs-e9cf2c7ca8fd | https://www.youtube.com/watch?v=yd89DKyf6hc
+Improve a chatbot classifier with production data | https://medium.com/ibm-watson/improve-a-chatbot-classifier-with-production-data-22a437f419b4 | https://www.youtube.com/watch?v=ftFIQtHiQY8
+
+### Related projects
+Watson Assistant is commonly paired with IBM Speech services to build voice-driven Conversational AI solutions.  Check out these tools to assess and tune your speech models!
+
+* [STT-WER-Python](https://github.com/IBM/watson-stt-wer-python/): Utilities for testing IBM Speech to Text
+* [TTS-Python](https://github.com/IBM/watson-tts-python/): Utilities for testing IBM Text to Speech
+
 ## Testing Natural Language Understanding Classifier
 This tool can also be used to test a trained Natural Language Understanding (NLU) Classifier. The configuration is similar to testing Watson Assistant except:
 1. Use the NLU URL in the `url` parameter (ex: `https://api.us-south.natural-language-understanding.watson.cloud.ibm.com`)
