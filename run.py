@@ -27,7 +27,7 @@ from ibm_watson import AssistantV1
 from ibm_watson import NaturalLanguageUnderstandingV1
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator, BearerTokenAuthenticator
 from utils import TRAIN_FILENAME, TEST_FILENAME, UTTERANCE_COLUMN, \
-                  GOLDEN_INTENT_COLUMN, TEST_OUT_FILENAME, WORKSPACE_ID_TAG, CLASSIFIER_ID_TAG, \
+                  GOLDEN_INTENT_COLUMN, TEST_OUT_FILENAME, WORKSPACE_ID_TAG, CLASSIFIER_ID_TAG, ENVIRONMENT_ID_TAG, \
                   WA_API_VERSION_ITEM, DEFAULT_WA_VERSION, UTF_8, INTENT_JUDGE_COLUMN, BOOL_MAP, \
                   DEFAULT_TEST_RATE, POPULATION_WEIGHT_MODE, DEFAULT_TEMP_DIR, FOLD_NUM_DEFAULT, \
                   DEFAULT_CONF_THRES, WCS_IAM_APIKEY_ITEM, WCS_BASEURL_ITEM, \
@@ -43,6 +43,7 @@ DEFAULT_SECTION = 'DEFAULT'
 
 MODE_ITEM = 'mode'
 WORKSPACE_ID_ITEM = 'workspace_id'
+ENVIRONMENT_ID_ITEM = 'environment_id'
 INTENT_FILE_ITEM = 'intent_train_file'
 ENTITY_FILE_ITEM = 'entity_train_file'
 TEST_FILE_ITEM = 'test_input_file'
@@ -82,6 +83,8 @@ def list_workspaces(auth_token, version, url, auth_type='iam', disable_ssl="Fals
         raise Exception(f'Unknown auth type: "{auth_type}"')
     if 'natural-language-understanding' in url:
         WATSON_SERVICE = 'nlc'
+    else:
+        WATSON_SERVICE = 'assistant'
     if WATSON_SERVICE != 'nlc':
         c = AssistantV1(
             version=version,
@@ -282,7 +285,7 @@ def kfold(fold_num, out_dir, intent_train_file, workspace_base_file, test_out_pa
 
 def blind(out_dir, intent_train_file, workspace_base_file, figure_path,
           test_out_path, test_input_file, previous_blind_out, workspace_id, keep_workspace,
-          iam_apikey, url, version, weight_mode, conf_thres, partial_credit_table, figure_title, auth_type, disable_ssl):
+          iam_apikey, url, version, weight_mode, conf_thres, partial_credit_table, figure_title, auth_type, disable_ssl, apiversion):
     print('Begin {} with following details:'.format(BLIND_TEST.upper()))
     print('{}={}'.format(INTENT_FILE_ITEM, intent_train_file))
     print('{}={}'.format(WORKSPACE_BASE_ITEM, workspace_base_file))
@@ -319,7 +322,7 @@ def blind(out_dir, intent_train_file, workspace_base_file, figure_path,
     if not os.path.exists(working_dir):
         os.makedirs(working_dir)
 
-    if WATSON_SERVICE != 'nlc':
+    if WATSON_SERVICE != 'nlc' and apiversion != 'v2':
         print('Training blind workspace...')
         workspace_spec_json = os.path.join(working_dir, SPEC_FILENAME)
         train_args = [sys.executable, TRAIN_CONVERSATION_PATH,
@@ -356,6 +359,7 @@ def blind(out_dir, intent_train_file, workspace_base_file, figure_path,
             test_args += ['--partial_credit_table', partial_credit_table]
         if WATSON_SERVICE != 'nlc':
              test_args += ['-v', version]
+             test_args += ['--apiversion', apiversion]
         if subprocess.run(test_args).returncode == 0:
             print('Tested blind workspace')
         else:
@@ -383,12 +387,12 @@ def blind(out_dir, intent_train_file, workspace_base_file, figure_path,
         if subprocess.run(confusion_args).returncode != 0:
             raise RuntimeError('Failure in generating confusion matrix')
     finally:
-        if not keep_workspace and WATSON_SERVICE != 'nlc':
+        if not keep_workspace and WATSON_SERVICE != 'nlc' and apiversion != 'v2':
             delete_workspaces(iam_apikey, url, version, [workspace_id], auth_type, disable_ssl)
 
 
 def test(out_dir, intent_train_file, workspace_base_file, test_out_path,
-         test_input_file, workspace_id, keep_workspace, iam_apikey, version, url, auth_type, disable_ssl):
+         test_input_file, workspace_id, keep_workspace, iam_apikey, version, url, auth_type, disable_ssl, apiversion):
     print('Begin {} with following details:'.format(STANDARD_TEST.upper()))
     print('{}={}'.format(INTENT_FILE_ITEM, intent_train_file))
     print('{}={}'.format(WORKSPACE_BASE_ITEM, workspace_base_file))
@@ -415,7 +419,7 @@ def test(out_dir, intent_train_file, workspace_base_file, test_out_path,
     if not os.path.exists(working_dir):
         os.makedirs(working_dir)
 
-    if WATSON_SERVICE != 'nlc':
+    if WATSON_SERVICE != 'nlc' and apiversion != 'v2':
         print('Training standard test workspace...')
         workspace_spec_json = os.path.join(working_dir, SPEC_FILENAME)
         train_args = [sys.executable, TRAIN_CONVERSATION_PATH,
@@ -441,6 +445,7 @@ def test(out_dir, intent_train_file, workspace_base_file, test_out_path,
             test_module_path = TEST_CLASSIFIER_PATH
         if WATSON_SERVICE != 'nlc':
              extra_params += ['-v', version]
+             extra_params += ['--apiversion', apiversion]
         if subprocess.run([sys.executable, test_module_path,
                            '-i', test_input_file,
                            '-o', test_out_path, '-m',
@@ -454,7 +459,7 @@ def test(out_dir, intent_train_file, workspace_base_file, test_out_path,
         else:
             raise RuntimeError('Failure in testing data')
     finally:
-        if not keep_workspace and WATSON_SERVICE != 'nlc':
+        if not keep_workspace and WATSON_SERVICE != 'nlc' and apiversion != 'v2':
             delete_workspaces(iam_apikey, url, version, [workspace_id], auth_type=auth_type, disable_ssl=disable_ssl)
 
 
@@ -503,13 +508,21 @@ def func(args):
     default_section = config[DEFAULT_SECTION]
 
     # Main params validation - make sure required parameters are passed
-    validate_config([MODE_ITEM, WORKSPACE_ID_ITEM], default_section)
-
+    workspace_id   = default_section.get(WORKSPACE_ID_ITEM, None)
+    environment_id = default_section.get(ENVIRONMENT_ID_ITEM, None)
+    if workspace_id is None and environment_id is None:
+        print("ERROR: one of workspace_id or environment_id is required")
+        exit(1)
+    
+    if workspace_id is not None and environment_id is not None:
+        print("ERROR: only one of workspace_id or environment_id can be provided")
+        exit(2)
+    
     #TEMP_DIR_ITEM is legacy configuration variable, subsumed by OUT_DIR_ITEM
     temp_dir = default_section.get(TEMP_DIR_ITEM, DEFAULT_TEMP_DIR)
     out_dir  = default_section.get(OUT_DIR_ITEM, temp_dir)
 
-    if WATSON_SERVICE != 'nlc':
+    if WATSON_SERVICE != 'nlc' and environment_id is None:
         # Prepare folds
         if subprocess.run([sys.executable, WORKSPACE_PARSER_PATH,
                            '-i', default_section[WORKSPACE_ID_ITEM],
@@ -534,6 +547,14 @@ def func(args):
             raise ValueError(
                 "Item '{}' is neither 'yes' nor 'no'".
                 format(DO_KEEP_WORKSPACE_ITEM))
+    if environment_id is not None:
+        #Cannot create or delete skills in v2 API
+        keep_workspace = True
+        apiversion = 'v2'
+        #Rest of tool expects workspace_id
+        workspace_id = environment_id
+    else:
+        apiversion = 'v1'
 
     mode = default_section[MODE_ITEM].lower()  # Ignore case
 
@@ -553,6 +574,10 @@ def func(args):
 
     test_out_path   = default_section.get(TEST_OUT_PATH_ITEM, out_dir + "/" + mode + "-out.csv")
     if KFOLD == mode:
+        if environment_id is not None:
+            print("Error: k-fold mode not supported for v2 API yet")
+            exit(3)
+        
         fold_num = default_section.get(FOLD_NUM_ITEM, FOLD_NUM_DEFAULT)
 
         kfold(fold_num=int(fold_num),
@@ -581,7 +606,7 @@ def func(args):
                   figure_path=figure_path,
                   test_out_path=test_out_path,
                   previous_blind_out=previous_blind_out,
-                  workspace_id=default_section[WORKSPACE_ID_ITEM],
+                  workspace_id=workspace_id,
                   keep_workspace=keep_workspace,
                   iam_apikey=iam_apikey, url=url,
                   version=version,
@@ -589,20 +614,22 @@ def func(args):
                   partial_credit_table=partial_credit_table,
                   figure_title=blind_figure_title,
                   auth_type=auth_type,
-                  disable_ssl=disable_ssl)
+                  disable_ssl=disable_ssl,
+                  apiversion=apiversion)
         elif STANDARD_TEST == mode:
             test(out_dir=out_dir,
                  intent_train_file=intent_train_file,
                  workspace_base_file=workspace_base_file,
                  test_input_file=test_input_file,
                  test_out_path=test_out_path,
-                 workspace_id=default_section[WORKSPACE_ID_ITEM],
+                 workspace_id=workspace_id,
                  keep_workspace=keep_workspace,
                  iam_apikey=iam_apikey,
                  version=version,
                  url=url,
                  auth_type=auth_type,
-                 disable_ssl=disable_ssl)
+                 disable_ssl=disable_ssl,
+                 apiversion=apiversion)
         else:
             raise ValueError("Unknown mode '{}'".format(mode))
 

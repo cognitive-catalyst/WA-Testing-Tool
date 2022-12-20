@@ -27,7 +27,7 @@ Pre-work: Make sure to cd into the location of a projects folder, where you will
   b. Open the config.ini file in your favorite text editor, edit and save the following information with your actual credentials: 
       API Key
       url
-      workspace_id
+      workspace_id (Watson Assistant v1) or environment_id (Watson Assistant v2)
   c. Set the mode and the mode-specific parameters.
 4. Run the process. `python3 run.py -c config.ini` or `python3 run.py -c <path to your config file>`
 
@@ -106,3 +106,5 @@ This tool can also be used to test a trained Natural Language Understanding (NLU
 6. "This utility used to work and now it doesn't." Upgrade to latest dependencies with `pip3 install --upgrade -r requirements.txt` and latest code with `git pull`.
 
 7. If you get a Python module loading error, confirm that you are using matching pip and python version, ie `pip3` and `python3` or `pip` and `python`.
+
+8. Watson Assistant v2 configuration does not support k-folds mode.  Watson Assistant v2 is tested "in-place" rather than creating temporary skills for this tool.

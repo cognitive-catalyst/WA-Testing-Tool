@@ -78,6 +78,7 @@ FOLD_NUM_DEFAULT = 5
 DEFAULT_WA_VERSION = '2019-02-28'
 WORKSPACE_ID_TAG = 'workspace_id'
 CLASSIFIER_ID_TAG = 'model_id'
+ENVIRONMENT_ID_TAG = 'environment_id'
 TIME_TO_WAIT = 600
 BOOL_MAP = {True: 'yes', False: 'no'}
 DEFAULT_TEST_RATE = 100

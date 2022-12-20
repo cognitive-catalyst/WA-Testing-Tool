@@ -11,6 +11,8 @@ Further, reports are generated for an [intent metrics summary](intent-metrics.md
 ## Prerequisite
 User's workspace must allow to create 5 more workspaces. For 'lite' plans, use 3 folds instead (`fold_num=3`)
 
+Requires Watson Assistant v1 (dialog)
+
 ## Input file
 `config.ini` (fill in your `iam_apikey`, `url`, and `workspace_id` at minimum. (Older instances use a url like "https://gateway-wdc.watsonplatform.net/assistant/api")
 
