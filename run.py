@@ -27,7 +27,7 @@ from ibm_watson import AssistantV1
 from ibm_watson import NaturalLanguageUnderstandingV1
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator, BearerTokenAuthenticator
 from utils import TRAIN_FILENAME, TEST_FILENAME, UTTERANCE_COLUMN, \
-                  GOLDEN_INTENT_COLUMN, TEST_OUT_FILENAME, WORKSPACE_ID_TAG, CLASSIFIER_ID_TAG, ASSISTANT_ID_TAG, \
+                  GOLDEN_INTENT_COLUMN, TEST_OUT_FILENAME, WORKSPACE_ID_TAG, CLASSIFIER_ID_TAG, ENVIRONMENT_ID_TAG, \
                   WA_API_VERSION_ITEM, DEFAULT_WA_VERSION, UTF_8, INTENT_JUDGE_COLUMN, BOOL_MAP, \
                   DEFAULT_TEST_RATE, POPULATION_WEIGHT_MODE, DEFAULT_TEMP_DIR, FOLD_NUM_DEFAULT, \
                   DEFAULT_CONF_THRES, WCS_IAM_APIKEY_ITEM, WCS_BASEURL_ITEM, \
@@ -43,7 +43,7 @@ DEFAULT_SECTION = 'DEFAULT'
 
 MODE_ITEM = 'mode'
 WORKSPACE_ID_ITEM = 'workspace_id'
-ASSISTANT_ID_ITEM = 'assistant_id'
+ENVIRONMENT_ID_ITEM = 'environment_id'
 INTENT_FILE_ITEM = 'intent_train_file'
 ENTITY_FILE_ITEM = 'entity_train_file'
 TEST_FILE_ITEM = 'test_input_file'
@@ -508,21 +508,21 @@ def func(args):
     default_section = config[DEFAULT_SECTION]
 
     # Main params validation - make sure required parameters are passed
-    workspace_id = default_section.get(WORKSPACE_ID_ITEM, None)
-    assistant_id = default_section.get(ASSISTANT_ID_ITEM, None)
-    if workspace_id is None and assistant_id is None:
-        print("ERROR: one of workspace_id or assistant ID is required")
+    workspace_id   = default_section.get(WORKSPACE_ID_ITEM, None)
+    environment_id = default_section.get(ENVIRONMENT_ID_ITEM, None)
+    if workspace_id is None and environment_id is None:
+        print("ERROR: one of workspace_id or environment_id is required")
         exit(1)
     
-    if workspace_id is not None and assistant_id is not None:
-        print("ERROR: only one of workspace_id or assistant ID can be provided")
+    if workspace_id is not None and environment_id is not None:
+        print("ERROR: only one of workspace_id or environment_id can be provided")
         exit(2)
     
     #TEMP_DIR_ITEM is legacy configuration variable, subsumed by OUT_DIR_ITEM
     temp_dir = default_section.get(TEMP_DIR_ITEM, DEFAULT_TEMP_DIR)
     out_dir  = default_section.get(OUT_DIR_ITEM, temp_dir)
 
-    if WATSON_SERVICE != 'nlc' and assistant_id is None:
+    if WATSON_SERVICE != 'nlc' and environment_id is None:
         # Prepare folds
         if subprocess.run([sys.executable, WORKSPACE_PARSER_PATH,
                            '-i', default_section[WORKSPACE_ID_ITEM],
@@ -547,12 +547,12 @@ def func(args):
             raise ValueError(
                 "Item '{}' is neither 'yes' nor 'no'".
                 format(DO_KEEP_WORKSPACE_ITEM))
-    if assistant_id is not None:
+    if environment_id is not None:
         #Cannot create or delete skills in v2 API
         keep_workspace = True
         apiversion = 'v2'
         #Rest of tool expects workspace_id
-        workspace_id = assistant_id
+        workspace_id = environment_id
     else:
         apiversion = 'v1'
 
@@ -574,7 +574,7 @@ def func(args):
 
     test_out_path   = default_section.get(TEST_OUT_PATH_ITEM, out_dir + "/" + mode + "-out.csv")
     if KFOLD == mode:
-        if assistant_id is not None:
+        if environment_id is not None:
             print("Error: k-fold mode not supported for v2 API yet")
             exit(3)
         

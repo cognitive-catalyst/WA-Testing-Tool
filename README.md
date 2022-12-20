@@ -27,7 +27,7 @@ Pre-work: Make sure to cd into the location of a projects folder, where you will
   b. Open the config.ini file in your favorite text editor, edit and save the following information with your actual credentials: 
       API Key
       url
-      workspace_id (Watson Assistant v1) or assistant_id (Watson Assistant v2)
+      workspace_id (Watson Assistant v1) or environment_id (Watson Assistant v2)
   c. Set the mode and the mode-specific parameters.
 4. Run the process. `python3 run.py -c config.ini` or `python3 run.py -c <path to your config file>`
 

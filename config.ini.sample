@@ -23,15 +23,15 @@ iam_apikey =
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Required parameters independent of mode
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; (Required) One of `workspace_id` or `assistant_id`
+; (Required) One of `workspace_id` or `environment_id`
 ; `workspace_id` can be one of:
 ; * Watson Assistant Workspace ID (can be found on Watson Assistant UI - navigate to Skills tab and click three dots for View API Details)
 ; * Natural Language Classifier classifer ID
 ; * Path to JSON file representing the locally saved workspace
 ;
-; `assistant_id` must be the Environment ID for the Assistant you wish to test.  This value is available from Watson Assistant UI.
+; `environment_id` must be the Environment ID for the Assistant you wish to test.  This value is available from Watson Assistant UI.
 workspace_id = <workspace_id or workspace JSON>
-assistant_id = <environment_id for v2 assistant>
+environment_id = <environment_id for v2 assistant>
 
 ; (Required) Mode to run tool in.  This setting affects which other variables are required in the rest of the DEFAULT section.
 ; Value values: KFOLD, BLIND or TEST
