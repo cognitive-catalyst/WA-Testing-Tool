@@ -9,18 +9,25 @@ For more information on Watson Assistant log analysis, check out the blog series
 # getAllLogs.py
 Using a filter argument grabs a set of logs from Watson Assistant.  Specify the maximum number of log pages (`-n`) to retrieve and the maximum number of log entries per page (`-p`).
 
-This utility uses the `list_logs` API when a workspace_id is passed, otherwise uses `list_all_logs` API which requires a language and one of `request.context.system.assistant_id`, `workspace_id`, or `request.context.metadata.deployment` in the filter (see https://cloud.ibm.com/apidocs/assistant/assistant-v1?code=python#list-log-events-in-all-workspaces)
+For dialog skills, this utility uses the `list_logs` API when a workspace_id is passed, otherwise uses `list_all_logs` API which requires a language and one of `request.context.system.assistant_id`, `workspace_id`, or `request.context.metadata.deployment` in the filter (see https://cloud.ibm.com/apidocs/assistant/assistant-v1?code=python#list-log-events-in-all-workspaces)
+
+For action skills, this utility uses the `list_logs` API which requires an ID for the environment the assistant is linked to (see https://cloud.ibm.com/apidocs/assistant-v2?code=python#listlogs)
 
 The `filter` syntax is documented here: https://cloud.ibm.com/docs/services/assistant?topic=assistant-filter-reference#filter-reference
 
-Example for one workspace:
+Example for one dialog-based workspace:
 ```
 python3 getAllLogs.py -a your_api_key -w your_workspace_id -l https://gateway.watsonplatform.net/assistant/api -c raw -n 20 -p 500 -o 10000_logs.json -f "response_timestamp>=2019-11-01,response_timestamp<2019-11-21"
 ```
 
-Example for one assistant:
+Example for one dialog-based assistant (v1 API):
 ```
 python3 getAllLogs.py -a your_api_key -l https://gateway.watsonplatform.net/assistant/api -c raw -n 20 -p 500 -o 10000_logs.json -f "language::en,response_timestamp>=2019-11-01,response_timestamp<2019-11-21,request.context.system.assistant_id::your_assistant_id"
+```
+
+Example for one actions-based assistant (v2 API):
+```
+python3 getAllLogs.py -a your_api_key -e your_environment_id -l https://gateway.watsonplatform.net/assistant/api -c raw -n 20 -p 500 -o 10000_logs.json -f "response_timestamp>=2019-11-01,response_timestamp<2019-11-21"
 ```
 
 The Watson Assistant team has put out a similar script at https://github.com/watson-developer-cloud/community/blob/master/watson-assistant/export_logs.py
