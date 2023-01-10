@@ -44,12 +44,17 @@ Example for text-based assistants:
 python3 extractConversations.py -i 10000_logs.json -o 10000_logs.csv -c "response.context.conversation_id"
 ```
 
-Example for voice-based assistants using IBM Voice Gateway:
+Example for voice-based assistants (v2) using IBM Voice Gateway:
+```
+python3 extractConversations.py -i 10000_logs.json -o 10000_logs.csv -c "request.context.skills.main skill.user_defined.vgwSessionID"
+```
+
+Example for voice-based assistants (v1) using IBM Voice Gateway:
 ```
 python3 extractConversations.py -i 10000_logs.json -o 10000_logs.csv -c "request.context.vgwSessionID"
 ```
 
-Example for voice-based assistants that adds some useful phone-based fields
+Example for voice-based assistants (v1) that adds some useful phone-based fields
 ```
 python3 extractConversations.py -i 10000_logs.json -o 10000_logs.csv -c "request.context.vgwSessionID" -f log_id,request.context.vgwPhoneUserPhoneNumber,request.context.vgwIsDTMF,request.context.vgwBargeInOccurred
 ```
