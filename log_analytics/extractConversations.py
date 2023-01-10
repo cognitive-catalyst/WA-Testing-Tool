@@ -55,7 +55,13 @@ def deep_get(dct, keys, default=None):
 
 def getFieldShortName(field_name):
     """ Simplifies `field_name` in the exported dataframe by removing Watson Assistant prefixes """
-    return field_name.replace('request.','').replace('response.','').replace('context.system.','').replace('context.','')
+    return field_name.replace('request.','')         \
+                     .replace('response.','')        \
+                     .replace('context.system.','')  \
+                     .replace('skills.','')          \
+                     .replace('main skill.','')      \
+                     .replace('user_defined.','')    \
+                     .replace('context.','')
 
 # Caches information about custom fields so they do not need to be re-calculated on every log event.
 # Example dictionary format is `{'request.response.XYZ': {'name': 'XYZ', 'key_list': ['request', 'response', 'XYZ']}}``
@@ -74,10 +80,17 @@ def logToRecord(log, customFields):
         record = {}
         record['conversation_id']          = log['response']['context']['conversation_id']
         #Location of dialog_turn_counter varies by WA version
-        if 'dialog_turn_counter' in log['response']['context']['system']:
-            record['dialog_turn_counter']  = log['response']['context']['system']['dialog_turn_counter']
-        else:
+        if 'system' in log['response']['context']:
+            if 'dialog_turn_counter' in log['response']['context']['system']:
+                record['dialog_turn_counter']  = log['response']['context']['system']['dialog_turn_counter']
+            else:
+                record['dialog_turn_counter']  = log['request']['context']['system']['dialog_turn_counter']
+        elif 'global' in log['response']['context'] and 'dialog_turn_counter' in log['response']['context']['global']:
+            record['dialog_turn_counter'] = log['response']['context']['global']['dialog_turn_counter']
+        elif 'system' in log['request']['context'] and 'dialog_turn_counter' in log['request']['context']['system']:
             record['dialog_turn_counter']  = log['request']['context']['system']['dialog_turn_counter']
+        else:
+            pass
 
         record['request_timestamp']        = log['request_timestamp']
         record['response_timestamp']       = log['response_timestamp']
@@ -91,18 +104,26 @@ def logToRecord(log, customFields):
         if 'intents' in log['response'] and (len(log['response']['intents']) > 0):
             record['intent']               = log['response']['intents'][0]['intent']
             record['intent_confidence']    = log['response']['intents'][0]['confidence']
+        if 'output' in log['response'] and 'intents' in log['response']['output'] and (len(log['response']['output']['intents']) > 0):
+            record['intent']               = log['response']['output']['intents'][0]['intent']
+            record['intent_confidence']    = log['response']['output']['intents'][0]['confidence']
 
         if 'entities' in log['response'] and len(log['response']['entities']) > 0:
             record['entities']             = tuple ( log['response']['entities'] )
+        if 'output' in log['response'] and 'entities' in log['response']['output'] and len(log['response']['output']['entities']) > 0:
+            record['entities']             = tuple ( log['response']['output']['entities'] )
 
         if 'nodes_visited' in log['response']['output']:
             record['nodes_visited']        = tuple (log['response']['output']['nodes_visited'])
         elif 'debug' in log['response']['output'] and 'nodes_visited' in log['response']['output']['debug']:
             record['nodes_visited']        = tuple (log['response']['output']['debug']['nodes_visited'])
+        elif 'debug' in log['response']['output'] and 'turn_events' in log['response']['output']['debug']:
+            record['nodes_visited']        = getNodesVisited(log['response']['output']['debug']['turn_events'])
         else:
             record['nodes_visited']        = ()
         
-        if 'branch_exited_reason' in log['response']['context']['system']:
+        #Single variable in v1, multiple choices in v2
+        if 'system' in log['response']['context'] and 'branch_exited_reason' in log['response']['context']['system']:
             record['branch_exited_reason'] = log['response']['context']['system']['branch_exited_reason']
 
         for field in customFields:
@@ -110,6 +131,19 @@ def logToRecord(log, customFields):
             record[key]                    = deep_get(log, value)
         
         return record
+
+def getNodesVisited(turn_events):
+    nodes_visited = list()
+    for turn_event in turn_events:
+        if 'source' in turn_event and 'event' in turn_event and 'step_visited' == turn_event['event']:
+            action = turn_event['source'].get('action', None)
+            step   = turn_event['source'].get('step', None)
+            if step is None:
+                nodes_visited.append(action)
+            else:
+                nodes_visited.append(f"{action}_{step}")
+
+    return nodes_visited
 
 def extractConversationData(logs, conversation_id_key='response.context.conversation_id', custom_field_names_comma_separated=None):
     # Parse custom field names from argument list
