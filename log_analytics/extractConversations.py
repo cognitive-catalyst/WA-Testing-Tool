@@ -55,7 +55,13 @@ def deep_get(dct, keys, default=None):
 
 def getFieldShortName(field_name):
     """ Simplifies `field_name` in the exported dataframe by removing Watson Assistant prefixes """
-    return field_name.replace('request.','').replace('response.','').replace('context.system.','').replace('context.','')
+    return field_name.replace('request.','')         \
+                     .replace('response.','')        \
+                     .replace('context.system.','')  \
+                     .replace('skills.','')          \
+                     .replace('main skill.','')      \
+                     .replace('user_defined.','')    \
+                     .replace('context.','')
 
 # Caches information about custom fields so they do not need to be re-calculated on every log event.
 # Example dictionary format is `{'request.response.XYZ': {'name': 'XYZ', 'key_list': ['request', 'response', 'XYZ']}}``
@@ -79,8 +85,12 @@ def logToRecord(log, customFields):
                 record['dialog_turn_counter']  = log['response']['context']['system']['dialog_turn_counter']
             else:
                 record['dialog_turn_counter']  = log['request']['context']['system']['dialog_turn_counter']
-        if 'global' in log['response']['context'] and 'dialog_turn_counter' in log['response']['context']['global']:
+        elif 'global' in log['response']['context'] and 'dialog_turn_counter' in log['response']['context']['global']:
             record['dialog_turn_counter'] = log['response']['context']['global']['dialog_turn_counter']
+        elif 'system' in log['request']['context'] and 'dialog_turn_counter' in log['request']['context']['system']:
+            record['dialog_turn_counter']  = log['request']['context']['system']['dialog_turn_counter']
+        else:
+            pass
 
         record['request_timestamp']        = log['request_timestamp']
         record['response_timestamp']       = log['response_timestamp']
