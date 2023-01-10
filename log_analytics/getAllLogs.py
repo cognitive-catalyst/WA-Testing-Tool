@@ -19,7 +19,7 @@ def getAssistant(ARGS):
     '''Retrieve Watson Assistant SDK object'''
     authenticator = IAMAuthenticator(iam_apikey)
 
-    if 'environment_id' in ARGS:
+    if 'environment_id' in ARGS and ARGS['environment_id'] is not None:
         c = AssistantV2(
             version=version,
             authenticator=authenticator
