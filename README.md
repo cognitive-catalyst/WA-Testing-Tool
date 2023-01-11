@@ -107,6 +107,8 @@ This tool can also be used to test a trained Natural Language Understanding (NLU
 2. Specify the `<model_id>` in the `workspace_id` parameter in the configuration
 3. Since NLU classifier does not support downloading training data, the original training data must be provided if run in 'kfold' mode (using the `train_input_file` parameter)
 
+This NLU mode requires Python 3.9+ or later.
+
 ## General Caveats and Troubleshooting
 1. Due to different coverage among service plans, user may need to adjust `max_test_rate` accordingly to avoid network connection error.
 
