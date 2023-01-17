@@ -92,8 +92,8 @@ def logToRecord(log, customFields):
         else:
             pass
 
-        record['request_timestamp']        = log['request_timestamp']
-        record['response_timestamp']       = log['response_timestamp']
+        record['request_timestamp']        = log.get('request_timestamp', None)
+        record['response_timestamp']       = log.get('response_timestamp', None)
 
         if 'text' in log['request']['input']:
             record['input.text']           = log['request']['input']['text']
