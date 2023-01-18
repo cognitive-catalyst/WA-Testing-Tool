@@ -34,7 +34,7 @@ def getAssistant(ARGS):
     c.set_service_url(url)
     return c
 
-def getLogs(iam_apikey, url, workspace_id, filter, page_size_limit=DEFAULT_PAGE_SIZE, page_num_limit=DEFAULT_NUMBER_OF_PAGES, version=DEFAULT_WCS_VERSION):
+def getLogs(iam_apikey, url, workspace_id, filter, page_size_limit=DEFAULT_PAGE_SIZE, page_num_limit=DEFAULT_NUMBER_OF_PAGES, version=DEFAULT_WCS_VERSION, environment_id=None):
     '''Public API for script, connects to Watson Assistant and downloads all logs'''
     ARGS = {}
     ARGS['iam_apikey'] = iam_apikey
@@ -44,6 +44,7 @@ def getLogs(iam_apikey, url, workspace_id, filter, page_size_limit=DEFAULT_PAGE_
     ARGS['page_limit'] = page_size_limit
     ARGS['number_of_pages'] = page_num_limit
     ARGS['version'] = version
+    ARGS['environment_id'] = environment_id
 
     service = getAssistant(ARGS)
     return getLogsInternal(service, ARGS)
