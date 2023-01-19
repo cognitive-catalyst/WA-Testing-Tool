@@ -1,9 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## 2022-01-17
+### Added
+- Support for Watson Assistant v2 API log extraction and analysis
+
 ## 2022-12-15
 ### Added
-- Support for Watson Assistant v2 API (blind test and standard test only)
+- Support for Watson Assistant v2 API accuracy (blind test and standard test only)
 
 ## 2022-03-03
 ### Added

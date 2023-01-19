@@ -26,7 +26,7 @@ from argparse import ArgumentParser
 import aiohttp
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator, BearerTokenAuthenticator
 from ibm_watson import NaturalLanguageUnderstandingV1
-from ibm_watson.natural_language_understanding_v1 import ClassificationOptions
+from ibm_watson.natural_language_understanding_v1 import ClassificationsOptions
 from ibm_watson.natural_language_understanding_v1 import Features
 
 from choose_auth import choose_auth
@@ -46,15 +46,14 @@ MAX_RETRY_LIMIT = 5
 
 
 async def classify(service, workspace_id, utterance):
-    # Include user_id in request body for Plus and Premium plans
     response = service.analyze(
-        classifier_id=workspace_id,
-        text=utterance,
         features=Features(
-            ClassificationOptions(
+            classifications=ClassificationsOptions(
                 model=workspace_id
             )
-        ))
+        ),
+        text=utterance,
+        language='en')
     #print(json.dumps(response.get_result(), indent=2))
     return response.get_result()
 
@@ -84,7 +83,7 @@ async def fill_df(utterance, row_idx, out_df, workspace_id, nlu, sem):
         utterance = utterance.replace('\n', ' ')
         resp = await post(nlu, workspace_id, utterance, sem)
         try:
-            classes = resp['classes']
+            classes = resp['classifications']
 
             if len(classes) != 0:
                 out_df.loc[row_idx, PREDICTED_INTENT_COLUMN] = \
@@ -92,8 +91,8 @@ async def fill_df(utterance, row_idx, out_df, workspace_id, nlu, sem):
                 out_df.loc[row_idx, CONFIDENCE_COLUMN] = \
                     classes[0]['confidence']
 
-        except KeyError:
-            print("class key does not exist!")
+        except Exception as e:
+            print(f"Error classifying {utterance}: ", e)
 
 def func(args):
     in_df = None
