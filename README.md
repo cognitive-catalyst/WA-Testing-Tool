@@ -122,4 +122,4 @@ This tool can also be used to test a trained Natural Language Understanding (NLU
 
 7. If you get a Python module loading error, confirm that you are using matching pip and python version, ie `pip3` and `python3` or `pip` and `python`.
 
-8. Watson Assistant v2 configuration does not support k-folds mode.  Watson Assistant v2 is tested "in-place" rather than creating temporary skills for this tool.
+8. Watson Assistant v2 configuration does not support k-folds mode.  Watson Assistant v2 is tested "in-place" rather than creating temporary skills for this tool. Actions users may prefer to use [Dialog Skill Analysis](https://github.com/watson-developer-cloud/assistant-skill-analysis/) notebooks - these notebooks have additional capabilities for analyzing Dialog or Action skills.
