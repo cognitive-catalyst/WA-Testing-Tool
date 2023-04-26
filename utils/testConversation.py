@@ -251,7 +251,7 @@ def create_parser():
     parser.add_argument('-t', '--test_column', type=str,
                         help='Test column name in input file')
     parser.add_argument('-m', '--merge_input', action='store_true',
-                        default=False,
+                        default=True,
                         help='Merge input content into test out')
     parser.add_argument('-g', '--golden_intent_column', type=str,
                         help='Golden column name in input file')
