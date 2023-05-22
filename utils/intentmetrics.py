@@ -43,6 +43,9 @@ def func(args):
                                         labels=labels,
                                         zero_division=0)
 
+    # scikit learn doesn't give number of predictions
+    num_predictions = [(in_df[args.test_column] == label).sum() for label in labels]
+
     #Raw accuracy as well
     in_df['correct'] = (in_df[args.golden_column] == in_df[args.test_column])
     samples = len(in_df['correct'])
@@ -72,11 +75,12 @@ def func(args):
                                 'recall': recalls,
                                 'precision': precisions,
                                 'f-score': fscores,
-                                'number of samples': support})
+                                'number of samples': support,
+                                'number of predictions': num_predictions})
 
     out_df.to_csv(args.out_file, encoding='utf-8', quoting=csv.QUOTE_ALL,
-                  index=False, columns=['intent', 'number of samples', 'recall',
-                  'precision', 'f-score'] )
+                  index=False, columns=['intent', 'number of samples', 
+                  'number of predictions', 'recall', 'precision', 'f-score'] )
 
     print ("Wrote intent metrics output to {}. Includes {} correct intents in {} tries for accuracy of {}.".format(args.out_file, num_correct, samples, accuracy))
 
