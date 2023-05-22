@@ -47,9 +47,9 @@ python3 utils/intentmetrics.py -i data/golden_vs_predicted.csv -o data/golden_vs
 ## Sample output
 Assuming the small example file `data/golden_vs_predicted.csv` above, this CSV is generated
 ```
-"intent","number of samples","recall","precision","f-score"
-"intent1","1","1.0","0.3333333333333333","0.5"
-"intent2","3","0.3333333333333333","1.0","0.6666666666666666"
+"intent","number of samples","number of predictions","recall","precision","f-score"
+"intent1","1","3","1.0","0.3333333333333333","0.5"
+"intent2","4","2","0.5","1.0","0.6666666666666666"
 ```
 
 This mode also generates a treemap where:
