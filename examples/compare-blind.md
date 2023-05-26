@@ -12,10 +12,10 @@ User executes `compare-blind.py` providing the input filename for current and pr
 User must have two input .csv files containing utterance-level results from blind tests.
 
 ## Invocation
-Assuming "current" input file at `data/blind-current-out.csv` and "previous" input file at `data/blind-previous-out.csv` created by WA-Testing-Tool blind tests and writing to `data/comparison.csv'.
+Assuming "current" input file at `data/blind-current-out.csv` and "previous" input file at `data/blind-previous-out.csv` created by WA-Testing-Tool blind tests and writing to three output files (`data/compare_intent_comparison.csv`, `data/compare_improved_utterances.csv`, and `data/compare_regressed_utterances.csv`) via base name `data/compare.csv`.
 
 ```
-python3 utils/compare-blind.py -c data/blind-current-out.csv -p data/blind-previous-out.csv -o data/comparison.csv
+python3 utils/compare-blind.py -c data/blind-current-out.csv -p data/blind-previous-out.csv -o data/compare.csv
 ```
 
 ## Sample output
@@ -40,7 +40,7 @@ Average confidence in incorrect answer (current ): 0.663
 Average confidence in incorrect answer (previous): 0.635
 ```
 
-`compare_intent_comparison.csv` example contents:
+`data/compare_intent_comparison.csv` example contents:
 
 ```
 "intent","total","curr_correct","prev_correct","diff_correct","curr_correct_confidence","prev_correct_confidence","diff_correct_confidence","curr_incorrect_confidence","prev_incorrect_confidence","diff_incorrect_confidence"
@@ -48,7 +48,7 @@ Average confidence in incorrect answer (previous): 0.635
 "store_location","314","263","227","36","0.912","0.892","0.020","0.796","0.703","0.093"
 ```
 
-`compare_improved_utterances.csv` example contents (`compare_regressed_utterances.csv` has similar format):
+`data/compare_improved_utterances.csv` example contents (`data/compare_regressed_utterances.csv` has similar format):
 ```
 "utterance","golden intent","current_prediction","current_confidence","current_score","previous_prediction","previous_confidence","previous_score"
 "where do i go to reset my password","reset_password","store_location","0.4428514242172241","0","reset_password","0.4460688531398773","1"
