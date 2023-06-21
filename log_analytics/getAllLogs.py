@@ -107,10 +107,12 @@ def getLogsInternal(assistant, ARGS):
 
 def writeLogs(logs, output_file, output_columns="raw"):
     '''
-    Writes log output to file system or screen.  Includes three modes:
+    Writes log output to file system or screen.  Includes four modes:
     `raw`: logs are written in JSON format
     `all`: all log columns useful for intent training are written in CSV format
     `utterance`: only the `input.text` column is written (one per line)
+    `transcript`: Alternating lines of "User" and "Watson" transcript
+
     '''
     file = None
     if output_file != None:
@@ -133,6 +135,7 @@ def writeLogs(logs, output_file, output_columns="raw"):
        confidence   = 0.0
        date         = 'unknown_date'
        last_visited = 'unknown_last_visited'
+       response     = ''
        if 'response' in log and 'intents' in log['response'] and len(log['response']['intents'])>0:
           intent     = log['response']['intents'][0]['intent']
           confidence = log['response']['intents'][0]['confidence']
@@ -141,11 +144,15 @@ def writeLogs(logs, output_file, output_columns="raw"):
           if 'nodes_visited' in log['response']['output'] and len (log['response']['output']['nodes_visited']) > 0:
              last_visited = log['response']['output']['nodes_visited'][-1]
 
+       if 'response' in log and 'output' in log['response'] and 'text' in log['response']['output'] and len(log['response']['output']['text'])>0:
+          response   = log['response']['output']['text'][0]
+
        if 'all' == output_columns:
           output_line = '{}\t{}\t{}\t{}\t{}'.format(utterance, intent, confidence, date, last_visited)
-       else:
-          #assumed just 'utterance'
+       elif 'utterance' == output_columns:
           output_line = utterance
+       else:
+          output_line = f"User: {utterance}\nWatson: {response}"
 
        writeOut(file, output_line)
 

@@ -30,6 +30,11 @@ Example for one actions-based assistant (v2 API):
 python3 getAllLogs.py -a your_api_key -e your_environment_id -l https://gateway.watsonplatform.net/assistant/api -c raw -n 20 -p 500 -o 10000_logs.json -f "response_timestamp>=2019-11-01,response_timestamp<2019-11-21"
 ```
 
+Example to get logs for one conversation by conversation_id:
+```
+python3 getAllLogs.py -a your_api_key -w your_workspace_id -l https://api.xx-xxxx.assistant.watson.cloud.ibm.com/instances/xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx -f "response.context.conversation_id::xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" -c transcript
+```
+
 The Watson Assistant team has put out a similar script at https://github.com/watson-developer-cloud/community/blob/master/watson-assistant/export_logs.py
 
 # extractConversations.py
