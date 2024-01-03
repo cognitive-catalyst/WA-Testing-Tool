@@ -51,10 +51,9 @@ python3 utils/confusionmatrix.py -i data/golden_vs_predicted.csv -o data/golden_
 "golden:intent2","2","2"
 ```
 
-This mode also generates the confusion matrix as a heatmap where:
-* COLOR of box relates to number of samples for that intent
+This mode also generates the confusion matrix as a heatmap where COLOR of box relates to number of samples for that intent.  Two matrices are generated: one where the colors are scaled relative to a single intent (black represents perfect accuracy in that intent) and one where the colors are scaled relative to global number of examples (black represents the largest sample sizes).
 
-An ideal confusion matrix has black boxes on the diagonal and no other colors.  For improvement focus on the darkest boxes off of the main diagonal.
+An ideal confusion matrix has dark boxes on the diagonal and no other colors.  For improvement focus on the darkest boxes off of the main diagonal.
 
 Using a [larger example file](../resources/example-kfold-test-out-union.csv) we get the following heatmap:
 

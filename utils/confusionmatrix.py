@@ -25,6 +25,11 @@ from argparse import ArgumentParser
 from sklearn.metrics import confusion_matrix
 from __init__ import UTF_8
 
+def cell_to_str(x):
+    # Removes 0 from confusion matrix
+    if x == 0:
+        return ""
+    return str(x)
 
 def func(args):
     in_df = pd.read_csv(args.in_file, quoting=csv.QUOTE_ALL,
@@ -53,14 +58,33 @@ def func(args):
 
     #Plot a normalized confusion matrix as a heatmap
     plt.figure(figsize = (10,10))
-    df_cm = pd.DataFrame(output_matrix, index=index_labels, columns=column_labels)
-    df_cm = df_cm.to_numpy()
-    df_cm = df_cm.astype('float') / df_cm.sum(axis=1)[:, np.newaxis]
+
+    # Create multiple normalizations
+    orig_cm = pd.DataFrame(output_matrix, index=index_labels, columns=column_labels)
+    df_cm = orig_cm.copy(deep=True).to_numpy()
+    global_scaled_cm = df_cm/np.sum(df_cm) # Normalize on total number of samples.  Makes the higher-volume parts stand out.
+    intent_scaled_cm = df_cm.astype('float') / df_cm.sum(axis=1)[:, np.newaxis] # Makes single-intent accuracy of 100% full black
     sns.set(font_scale=1)
-    # Add 'annot=True' to the list of options for heatmap if you want to print the numbers, ideal only for small maps
-    hm = sns.heatmap(df_cm, cmap="Greys",cbar=False,fmt='.1%',linewidths=0.1,linecolor='black',xticklabels=column_labels, yticklabels=index_labels)
+
+    hm_args = {}
+    hm_args['cmap'] = "Greys"      # Grayscale prints best
+    hm_args['cbar'] = False        # Does not append legend
+    hm_args['linewidths'] = 0.1    # Border on each cell
+    hm_args['linecolor'] = 'black' # Black lines
+    hm_args['xticklabels'] = column_labels # Test/Predicted intent
+    hm_args['yticklabels'] = index_labels  # Golden/Expected intent
+
+    # Add labels if it does not clutter the graph too much.  After 10-15 classes the labels get hard to read.
+    if(len(index_labels) < 12): 
+        labels_cm = orig_cm.copy(deep=True).applymap(cell_to_str) # Replace 0 with blank to declutter the visualization
+        hm_args['annot'] = labels_cm   # Label each cell
+        hm_args['fmt'] = ''            # Pass only the label string to the cell
+
+    # First create the original "intent scaled" version (100% on intent = black)
+    hm = sns.heatmap(intent_scaled_cm, **hm_args)
     hm.set_yticklabels(hm.get_yticklabels(), rotation=0)
-    hm.set_xticklabels(hm.get_xticklabels(), rotation=90)
+    hm.set_xticklabels(hm.get_xticklabels(), rotation=90) #Rotation 90 degrees to vertical, easier to read
+
     plt.title("Normalized Confusion Matrix")
     plt.tight_layout()
     plt.autoscale()
@@ -68,6 +92,19 @@ def func(args):
     plt.savefig(out_image_file,bbox_inches='tight',dpi=400)
    
     print ("Wrote confusion matrix diagram to {}.".format(out_image_file))
+
+    # Then create the new "global scaled" version (highest volume == darkest)
+    hm = sns.heatmap(global_scaled_cm, **hm_args)
+    hm.set_yticklabels(hm.get_yticklabels(), rotation=0)
+    hm.set_xticklabels(hm.get_xticklabels(), rotation=90) #Rotation 90 degrees to vertical, easier to read
+
+    plt.title("Normalized Scaled Confusion Matrix")
+    plt.tight_layout()
+    plt.autoscale()
+    out_image_file = args.out_file[:-4] + "_scaled.png"
+    plt.savefig(out_image_file,bbox_inches='tight',dpi=400)
+   
+    print ("Wrote global-scaled confusion matrix diagram to {}.".format(out_image_file))
 
 def create_parser():
     parser = ArgumentParser(
