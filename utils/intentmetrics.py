@@ -82,7 +82,16 @@ def func(args):
                   index=False, columns=['intent', 'number of samples', 
                   'number of predictions', 'recall', 'precision', 'f-score'] )
 
-    print ("Wrote intent metrics output to {}. Includes {} correct intents in {} tries for accuracy of {}.".format(args.out_file, num_correct, samples, accuracy))
+    print ("Wrote intent metrics output to {}.".format(args.out_file))
+
+    summary_file = args.out_file[:-4] + "_summary.csv"
+    summary_df = pd.DataFrame(data={
+        'correct': [num_correct],
+        'total': [samples],
+        'accuracy': [accuracy]
+    })
+    summary_df.to_csv(summary_file, encoding='utf-8', quoting=csv.QUOTE_ALL, index=False)
+    print ("Wrote metrics summary output to {}. Includes {} correct intents in {} tries for accuracy of {}.".format(summary_file, num_correct, samples, accuracy))
 
     # Fill f-score column with the recall when the precision is undefined.  Produces a more actionable tree map especially in partial-credit scenarios.
     if args.partial_credit_on is not None:
