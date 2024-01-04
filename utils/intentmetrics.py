@@ -37,11 +37,18 @@ def func(args):
 
     labels = in_df[args.golden_column].drop_duplicates().sort_values()
 
+    prfs_args = {}
+    prfs_args['y_true'] = in_df[args.golden_column]
+    prfs_args['y_pred'] = in_df[args.test_column]
+    prfs_args['labels'] = labels
+    prfs_args['zero_division'] = 0
+
+    # Use a column called 'weight' to scale the per-intent metrics
+    if 'weight' in in_df:
+        prfs_args['sample_weight'] = in_df['weight']
+
     precisions, recalls, fscores, support = \
-        precision_recall_fscore_support(y_true=in_df[args.golden_column],
-                                        y_pred=in_df[args.test_column],
-                                        labels=labels,
-                                        zero_division=0)
+        precision_recall_fscore_support(**prfs_args)
 
     # scikit learn doesn't give number of predictions
     num_predictions = [(in_df[args.test_column] == label).sum() for label in labels]
@@ -51,6 +58,12 @@ def func(args):
     samples = len(in_df['correct'])
     num_correct = sum(in_df['correct'])
     accuracy = format(num_correct/samples, '.2f')
+
+    # Use a column called 'weight' to scale the raw accuracy
+    if 'weight' in in_df:
+        samples = sum(in_df['weight'])
+        num_correct = sum(in_df['correct'] * in_df['weight'])
+        accuracy = format(num_correct/samples, '.2f')
 
     if args.partial_credit_on is not None:
         for idx, label in enumerate(labels):
