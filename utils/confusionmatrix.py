@@ -40,10 +40,16 @@ def func(args):
 
     labels = in_df[args.golden_column].drop_duplicates().sort_values()
 
-    output_matrix = \
-        confusion_matrix(y_true=in_df[args.golden_column],
-                         y_pred=in_df[args.test_column],
-                         labels=labels)
+    cm_args = {}
+    cm_args['y_true'] = in_df[args.golden_column]
+    cm_args['y_pred'] = in_df[args.test_column]
+    cm_args['labels'] = labels
+
+    # Use a column called 'weight' to scale the per-intent metrics
+    if 'weight' in in_df:
+        cm_args['sample_weight'] = in_df['weight']
+
+    output_matrix = confusion_matrix(**cm_args)
 
     #Thanks to https://stackoverflow.com/questions/50325786/sci-kit-learn-how-to-print-labels-for-confusion-matrix for this clever line of python
     index_labels  = ['golden:{:}'.format(x) for x in labels]
