@@ -127,6 +127,7 @@ async def fill_df(utterance, row_idx, out_df, workspace_id, conversation, apiver
                 response_text_list = resp['output']['text']
             elif 'generic' in resp['output'] and len(resp['output']['generic']) != 0 and 'text' in resp['output']['generic'][0]:
                 response_text_list = [ resp['output']['generic'][0]['text'] ]
+            #Auto-disambiguation (suggestions)
             elif 'generic' in resp['output'] and len(resp['output']['generic']) != 0 and 'title' in resp['output']['generic'][0]:
                 response_text_list = resp['output']['generic'][0]['title']
                 suggestions = resp['output']['generic'][0]['suggestions']
