@@ -125,8 +125,14 @@ async def fill_df(utterance, row_idx, out_df, workspace_id, conversation, apiver
             response_text_list = []
             if 'text' in resp['output']:
                 response_text_list = resp['output']['text']
-            elif 'generic' in resp['output'] and len(resp['output']['generic']) != 0:
+            elif 'generic' in resp['output'] and len(resp['output']['generic']) != 0 and 'text' in resp['output']['generic'][0]:
                 response_text_list = [ resp['output']['generic'][0]['text'] ]
+            #Auto-disambiguation (suggestions)
+            elif 'generic' in resp['output'] and len(resp['output']['generic']) != 0 and 'title' in resp['output']['generic'][0]:
+                response_text_list = resp['output']['generic'][0]['title']
+                suggestions = resp['output']['generic'][0]['suggestions']
+                for suggestion in suggestions:
+                    response_text_list += " " + suggestion ['label']
             else:
                 pass
             
@@ -136,7 +142,7 @@ async def fill_df(utterance, row_idx, out_df, workspace_id, conversation, apiver
 
             out_df.loc[row_idx, DIALOG_RESPONSE_COLUMN] = response_text
 
-        except Error as e:
+        except Exception as e:
             print("analysis error",e)
 
 async def gather_all_tasks(tasks):
