@@ -103,10 +103,12 @@ def logToRecord(log, customFields):
 
         if 'intents' in log['response'] and (len(log['response']['intents']) > 0):
             record['intent']               = log['response']['intents'][0]['intent']
-            record['intent_confidence']    = log['response']['intents'][0]['confidence']
+            if 'confidence' in log['response']['intents'][0]:
+                record['intent_confidence']    = log['response']['intents'][0]['confidence']
         if 'output' in log['response'] and 'intents' in log['response']['output'] and (len(log['response']['output']['intents']) > 0):
             record['intent']               = log['response']['output']['intents'][0]['intent']
-            record['intent_confidence']    = log['response']['output']['intents'][0]['confidence']
+            if 'confidence' in log['response']['output']['intents'][0]:
+                record['intent_confidence']    = log['response']['output']['intents'][0]['confidence']
 
         if 'entities' in log['response'] and len(log['response']['entities']) > 0:
             record['entities']             = tuple ( log['response']['entities'] )
@@ -170,9 +172,10 @@ def extractConversationData(logs, conversation_id_key='response.context.conversa
     
     df['request_timestamp']  = pd.to_datetime(df['request_timestamp'])
     df['response_timestamp'] = pd.to_datetime(df['response_timestamp'])
-    df['intent_confidence'] = pd.to_numeric(df["intent_confidence"], errors='coerce')
-    df['intent_confidence'] = df['intent_confidence'].fillna(0.0)
-    df[df['intent_confidence']=='']=0.0
+    if 'intent_confidence' in df:
+        df['intent_confidence'] = pd.to_numeric(df["intent_confidence"], errors='coerce')
+        df['intent_confidence'] = df['intent_confidence'].fillna(0.0)
+        df[df['intent_confidence']=='']=0.0
 
     # Lastly sort by conversation ID, and then request, so that the logs become readable. 
     df = df.sort_values([primarySortField, 'request_timestamp'], ascending=[True, True]).reset_index(drop=True)
