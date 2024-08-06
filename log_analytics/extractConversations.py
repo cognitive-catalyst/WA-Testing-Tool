@@ -61,7 +61,9 @@ def getFieldShortName(field_name):
                      .replace('skills.','')          \
                      .replace('main skill.','')      \
                      .replace('user_defined.','')    \
-                     .replace('context.','')
+                     .replace('context.','')         \
+                     .replace('actions skill.','')   \
+                     .replace('skill_variables.','')
 
 # Caches information about custom fields so they do not need to be re-calculated on every log event.
 # Example dictionary format is `{'request.response.XYZ': {'name': 'XYZ', 'key_list': ['request', 'response', 'XYZ']}}``
@@ -100,6 +102,12 @@ def logToRecord(log, customFields):
 
         if 'text' in log['response']['output']:
             record['output.text']          = ' '.join(filter(None,log['response']['output']['text'])).replace('\r','').replace('\n','')
+            if 'generic' in log['response']['output'] and len(log['response']['output']['generic']) > 1 and 'options' in log['response']['output']['generic'][1]:
+                record['output.text'] += f" options:["
+                for option in log['response']['output']['generic'][1]['options']:
+                    labelText = option["label"]
+                    record['output.text'] += f'"{labelText}",'
+                record['output.text'] += "]"
 
         if 'intents' in log['response'] and (len(log['response']['intents']) > 0):
             record['intent']               = log['response']['intents'][0]['intent']
