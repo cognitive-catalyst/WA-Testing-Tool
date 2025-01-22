@@ -2,7 +2,7 @@ import json
 from argparse import ArgumentParser
 from ibm_watson import AssistantV1
 from ibm_watson import AssistantV2
-from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
+from ibm_cloud_sdk_core.authenticators import IAMAuthenticator, BearerTokenAuthenticator
 import dateutil.parser
 import datetime
 import time
@@ -13,11 +13,16 @@ DEFAULT_NUMBER_OF_PAGES=20
 
 def getAssistant(ARGS):
     iam_apikey=ARGS['iam_apikey']
+    bearer_token=ARGS['bearer_token']
     url=ARGS['url']
     version=ARGS['version']
 
     '''Retrieve Watson Assistant SDK object'''
-    authenticator = IAMAuthenticator(iam_apikey)
+    authenticator = None
+    if iam_apikey != None:
+        authenticator = IAMAuthenticator(iam_apikey)
+    else:
+        authenticator = BearerTokenAuthenticator(bearer_token)
 
     if 'environment_id' in ARGS and ARGS['environment_id'] is not None:
         c = AssistantV2(
@@ -171,7 +176,8 @@ def create_parser():
     parser.add_argument('-o', '--output_file', type=str, help='Filename to write results to')
     parser.add_argument('-w', '--workspace_id', type=str, help='Workspace identifier, required for Dialog skills')
     parser.add_argument('-e', '--environment_id', type=str, help='Assistant environment identifier, required for Actions skills')
-    parser.add_argument('-a', '--iam_apikey', type=str, required=True, help='Assistant service iam api key')
+    parser.add_argument('-a', '--iam_apikey', type=str, help='Assistant service iam api key, required for IBM cloud')
+    parser.add_argument('-b', '--bearer_token', type=str, help='Assistant service bearer token, required for Cloud Pak')
     parser.add_argument('-f', '--filter', type=str, required=True, help='Watson Assistant log query filter')
     parser.add_argument('-v', '--version', type=str, default=DEFAULT_WCS_VERSION, help="Watson Assistant version in YYYY-MM-DD form.")
     parser.add_argument('-n', '--number_of_pages', type=int, default=DEFAULT_NUMBER_OF_PAGES, help='Number of result pages to download (default is {})'.format(DEFAULT_NUMBER_OF_PAGES))
