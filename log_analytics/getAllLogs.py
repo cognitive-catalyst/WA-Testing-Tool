@@ -39,10 +39,12 @@ def getAssistant(ARGS):
     c.set_service_url(url)
     return c
 
+# This function used by Jupyter notebooks only, which are based on using iam_apikey only
 def getLogs(iam_apikey, url, workspace_id, filter, page_size_limit=DEFAULT_PAGE_SIZE, page_num_limit=DEFAULT_NUMBER_OF_PAGES, version=DEFAULT_WCS_VERSION, environment_id=None):
     '''Public API for script, connects to Watson Assistant and downloads all logs'''
     ARGS = {}
     ARGS['iam_apikey'] = iam_apikey
+    ARGS['bearer_token'] = ''
     ARGS['url'] = url
     ARGS['workspace_id'] = workspace_id
     ARGS['filter'] = filter
