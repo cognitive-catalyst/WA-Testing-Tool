@@ -1,6 +1,7 @@
 import os
 import json
 import pandas as pd
+from pandas import ExcelWriter
 from argparse import ArgumentParser
 
 # Reading Watson Assistant log files in .json format, each log event is a JSON record.
@@ -275,6 +276,20 @@ def writeFrameToFile(df, output_file):
     print("Writing output file {}".format(output_file))
     if(output_file.endswith(".pkl")):
         df.to_pickle(output_file)
+    elif output_file.endswith(".xlsx"):
+        with ExcelWriter(output_file, engine='openpyxl') as writer:
+            df['request_timestamp']  = pd.to_datetime(df['request_timestamp'] ).dt.tz_localize(None)
+            df['response_timestamp'] = pd.to_datetime(df['response_timestamp']).dt.tz_localize(None)
+            df['conversation_start'] = pd.to_datetime(df['conversation_start']).dt.tz_localize(None)
+            df.to_excel(writer, index=False, sheet_name='Messages')
+            worksheet = writer.sheets['Messages']
+
+            # Auto-adjust column widths
+            for column_cells in worksheet.columns:
+                length = max(len(str(cell.value)) if cell.value is not None else 0 for cell in column_cells)
+                worksheet.column_dimensions[column_cells[0].column_letter].width = min(0.8*length,25)
+
+
     else:
         df.to_csv(output_file,index=False)
     print("Wrote output file {}".format(output_file))
