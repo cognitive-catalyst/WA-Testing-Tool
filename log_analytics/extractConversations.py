@@ -196,8 +196,34 @@ def extractConversationData(logs, conversation_id_key='response.context.conversa
     df = augment_previous_nodes_visited(df, primarySortField)
     df = augment_conversation_and_message_times(df, primarySortField)
     df = augment_sequence_numbers(df, primarySortField)
+    df = augment_previous_output_text(df, primarySortField) #Shows what bot said (previous output.text) to which user responded (input.text)
+
+    df = reorder_columns(df)
 
     return df
+
+def reorder_columns(df):
+    df = move_col_before_col(df, "input.text", "prev_output.text")
+    df = move_col_before_col(df, "request_timestamp", "duration_ms")
+    return df
+
+def move_col_before_col(df, col1:str, col2:str):
+    cols = list(df.columns)
+    if col1 not in cols or col2 not in cols:
+        print("WARNING: Both '{col1}' and '{col2}' must be in the DataFrame columns, to reorder them.")
+        return df
+
+    # Remove col2 from its current position
+    cols.remove(col2)
+
+    # Find the index of col1
+    index = cols.index(col1)
+
+    # Insert col2 just before col1
+    cols.insert(index, col2)
+
+    # Reorder the DataFrame
+    return df[cols]
 
 def augment_previous_nodes_visited(inputDF:pd.DataFrame, conversation_sort_key:str) -> pd.DataFrame:
     '''
@@ -207,6 +233,17 @@ def augment_previous_nodes_visited(inputDF:pd.DataFrame, conversation_sort_key:s
     '''
     df = inputDF.copy()
     df['prev_nodes_visited'] = df.groupby(conversation_sort_key)['nodes_visited'].shift(1).fillna('')
+    
+    return df
+
+def augment_previous_output_text(inputDF:pd.DataFrame, conversation_sort_key:str) -> pd.DataFrame:
+    '''
+    Several analyses require comparing the previous response node_visited to the current request objects
+    This method supports those analyses by creating a `prev_output.text` field shifted from the original `output.text` field.
+    To correlate a request.input field with response.output.text of the previous request, use the new `prev_output.text` field instead.
+    '''
+    df = inputDF.copy()
+    df['prev_output.text'] = df.groupby(conversation_sort_key)['output.text'].shift(1).fillna('')
     
     return df
 
