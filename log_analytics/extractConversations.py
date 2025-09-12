@@ -103,12 +103,20 @@ def logToRecord(log, customFields):
 
         if 'text' in log['response']['output']:
             record['output.text']          = ' '.join(filter(None,log['response']['output']['text'])).replace('\r','').replace('\n','')
+            # Options (button/responses), assumed to come after a descriptive text element
             if 'generic' in log['response']['output'] and len(log['response']['output']['generic']) > 1 and 'options' in log['response']['output']['generic'][1]:
                 record['output.text'] += f" options:["
                 for option in log['response']['output']['generic'][1]['options']:
                     labelText = option["label"]
                     record['output.text'] += f'"{labelText}",'
                 record['output.text'] += "]"
+            # Disambiguation: Needs to loop over `response.output.generic[].title` and each of `response.output.generic[i].suggestions[].label`
+            if 'generic' in log['response']['output'] and len(log['response']['output']['generic']) > 0 and 'suggestions' in log['response']['output']['generic'][0]:
+                record['output.text'] += f"{log['response']['output']['generic'][0]['title']}: "
+                for suggestion in log['response']['output']['generic'][0]['suggestions']:
+                    labelText = suggestion["label"]
+                    record['output.text'] += f'"{labelText}",'
+                record['output.text'] += ""
 
         if 'intents' in log['response'] and (len(log['response']['intents']) > 0):
             record['intent']               = log['response']['intents'][0]['intent']
