@@ -218,7 +218,7 @@ def reorder_columns(df):
 def move_col_before_col(df, col1:str, col2:str):
     cols = list(df.columns)
     if col1 not in cols or col2 not in cols:
-        print("WARNING: Both '{col1}' and '{col2}' must be in the DataFrame columns, to reorder them.")
+        print(f"WARNING: Both '{col1}' and '{col2}' must be in the DataFrame columns, to reorder them.")
         return df
 
     # Remove col2 from its current position
