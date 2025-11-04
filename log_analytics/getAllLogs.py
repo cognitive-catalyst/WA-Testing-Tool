@@ -76,36 +76,43 @@ def getLogsInternal(assistant, ARGS):
     noMore = False
 
     while pages_retrieved < page_num_limit and noMore != True:
-        if assistant_id is not None:
-            #v2-based or actions
-            output = assistant.list_logs(assistant_id=assistant_id, sort='request_timestamp', filter=filter, page_limit=page_size_limit, cursor=cursor)
-        elif workspace_id is None:
-            #v1-style, all - requires a workspace_id, assistant id, or deployment id in the filter
-            output = assistant.list_all_logs(sort='request_timestamp', filter=filter, page_limit=page_size_limit, cursor=cursor)
-        else:
-            #v1-dialog
-            output = assistant.list_logs(workspace_id=workspace_id, sort='request_timestamp', filter=filter, page_limit=page_size_limit, cursor=cursor)
+        try:
+            if assistant_id is not None:
+                #v2-based or actions
+                output = assistant.list_logs(assistant_id=assistant_id, sort='request_timestamp', filter=filter, page_limit=page_size_limit, cursor=cursor)
+            elif workspace_id is None:
+                #v1-style, all - requires a workspace_id, assistant id, or deployment id in the filter
+                output = assistant.list_all_logs(sort='request_timestamp', filter=filter, page_limit=page_size_limit, cursor=cursor)
+            else:
+                #v1-dialog
+                output = assistant.list_logs(workspace_id=workspace_id, sort='request_timestamp', filter=filter, page_limit=page_size_limit, cursor=cursor)
 
-        #Hack for API compatibility between v1 and v2 of the API - v2 adds a 'result' property on the response.  v2 simplest form is list_logs().get_result()
-        output = json.loads(str(output))
-        if 'result' in output:
-           logs = output['result']
-        else:
-           logs = output
+            #Hack for API compatibility between v1 and v2 of the API - v2 adds a 'result' property on the response.  v2 simplest form is list_logs().get_result()
+            output = json.loads(str(output))
+            if 'result' in output:
+               logs = output['result']
+            else:
+               logs = output
 
-        if 'pagination' in logs and len(logs['pagination']) != 0:
-            cursor = logs['pagination'].get('next_cursor', None)
-            #Do not DOS the list_logs function!
-            time.sleep(3.0)
-        else:
-            noMore = True
+            if 'pagination' in logs and len(logs['pagination']) != 0:
+                cursor = logs['pagination'].get('next_cursor', None)
+                #Do not DOS the list_logs function!
+                time.sleep(3.0)
+            else:
+                noMore = True
 
-        if 'logs' in logs:
-           allLogs.extend(logs['logs'])
-           pages_retrieved = pages_retrieved + 1
-           print("Fetched {} log pages with {} total logs".format(pages_retrieved, len(allLogs)))
-        else:
-           return allLogs
+            if 'logs' in logs:
+               allLogs.extend(logs['logs'])
+               pages_retrieved = pages_retrieved + 1
+               print("Fetched {} log pages with {} total logs".format(pages_retrieved, len(allLogs)))
+            else:
+               print("Warning: No 'logs' key found in response on page {}".format(pages_retrieved + 1))
+               break
+               
+        except Exception as e:
+            print("Error fetching page {}: {}".format(pages_retrieved + 1, str(e)))
+            print("Returning {} logs from {} successfully fetched pages".format(len(allLogs), pages_retrieved))
+            break
 
     return allLogs
 
