@@ -328,6 +328,13 @@ def writeFrameToFile(df, output_file):
             df['request_timestamp']  = pd.to_datetime(df['request_timestamp'] ).dt.tz_localize(None)
             df['response_timestamp'] = pd.to_datetime(df['response_timestamp']).dt.tz_localize(None)
             df['conversation_start'] = pd.to_datetime(df['conversation_start']).dt.tz_localize(None)
+            
+            # Format timedelta columns for Excel display
+            if 'message_start' in df.columns:
+                df['message_start'] = df['message_start'].apply(lambda x: str(x).split('.')[0] if pd.notna(x) else '00:00:00')
+            if 'message_end' in df.columns:
+                df['message_end'] = df['message_end'].apply(lambda x: str(x).split('.')[0] if pd.notna(x) else '00:00:00')
+            
             df.to_excel(writer, index=False, sheet_name='Messages')
             worksheet = writer.sheets['Messages']
 
