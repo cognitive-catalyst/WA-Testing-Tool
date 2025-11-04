@@ -52,6 +52,8 @@ def deep_get(dct, keys, default=None):
             return default
         except TypeError:
             return default
+        except IndexError:
+            return default
     return dct
 
 def getFieldShortName(field_name):
@@ -93,7 +95,7 @@ def logToRecord(log, customFields):
         elif 'system' in log['request']['context'] and 'dialog_turn_counter' in log['request']['context']['system']:
             record['dialog_turn_counter']  = log['request']['context']['system']['dialog_turn_counter']
         else:
-            pass
+            record['dialog_turn_counter'] = None
 
         record['request_timestamp']        = log.get('request_timestamp', None)
         record['response_timestamp']       = log.get('response_timestamp', None)
@@ -292,7 +294,7 @@ def augment_conversation_and_message_times(inputDF:pd.DataFrame, conversation_so
     df['message_start'] = df['absolute_message_start'] - df['conversation_start']
     df['message_end']   = df['request_timestamp'] - df['conversation_start']
     df['duration_ms'] = df['message_end'] - df['message_start']
-    df['duration_ms'] = df['duration_ms'].apply(lambda x:x.total_seconds()*1000)
+    df['duration_ms'] = df['duration_ms'].apply(lambda x: x.total_seconds()*1000 if pd.notna(x) else 0)
 
     return df.drop(['last_message_end', 'absolute_message_start'], axis=1)
 
