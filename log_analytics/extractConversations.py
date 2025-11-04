@@ -19,7 +19,7 @@ def readLogs(inputPath, conversation_id_key='response.context.conversation_id', 
                     logFile = os.path.join(root, file)
                     fileData = readLogsFromFile(logFile, conversation_id_key, custom_field_names_comma_separated)
                     if fileData is not None and len(fileData) > 0:
-                        data = data.append(fileData)
+                        data = pd.concat([data, fileData], ignore_index=True)
         return data
     else:
         return readLogsFromFile(inputPath, conversation_id_key, custom_field_names_comma_separated)
