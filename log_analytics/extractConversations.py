@@ -19,7 +19,7 @@ def readLogs(inputPath, conversation_id_key='response.context.conversation_id', 
                     logFile = os.path.join(root, file)
                     fileData = readLogsFromFile(logFile, conversation_id_key, custom_field_names_comma_separated)
                     if fileData is not None and len(fileData) > 0:
-                        data = data.append(fileData)
+                        data = pd.concat([data, fileData], ignore_index=True)
         return data
     else:
         return readLogsFromFile(inputPath, conversation_id_key, custom_field_names_comma_separated)
@@ -51,6 +51,8 @@ def deep_get(dct, keys, default=None):
         except KeyError:
             return default
         except TypeError:
+            return default
+        except IndexError:
             return default
     return dct
 
@@ -93,7 +95,7 @@ def logToRecord(log, customFields):
         elif 'system' in log['request']['context'] and 'dialog_turn_counter' in log['request']['context']['system']:
             record['dialog_turn_counter']  = log['request']['context']['system']['dialog_turn_counter']
         else:
-            pass
+            record['dialog_turn_counter'] = None
 
         record['request_timestamp']        = log.get('request_timestamp', None)
         record['response_timestamp']       = log.get('response_timestamp', None)
@@ -218,7 +220,7 @@ def reorder_columns(df):
 def move_col_before_col(df, col1:str, col2:str):
     cols = list(df.columns)
     if col1 not in cols or col2 not in cols:
-        print("WARNING: Both '{col1}' and '{col2}' must be in the DataFrame columns, to reorder them.")
+        print(f"WARNING: Both '{col1}' and '{col2}' must be in the DataFrame columns, to reorder them.")
         return df
 
     # Remove col2 from its current position
@@ -292,7 +294,7 @@ def augment_conversation_and_message_times(inputDF:pd.DataFrame, conversation_so
     df['message_start'] = df['absolute_message_start'] - df['conversation_start']
     df['message_end']   = df['request_timestamp'] - df['conversation_start']
     df['duration_ms'] = df['message_end'] - df['message_start']
-    df['duration_ms'] = df['duration_ms'].apply(lambda x:x.total_seconds()*1000)
+    df['duration_ms'] = df['duration_ms'].apply(lambda x: x.total_seconds()*1000 if pd.notna(x) else 0)
 
     return df.drop(['last_message_end', 'absolute_message_start'], axis=1)
 
