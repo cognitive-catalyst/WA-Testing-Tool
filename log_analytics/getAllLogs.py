@@ -78,13 +78,13 @@ def getLogsInternal(assistant, ARGS):
     while pages_retrieved < page_num_limit and noMore != True:
         if assistant_id is not None:
             #v2-based or actions
-            output = assistant.list_logs(assistant_id=assistant_id, sort='-request_timestamp', filter=filter, page_limit=page_size_limit, cursor=cursor)
+            output = assistant.list_logs(assistant_id=assistant_id, sort='request_timestamp', filter=filter, page_limit=page_size_limit, cursor=cursor)
         elif workspace_id is None:
             #v1-style, all - requires a workspace_id, assistant id, or deployment id in the filter
-            output = assistant.list_all_logs(sort='-request_timestamp', filter=filter, page_limit=page_size_limit, cursor=cursor)
+            output = assistant.list_all_logs(sort='request_timestamp', filter=filter, page_limit=page_size_limit, cursor=cursor)
         else:
             #v1-dialog
-            output = assistant.list_logs(workspace_id=workspace_id, sort='-request_timestamp', filter=filter, page_limit=page_size_limit, cursor=cursor)
+            output = assistant.list_logs(workspace_id=workspace_id, sort='request_timestamp', filter=filter, page_limit=page_size_limit, cursor=cursor)
 
         #Hack for API compatibility between v1 and v2 of the API - v2 adds a 'result' property on the response.  v2 simplest form is list_logs().get_result()
         output = json.loads(str(output))
@@ -105,10 +105,7 @@ def getLogsInternal(assistant, ARGS):
            pages_retrieved = pages_retrieved + 1
            print("Fetched {} log pages with {} total logs".format(pages_retrieved, len(allLogs)))
         else:
-           return None
-
-    #Analysis is easier when logs are in increasing timestamp order
-    allLogs.reverse()
+           return allLogs
 
     return allLogs
 
