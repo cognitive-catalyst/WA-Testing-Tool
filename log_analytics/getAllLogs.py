@@ -88,11 +88,15 @@ def getLogsInternal(assistant, ARGS):
                 output = assistant.list_logs(workspace_id=workspace_id, sort='request_timestamp', filter=filter, page_limit=page_size_limit, cursor=cursor)
 
             #Hack for API compatibility between v1 and v2 of the API - v2 adds a 'result' property on the response.  v2 simplest form is list_logs().get_result()
-            output = json.loads(str(output))
-            if 'result' in output:
-               logs = output['result']
+            # Efficiently handle response - avoid unnecessary JSON serialization
+            if hasattr(output, 'get_result'):
+                logs = output.get_result()
+            elif isinstance(output, dict):
+                logs = output.get('result', output)
             else:
-               logs = output
+                # Fallback for unexpected response types
+                output = json.loads(str(output))
+                logs = output.get('result', output)
 
             if 'pagination' in logs and len(logs['pagination']) != 0:
                 cursor = logs['pagination'].get('next_cursor', None)
@@ -132,9 +136,13 @@ def writeLogs(logs, output_file, output_columns="raw"):
        print("Writing {} logs to {}".format(len(logs), output_file))
 
     if 'raw' == output_columns:
-       writeOut(file, json.dumps(logs,indent=2))
+       # Write JSON efficiently without creating massive string in memory
        if file is not None:
+           json.dump(logs, file, indent=2)
+           file.write('\n')
            file.close()
+       else:
+           print(json.dumps(logs, indent=2))
        return
 
     if 'all' == output_columns:
