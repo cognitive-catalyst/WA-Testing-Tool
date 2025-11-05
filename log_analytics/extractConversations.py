@@ -338,6 +338,9 @@ def writeFrameToFile(df, output_file):
             df.to_excel(writer, index=False, sheet_name='Messages')
             worksheet = writer.sheets['Messages']
 
+            # Freeze the top row (header row)
+            worksheet.freeze_panes = 'A2'
+
             # Auto-adjust column widths
             for column_cells in worksheet.columns:
                 length = max(len(str(cell.value)) if cell.value is not None else 0 for cell in column_cells)
