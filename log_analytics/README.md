@@ -30,23 +30,33 @@ Example for one actions-based assistant (v2 API):
 python3 getAllLogs.py -a your_api_key -e your_environment_id -l https://gateway.watsonplatform.net/assistant/api -c raw -n 20 -p 500 -o 10000_logs.json -f "response_timestamp>=2019-11-01,response_timestamp<2019-11-21"
 ```
 
+Example for one actions-based assistant (v2 API, Cloud Pak for Data):
+```
+python3 getAllLogs.py -b your_bearer_token -e your_environment_id -l https://gateway.watsonplatform.net/assistant/api -c raw -n 20 -p 500 -o 10000_logs.json -f "response_timestamp>=2019-11-01,response_timestamp<2019-11-21"
+```
+
 Example to get logs for one conversation by conversation_id:
 ```
-python3 getAllLogs.py -a your_api_key -w your_workspace_id -l https://api.xx-xxxx.assistant.watson.cloud.ibm.com/instances/xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx -f "response.context.conversation_id::xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" -c transcript
+python3 getAllLogs.py -a your_api_key -w your_workspace_id -l https://api.xx-xxxx.assistant.watson.cloud.ibm.com/instances/xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx -f "response.context.conversation_id::xxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 ```
 
 The Watson Assistant team has put out a similar script at https://github.com/watson-developer-cloud/community/blob/master/watson-assistant/export_logs.py
 
 # extractConversations.py
-Takes a series of logs, extracts fields for analysis, builds a Pandas dataframe, and outputs it to a CSV file.  (The `extractConversationData` method can be called directly to build a DataFrame in memory.) The output contains the most frequently analyzed Watson Assistant log fields, some new fields to augment analysis, and custom fields that you specify.
+This script transforms the output from `getAllLogs.py` into a Pandas dataframe and outputs it to a CSV, PKL, or XLSX file.  The output contains the most frequently analyzed Watson Assistant log fields, some new fields to augment analysis, and optionally custom fields that you specify.
 
 The unique conversation identifier is provided with `-c`.  Note that if a single conversation spans multiple workspaces (skills), you cannot use `conversation_id` as the unique identifier.
 
 Custom fields are specified with `-f`.  You can specifiy multiple custom fields as a comma-separated list, for example `-f response.context.STT_CONFIDENCE,response.context.action`.
 
-Example for text-based assistants:
+Example for text-based assistants (CSV):
 ```
 python3 extractConversations.py -i 10000_logs.json -o 10000_logs.csv -c "response.context.conversation_id"
+```
+
+Example for text-based assistants (XLSX):
+```
+python3 extractConversations.py -i 10000_logs.json -o 10000_logs.xlsx -c "response.context.conversation_id"
 ```
 
 Example for voice-based assistants (v2) using IBM Voice Gateway:
