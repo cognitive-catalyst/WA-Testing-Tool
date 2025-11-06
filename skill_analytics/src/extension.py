@@ -98,8 +98,13 @@ class Extension:
             if "variable_path" in value_obj:
                 value = f"{value}.{value_obj['variable_path']}"
             return value, value
-
+    
+        if "system_variable" in value_obj:
+            value = f"${{{value_obj['system_variable']}}}"
+            return value, value
+        
         raise Exception("Unknown", value_obj)
+
 
     # ================================================================================
     # Searching
