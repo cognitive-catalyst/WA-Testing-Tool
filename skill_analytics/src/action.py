@@ -35,6 +35,8 @@ class Action:
         # self.subactions = [step.subaction for step in self.steps if step.subaction.subaction_exists]
 
         self.variable_ids = list(sorted(set([variable for step in self.steps for variable in step.variable_ids] + self.conditions.variable_ids)))
+        self.utterances = []        # to be added later
+
 
     def __repr__(self):
         return self.title
@@ -46,8 +48,15 @@ class Action:
             "description": self.description,
             "index": self.index,
             "steps": self.steps.to_json(),
+            "utterances": self.utterances,
             "variables": self.variable_ids
         }
+
+    def add_utterances(self, intents):
+        for intent in intents:
+            if intent.action_id == self.ID:
+                self.utterances.extend(intent.examples)
+        return self.utterances
 
     # ================================================================================
     # Parsing

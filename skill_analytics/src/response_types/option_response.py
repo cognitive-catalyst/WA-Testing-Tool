@@ -16,6 +16,7 @@ class OptionResponse(Response):
 
         self.buttons = OptionResponse._parse_output_for_option_response(output_obj)
         self.response_collection_behavior = questions_obj.get("response_collection_behavior", "optionally_ask")
+        self.max_tries = questions_obj.get("max_tries", 0)
 
         self.variable_ids = []
         for button_obj in self.buttons:
@@ -24,13 +25,14 @@ class OptionResponse(Response):
         self.variable_ids = list(sorted(set(self.variable_ids)))
 
     def __bool__(self):
-        return self.buttons.__bool__()
+        return len(self.buttons).__bool__()
 
     def to_json(self):
         return {
             "buttons": self.buttons,
             "response_type": self.response_type,
             "response_collection_behavior": self.response_collection_behavior,
+            "max_tries": self.max_tries,
             "variables": self.variable_ids
         }
 

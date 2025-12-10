@@ -18,7 +18,7 @@ class ValidationResponse(Response):
         self.variable_ids = list(sorted(set(self.variable_ids)))
 
     def __bool__(self):
-        return self.validation_responses.__bool__()
+        return len(self.validation_responses).__bool__()
 
     def to_json(self):
         return {
