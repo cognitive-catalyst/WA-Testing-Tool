@@ -11,7 +11,11 @@ This becomes very useful in the final stages of a project. For example, you want
 - [How to Use This Repository](#how-to-use-this-repository)
 - [Command-Line Interface](#command-line-interface)
    * [Action Contents](#action-contents)
+   * [Action Settings](#action-settings)
    * [Variable Usage](#variable-usage)
+   * [Variable Summary](#variable-summary)
+   * [Intent Summary](#intent-summary)
+   * [Entity Usage](#entity-usage)
    * [Subaction Usage](#subaction-usage)
    * [Extension Usage](#extension-usage)
 - [Software Development Kit](#software-development-kit)
@@ -124,6 +128,42 @@ python -m cli.action_contents
 
 This gives the mega spreadsheet of all content in all actions.
 
+### Action Settings
+
+Returns a CSV reporting the settings of the provided action(s), e.g. step validation, disambiguation, etc.
+
+```
+usage: action_settings.py [-h] [-i ASSISTANT_JSON_PATH] [-o OUTPUT_PATH] [actions ...]
+
+Search for action contents inside an assistant
+
+positional arguments:
+  actions               List of actions names to search contents of.
+
+options:
+  -h, --help            show this help message and exit
+  -i ASSISTANT_JSON_PATH, --assistant_json_path ASSISTANT_JSON_PATH
+                        Path to assistant json. If not included, the code will search for one in `jsons/`.
+  -o OUTPUT_PATH, --output_path OUTPUT_PATH
+                        Path to output directory where the results will be saved. If not included, the code default to `reports/`.
+```
+
+The CSV will contain columns related to action settings and configuration.
+
+#### Example 1
+```
+python -m cli.action_settings "Example Action"
+```
+
+This will return the settings for the specified action.
+
+#### Example 2
+```
+python -m cli.action_settings
+```
+
+If no actions are provided, then it will return the settings for all actions in the assistant.
+
 ### Variable Usage
 
 Returns a CSV reporting the usage of the provided variable(s), e.g. conditions, context, extensions, etc.
@@ -159,6 +199,86 @@ python -m cli.variable_usage
 ```
 
 If no variable names are provided, then it will return the usage of all variables in the assistant (this could be a lot).
+
+### Variable Summary
+
+Returns a CSV providing a summary of all variables defined in the assistant.
+
+```
+usage: variable_summary.py [-h] [-s] [-a] [-i ASSISTANT_JSON_PATH] [-o OUTPUT_PATH]
+
+Summary of all variables defined in the assistant
+
+options:
+  -h, --help            show this help message and exit
+  -s, --system_variables
+                        If included, the output will include system variables.
+  -a, --action_variables
+                        If included, the output will include action variables.
+  -i ASSISTANT_JSON_PATH, --assistant_json_path ASSISTANT_JSON_PATH
+                        Path to assistant json. If not included, the code will search for one in `jsons/`.
+  -o OUTPUT_PATH, --output_path OUTPUT_PATH
+                        Path to output directory where the results will be saved. If not included, the code default to `reports/`.
+```
+
+The CSV will contain columns with variable definitions and metadata.
+
+#### Example 1
+```
+python -m cli.variable_summary
+```
+
+This will return a summary of all session variables in the assistant.
+
+#### Example 2
+```
+python -m cli.variable_summary --system_variables
+```
+
+This will return a summary including system variables.
+
+#### Example 3
+```
+python -m cli.variable_summary --action_variables
+```
+
+This will return a summary including action variables.
+
+#### Example 4
+```
+python -m cli.variable_summary --system_variables --action_variables
+```
+
+This will return a summary including both system and action variables.
+
+### Intent Summary
+
+Returns a CSV providing a summary of all intents (customer starts) in the assistant.
+
+```
+usage: intent_summary.py [-h] [-i ASSISTANT_JSON_PATH] [-o OUTPUT_PATH] [actions ...]
+
+Search for action contents inside an assistant
+
+positional arguments:
+  actions               List of actions names to search contents of.
+
+options:
+  -h, --help            show this help message and exit
+  -i ASSISTANT_JSON_PATH, --assistant_json_path ASSISTANT_JSON_PATH
+                        Path to assistant json. If not included, the code will search for one in `jsons/`.
+  -o OUTPUT_PATH, --output_path OUTPUT_PATH
+                        Path to output directory where the results will be saved. If not included, the code default to `reports/`.
+```
+
+The CSV will contain columns with intent information and examples.
+
+#### Example
+```
+python -m cli.intent_summary
+```
+
+This will return a summary of all intents in the assistant.
 
 ### Entity Usage
 
