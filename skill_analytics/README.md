@@ -402,32 +402,35 @@ python -m main
 All class methods have an optional parameter `return_as` which defaults to returning the results as a python list of dictionaries. If `return_as="csv"`, then the class method will return the results as a `pandas` DataFrame. If `return_as="json"`, then the class method will return the results as a JSON serialized string. [`main.py`](/main.py) shows an example of this usage.
 
 #### Variables
-- `get_all_variable_usage()`
-- `search_for_variables(*list_of_variable_ids)`
-- `get_all_variables_used_in_action(*list_of_action_titles_or_ids)`
-- `variable_summary()`
+- `get_all_variable_usage(return_as=None)`
+- `search_for_variables(*variable_ids, return_as=None)`
+- `get_all_variables_used_in_action(*action_title_or_id_list, return_as=None)`
+- `variable_summary(return_as=None)`
 
 #### Entities
-- `get_all_entity_usage()`
-- `search_for_entities(list_of_entity_ids)`
-- `get_all_entities_used_in_action(*list_of_action_titles_or_ids)`
+- `get_all_entity_usage(return_as=None)`
+- `search_for_entities(*entity_ids, return_as=None)`
+- `get_all_entities_used_in_action(*action_title_or_id_list, return_as=None)`
 
 #### Subactions
-- `get_all_subaction_usage()`
-- `search_for_subactions(*list_of_subaction_titles_or_ids)`
-- `get_all_subactions_used_in_action(*list_of_action_titles_or_ids)`
+- `get_all_subaction_usage(return_as=None)`
+- `search_for_subactions(*subaction_title_or_id_list, return_as=None)`
+- `get_all_subactions_used_in_action(*action_title_or_id_list, return_as=None)`
 
 #### Extensions
-- `get_all_extension_usage()`
-- `get_all_extensions_used_in_action(*list_of_action_titles_or_ids)`
+- `get_all_extension_usage(return_as=None)`
+- `get_all_extensions_used_in_action(*action_title_or_id_list, return_as=None)`
 
 #### Responses
-- `get_all_responses()`
-- `get_all_responses_in_action(*list_of_action_titles_or_ids)`
+- `get_all_responses(return_as=None)`
+- `get_all_responses_in_action(*action_title_or_id_list, return_as=None)`
 
 #### Action Settings
-- `get_all_action_settings()`
-- `search_for_action_settings(*list_of_action_titles_or_ids)`
+- `get_all_action_settings(return_as=None)`
+- `search_for_action_settings(*action_title_or_id_list, return_as=None)`
+
+#### Intents
+- `intent_summary(action_title_or_id_list=None, return_as=None)`
 
 ### Looping Over Actions and Steps
 
