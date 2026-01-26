@@ -38,6 +38,7 @@ class Step:
         self.subaction = SubAction(resolver_obj)
 
         self.entity_id = questions_obj.get("entity", None)
+        self.max_tries = questions_obj.get("max_tries", None)
         self.resolver_type = resolver_obj.get("type", "continue")
         self.is_end_action = Step._parse_resolver_type(self.resolver_type)
 

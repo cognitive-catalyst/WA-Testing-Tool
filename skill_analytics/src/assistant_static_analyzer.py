@@ -6,6 +6,7 @@ from networkx.drawing.nx_pydot import graphviz_layout
 
 from src.action import Action
 from src.entity import Entity
+from src.intent import Intent
 from src.variable import Variable
 
 from src.utils.graph import Graph
@@ -24,6 +25,9 @@ class AssistantStaticAnalyzer:
         self.entities = AssistantStaticAnalyzer._parse_assistant_obj_for_entities(assistant_obj)
 
         self.actions = AssistantStaticAnalyzer._parse_assistant_obj_for_actions(assistant_obj)
+        self.intents = AssistantStaticAnalyzer._parse_assistant_obj_for_intents(assistant_obj)
+        for action in self.actions:
+            action.add_utterances(self.intents)
 
         self.system_variables = AssistantStaticAnalyzer._parse_assistant_obj_for_system_variables(assistant_obj)
         self.action_variables = [action_variable for action in self.actions for action_variable in action.action_variables]
@@ -70,10 +74,11 @@ class AssistantStaticAnalyzer:
 
     @staticmethod
     def _parse_assistant_obj_for_entities(assistant_obj):
-
+        entities = []
         for entity_obj in assistant_obj["workspace"]["entities"]:
             pass
             # print(entity_obj)
+        return entities
 
     @staticmethod
     def _parse_assistant_obj_for_actions(assistant_obj):
@@ -83,6 +88,13 @@ class AssistantStaticAnalyzer:
         
         return actions
     
+    @staticmethod
+    def _parse_assistant_obj_for_intents(assistant_obj):
+        intents = []
+        for i, intent_obj in enumerate(assistant_obj["workspace"]["intents"]):
+            intents.append( Intent(intent_obj, i) )
+        return intents
+
     @staticmethod
     def _parse_assistant_obj_for_system_variables(assistant_obj):
         system_variables = []
@@ -133,7 +145,10 @@ class AssistantStaticAnalyzer:
 
         raise ValueError(f"Unknown value for `return_as`, got '{return_as}'")
 
-    def _get_action_id_list(self, action_title_or_id_list):
+    def _get_action_id_list(self, action_title_or_id_list=None):
+        if action_title_or_id_list is None:
+            return [action.ID for action in self.actions]
+
         action_ids = []
         for action_id_or_title in action_title_or_id_list:
             action = self.get_action(action_id_or_title)
@@ -204,6 +219,20 @@ class AssistantStaticAnalyzer:
                 "source": "system_variable"
             })
         
+        return AssistantStaticAnalyzer._return_as(results, return_as=return_as)
+
+    def intent_summary(self, action_title_or_id_list=None, return_as=None):
+        results = []
+        action_ids =  self._get_action_id_list(action_title_or_id_list)
+        for action in self.actions:
+            if action.ID not in action_ids:
+                continue
+            for utterance in action.utterances:
+                results.append({
+                    "action_id": action.ID,
+                    "action_title": action.title,
+                    "utterance": utterance
+                })
         return AssistantStaticAnalyzer._return_as(results, return_as=return_as)
 
     # ================================================================================
