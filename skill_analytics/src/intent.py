@@ -35,9 +35,10 @@ class Intent:
         if full_intent_id == "fallback_connect_to_agent":
             return "fallback"
         
-        pattern = r"(action\_\d*)_(intent\_.*)"
+        pattern = r"(action\_\d+)_(intent\_\d+)(-\d+)?"
         match = re.search(pattern, full_intent_id)
         if match:
-            return match.group(1)
+            end = "" if match.group(3) is None else match.group(3)
+            return match.group(1) + end
 
         print(f"Warning: Did not parse intent id {full_intent_id}")
