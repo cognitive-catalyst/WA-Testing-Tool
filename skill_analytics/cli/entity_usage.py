@@ -1,42 +1,87 @@
-from argparse import ArgumentParser
-from dotenv import load_dotenv
+from argparse import ArgumentParser, RawDescriptionHelpFormatter
 
 from config.config import get_config
-from src.utils.clean_cli_list import clean_cli_list
-from src.utils.file_path_helper import get_assistant_json, create_directory, get_output_save_path
-from src.utils.dataframe_helper import move_col_to_front
-from src.assistant_static_analyzer import AssistantStaticAnalyzer
+from src.analyzers import EntityAnalyzer
+from src.models.assistant import Assistant
+
+from .utils.clean_cli_list import clean_cli_list
+from .utils.file_path_helper import (
+    create_directory,
+    get_assistant_json,
+    get_output_save_path,
+)
+
 
 def main():
     cfg = get_config()
     
-    parser = ArgumentParser(description="Search for entity usage inside an assistant")
-    parser.add_argument('entities', nargs='*', help='List of entity names to search for.')
-    parser.add_argument('-d', '--definition_only', action='store_true', default=False, help="If included, the output will include the places where the entity was defined, not where it was used.")
-    parser.add_argument('-i', '--assistant_json_path', required=False, default=cfg["assistant_json_directory"], type=str, help=f'Path to assistant json. If not included, the code will search for one in `{cfg["assistant_json_directory"]}`.')
-    parser.add_argument('-o', '--output_path', required=False, default=cfg["output_directory"], type=str, help=f'Path to output directory where the results will be saved. If not included, the code default to `{cfg["output_directory"]}`.')
+    parser = ArgumentParser(
+        description="Find where entities are used throughout the assistant",
+        epilog="Examples:\n"
+               "  python -m cli.entity_usage                      # All entities\n"
+               "  python -m cli.entity_usage sys-date             # Single entity\n"
+               "  python -m cli.entity_usage sys-date sys-time    # Multiple entities\n"
+               "  python -m cli.entity_usage --metadata           # Include entity metadata",
+        formatter_class=RawDescriptionHelpFormatter
+    )
+    parser.add_argument(
+        'entities',
+        nargs='*',
+        metavar='ENTITY_ID',
+        help='One or more entity IDs to search for. If omitted, reports usage of all entities.'
+    )
+    parser.add_argument(
+        '--metadata',
+        action='store_true',
+        default=False,
+        help='Include entity metadata (type, values, fuzzy matching settings) in the output.'
+    )
+    parser.add_argument(
+        '-i', '--assistant_json_path',
+        required=False,
+        default=cfg["assistant_json_directory"],
+        type=str,
+        metavar='PATH',
+        help=f'Path to the watsonx Assistant JSON file. Default: {cfg["assistant_json_directory"]}'
+    )
+    parser.add_argument(
+        '-o', '--output_path',
+        required=False,
+        default=cfg["output_directory"],
+        type=str,
+        metavar='PATH',
+        help=f'Directory where the CSV output will be saved. Default: {cfg["output_directory"]}'
+    )
     args = parser.parse_args()
 
-    assistant_obj = get_assistant_json(args.assistant_json_path)
-    analyzer = AssistantStaticAnalyzer(assistant_obj)
+    assistant_dict = get_assistant_json(args.assistant_json_path)
+    assistant = Assistant.from_dict(assistant_dict)
+    entity_analyzer = EntityAnalyzer(assistant)
 
-    entities = clean_cli_list(args.entities)
-    if len(entities):
-        entity_usage_df = analyzer.search_for_entities(*entities, return_as="csv")
-        default_file_name = f"{', '.join(entities)} usage.csv"
-    else:
-        entity_usage_df = analyzer.get_all_entity_usage(return_as="csv")
-        default_file_name = "all entity usage.csv"
+    entity_ids = clean_cli_list(args.entities)
+    entity_usage_df = entity_analyzer.entity_usage(*entity_ids, return_as="dataframe")
+
+    if args.metadata:
+        entity_metadata_df = entity_analyzer.entity_metadata(return_as="dataframe")
+        
+        # Prepend 'entity_' to all columns in entity_metadata_df to avoid conflicts
+        entity_metadata_df = entity_metadata_df.add_prefix('entity_metadata_')
+        
+        # Join on entity_id = entity_metadata_entity_id
+        entity_usage_df = entity_usage_df.merge(
+            entity_metadata_df,
+            left_on='entity_id',
+            right_on='entity_metadata_entity_id',
+            how='left'
+        )
+
+    default_file_name = "all_entity_usage.csv"
     
-    if args.definition_only:
-        entity_usage_df = entity_usage_df[entity_usage_df["source"] == "customer_response"]
-
-    entity_usage_df = move_col_to_front(entity_usage_df, "entity")
-    entity_usage_df = entity_usage_df.dropna(axis=1, how='all')
-
     create_directory(args.output_path)
     output_path = get_output_save_path(args.output_path, default_file_name)
     entity_usage_df.to_csv(output_path, index=False)
+    
+    print(f"Entity usage saved to: {output_path}")
 
 if __name__ == "__main__":
     main()
