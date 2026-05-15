@@ -87,6 +87,7 @@ class ActionAnalyzer:
                         })
         
         handler = create_output_handler(return_as)
+        return handler.handle(results)
 
     def condition_usage(
         self,
