@@ -1,7 +1,7 @@
 from argparse import ArgumentParser
 
 from config.config import get_config
-from src.analyzers import ResolverAnalyzer
+from src.analyzers import EntityAnalyzer
 from src.models.assistant import Assistant
 
 from .utils.file_path_helper import (
@@ -15,8 +15,8 @@ def main():
     cfg = get_config()
     
     parser = ArgumentParser(
-        description="Find all subaction invocations in the assistant",
-        epilog="Example: python -m cli.subaction_usage -i assistant.json -o ./reports"
+        description="Extract metadata for all entities defined in the assistant",
+        epilog="Example: python -m cli.entity_metadata -i assistant.json -o ./reports"
     )
     parser.add_argument(
         '-i', '--assistant_json_path',
@@ -38,18 +38,18 @@ def main():
 
     assistant_dict = get_assistant_json(args.assistant_json_path)
     assistant = Assistant.from_dict(assistant_dict)
-    resolver_analyzer = ResolverAnalyzer(assistant)
+    entity_analyzer = EntityAnalyzer(assistant)
     
-    subaction_usage_df = resolver_analyzer.subaction_usage(return_as="dataframe")
+    entity_metadata_df = entity_analyzer.entity_metadata(return_as="dataframe")
 
-    subaction_usage_df = subaction_usage_df.sort_values(["action_id", "step_number"])
+    entity_metadata_df = entity_metadata_df.sort_values("entity_id")
 
-    default_file_name = "subaction_usage.csv"
+    default_file_name = "entity_metadata.csv"
     create_directory(args.output_path)
     output_path = get_output_save_path(args.output_path, default_file_name)
-    subaction_usage_df.to_csv(output_path, index=False)
+    entity_metadata_df.to_csv(output_path, index=False)
     
-    print(f"Subaction usage saved to: {output_path}")
+    print(f"Entity metadata saved to: {output_path}")
 
 if __name__ == "__main__":
     main()

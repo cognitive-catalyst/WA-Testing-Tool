@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=45", "wheel", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wxa-analyze"
+version = "0.1.0"
+description = "A tool to analyze and search various aspects of a watsonx Assistant instance"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "Eric Keilty", email = "eric.keilty@ibm.com"}
+]
+keywords = ["watsonx", "assistant", "watson", "analysis", "cli"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+dependencies = [
+    "networkx",
+    "matplotlib",
+    "pydot",
+    "graphviz",
+    "pandas",
+    "python-dotenv==1.0.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/cognitive-catalyst/WA-Testing-Tool/tree/main/skill_analytics"
+Repository = "https://github.com/cognitive-catalyst/WA-Testing-Tool"
+Issues = "https://github.com/cognitive-catalyst/WA-Testing-Tool/issues"
+
+[project.scripts]
+wxa-analyze = "cli.__main__:main"
+
+[tool.setuptools]
+packages = ["cli", "config", "src"]
+
+[tool.setuptools.package-data]
+"*" = ["*.json", "*.txt"]

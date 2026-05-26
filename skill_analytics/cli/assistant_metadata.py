@@ -1,7 +1,8 @@
+import json
 from argparse import ArgumentParser
 
 from config.config import get_config
-from src.analyzers import ResolverAnalyzer
+from src.analyzers import AssistantAnalyzer
 from src.models.assistant import Assistant
 
 from .utils.file_path_helper import (
@@ -15,8 +16,8 @@ def main():
     cfg = get_config()
     
     parser = ArgumentParser(
-        description="Find all subaction invocations in the assistant",
-        epilog="Example: python -m cli.subaction_usage -i assistant.json -o ./reports"
+        description="Extract comprehensive metadata about the assistant including IDs, settings, and aggregated statistics",
+        epilog="Example: python -m cli.assistant_metadata -i assistant.json -o ./reports"
     )
     parser.add_argument(
         '-i', '--assistant_json_path',
@@ -32,24 +33,29 @@ def main():
         default=cfg["output_directory"],
         type=str,
         metavar='PATH',
-        help=f'Directory where the CSV output will be saved. Default: {cfg["output_directory"]}'
+        help=f'Directory where the JSON output will be saved. Default: {cfg["output_directory"]}'
     )
     args = parser.parse_args()
 
     assistant_dict = get_assistant_json(args.assistant_json_path)
     assistant = Assistant.from_dict(assistant_dict)
-    resolver_analyzer = ResolverAnalyzer(assistant)
+    assistant_analyzer = AssistantAnalyzer(assistant)
     
-    subaction_usage_df = resolver_analyzer.subaction_usage(return_as="dataframe")
+    # Get metadata as Python dict (list with single dict)
+    assistant_metadata = assistant_analyzer.assistant_metadata(return_as="python")
+    
+    # Since there's only one assistant, extract the single dict from the list
+    metadata_dict = assistant_metadata[0] if assistant_metadata else {}
 
-    subaction_usage_df = subaction_usage_df.sort_values(["action_id", "step_number"])
-
-    default_file_name = "subaction_usage.csv"
+    default_file_name = "assistant_metadata.json"
     create_directory(args.output_path)
     output_path = get_output_save_path(args.output_path, default_file_name)
-    subaction_usage_df.to_csv(output_path, index=False)
     
-    print(f"Subaction usage saved to: {output_path}")
+    # Write as formatted JSON
+    with open(output_path, 'w') as f:
+        json.dump(metadata_dict, f, indent=2)
+    
+    print(f"Assistant metadata saved to: {output_path}")
 
 if __name__ == "__main__":
     main()
