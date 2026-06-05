@@ -22,6 +22,7 @@ class ActionAnalyzer:
                 "action_id": action.id,
                 "action_title": action.title,
                 "intent_id": action.intent.id,
+                "intent_example_count": len(action.intent.examples),
                 "num_steps": len(action.steps),
                 "condition_spel_expression": action.condition.spel_expression,
                 **action.settings.to_dict()
