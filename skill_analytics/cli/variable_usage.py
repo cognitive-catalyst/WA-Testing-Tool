@@ -3,6 +3,7 @@ from argparse import ArgumentParser, RawDescriptionHelpFormatter
 from config.config import get_config
 from src.analyzers import VariableAnalyzer
 from src.models.assistant import Assistant
+from src.output_handlers import OutputFormat
 
 from .utils.clean_cli_list import clean_cli_list
 from .utils.file_path_helper import (
@@ -59,10 +60,10 @@ def main():
     variable_analyzer = VariableAnalyzer(assistant)
 
     variable_ids = clean_cli_list(args.variables)
-    variable_usage_df = variable_analyzer.get_variable_usage(*variable_ids, return_as="dataframe")
+    variable_usage_df = variable_analyzer.get_variable_usage(*variable_ids, return_as=OutputFormat.DATAFRAME)
 
     if args.metadata:
-        variable_metadata_df = variable_analyzer.get_variable_metadata(return_as="dataframe")
+        variable_metadata_df = variable_analyzer.get_variable_metadata(return_as=OutputFormat.DATAFRAME)
         
         # Drop columns that would conflict or are redundant
         variable_metadata_df = variable_metadata_df.drop(columns=['id', 'action_id', 'step_id', 'type'])

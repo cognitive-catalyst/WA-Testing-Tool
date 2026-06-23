@@ -71,7 +71,7 @@ def main():
     
     all_false = not any([args.skill_variables, args.step_variables, args.result_variables, args.system_variables])
     if all_false:
-        variable_metadata_df = variable_analyzer.get_variable_metadata(return_as="dataframe")
+        variable_metadata_df = variable_analyzer.get_variable_metadata(return_as=OutputFormat.DATAFRAME)
     else:
         variable_metadata_df = variable_analyzer.get_variable_metadata(
             include_skill_variables=args.skill_variables,

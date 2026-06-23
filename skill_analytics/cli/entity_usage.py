@@ -3,6 +3,7 @@ from argparse import ArgumentParser, RawDescriptionHelpFormatter
 from config.config import get_config
 from src.analyzers import EntityAnalyzer
 from src.models.assistant import Assistant
+from src.output_handlers import OutputFormat
 
 from .utils.clean_cli_list import clean_cli_list
 from .utils.file_path_helper import (
@@ -59,10 +60,10 @@ def main():
     entity_analyzer = EntityAnalyzer(assistant)
 
     entity_ids = clean_cli_list(args.entities)
-    entity_usage_df = entity_analyzer.entity_usage(*entity_ids, return_as="dataframe")
+    entity_usage_df = entity_analyzer.entity_usage(*entity_ids, return_as=OutputFormat.DATAFRAME)
 
     if args.metadata:
-        entity_metadata_df = entity_analyzer.entity_metadata(return_as="dataframe")
+        entity_metadata_df = entity_analyzer.entity_metadata(return_as=OutputFormat.DATAFRAME)
         
         # Prepend 'entity_' to all columns in entity_metadata_df to avoid conflicts
         entity_metadata_df = entity_metadata_df.add_prefix('entity_metadata_')

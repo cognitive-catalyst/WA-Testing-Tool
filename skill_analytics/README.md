@@ -159,6 +159,14 @@ wxa-analyze validation-settings action_1 action_2  # Multiple actions
 ```
 Output: CSV with validation rules and error messages
 
+**step-summary** - Get a comprehensive summary of each step for specified actions:
+```bash
+wxa-analyze step-summary                    # All actions
+wxa-analyze step-summary action_1           # Single action
+wxa-analyze step-summary action_1 action_2  # Multiple actions
+```
+Output: CSV with detailed step information including conditions, context, responses, extensions, and resolvers
+
 #### Variable Analysis
 
 **variable-metadata** - Extract metadata for all variables defined in the assistant:
@@ -287,6 +295,7 @@ df = variable_analyzer.get_variable_usage(return_as="dataframe")
 - `context_usage(*action_ids, return_as="python")` - Get all context statements
 - `customer_response_settings(*action_ids, return_as="python")` - Get customer response settings
 - `response_usage(*action_ids, return_as="python")` - Get all response types used
+- `step_summary(*action_ids, return_as="python")` - Get comprehensive summary of each step
 - `validation_settings(*action_ids, return_as="python")` - Get validation settings
 
 #### VariableAnalyzer

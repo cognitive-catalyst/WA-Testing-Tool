@@ -3,6 +3,7 @@ from argparse import ArgumentParser
 from config.config import get_config
 from src.analyzers import ActionAnalyzer
 from src.models.assistant import Assistant
+from src.output_handlers import OutputFormat
 
 from .utils.file_path_helper import (
     create_directory,
@@ -40,7 +41,7 @@ def main():
     assistant = Assistant.from_dict(assistant_dict)
     action_analyzer = ActionAnalyzer(assistant)
     
-    action_metadata_df = action_analyzer.action_metadata(return_as="dataframe")
+    action_metadata_df = action_analyzer.action_metadata(return_as=OutputFormat.DATAFRAME)
 
     action_metadata_df = action_metadata_df.sort_values("action_id")
 

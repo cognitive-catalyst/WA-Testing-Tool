@@ -5,7 +5,6 @@ from src.analyzers import ActionAnalyzer
 from src.models.assistant import Assistant
 from src.output_handlers import OutputFormat
 
-from .utils.clean_cli_list import clean_cli_list
 from .utils.file_path_helper import (
     create_directory,
     get_assistant_json,
@@ -17,18 +16,17 @@ def main():
     cfg = get_config()
     
     parser = ArgumentParser(
-        description="Report all customer response types used in action steps (text, options, dates, etc.)",
+        description="Get a comprehensive summary of each step for specified actions",
         epilog="Examples:\n"
-               "  python -m cli.response_usage                    # All actions\n"
-               "  python -m cli.response_usage action_1           # Single action\n"
-               "  python -m cli.response_usage action_1 action_2  # Multiple actions",
+               "  python -m cli.step_summary                      # All actions\n"
+               "  python -m cli.step_summary action_1             # Single action\n"
+               "  python -m cli.step_summary action_1 action_2    # Multiple actions",
         formatter_class=RawDescriptionHelpFormatter
     )
     parser.add_argument(
         'action_ids',
         nargs='*',
-        metavar='ACTION_ID',
-        help='One or more action IDs to analyze. If omitted, analyzes all actions in the assistant.'
+        help='Optional action IDs to filter results. If not provided, analyzes all actions.'
     )
     parser.add_argument(
         '-i', '--assistant_json_path',
@@ -51,21 +49,15 @@ def main():
     assistant_dict = get_assistant_json(args.assistant_json_path)
     assistant = Assistant.from_dict(assistant_dict)
     action_analyzer = ActionAnalyzer(assistant)
+    
+    step_summary_df = action_analyzer.step_summary(*args.action_ids, return_as=OutputFormat.DATAFRAME)
 
-    action_ids = clean_cli_list(args.action_ids)
-    response_usage_df = action_analyzer.response_usage(*action_ids, return_as=OutputFormat.DATAFRAME)
-
-    response_usage_df = response_usage_df.sort_values(["action_id", "step_number"])
-
-    default_file_name = "all_response_usage.csv"
-    if len(action_ids):
-        default_file_name = f"response_usage ({', '.join(action_ids)}).csv"
-
+    default_file_name = "step_summary.csv"
     create_directory(args.output_path)
     output_path = get_output_save_path(args.output_path, default_file_name)
-    response_usage_df.to_csv(output_path, index=False)
+    step_summary_df.to_csv(output_path, index=False)
     
-    print(f"Response usage saved to: {output_path}")
+    print(f"Step summary saved to: {output_path}")
 
 if __name__ == "__main__":
     main()

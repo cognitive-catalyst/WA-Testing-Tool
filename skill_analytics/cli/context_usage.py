@@ -3,6 +3,7 @@ from argparse import ArgumentParser, RawDescriptionHelpFormatter
 from config.config import get_config
 from src.analyzers import ActionAnalyzer
 from src.models.assistant import Assistant
+from src.output_handlers import OutputFormat
 
 from .utils.clean_cli_list import clean_cli_list
 from .utils.file_path_helper import (
@@ -52,7 +53,7 @@ def main():
     action_analyzer = ActionAnalyzer(assistant)
 
     action_ids = clean_cli_list(args.action_ids)
-    context_usage_df = action_analyzer.context_usage(*action_ids, return_as="dataframe")
+    context_usage_df = action_analyzer.context_usage(*action_ids, return_as=OutputFormat.DATAFRAME)
 
     context_usage_df = context_usage_df.sort_values(["action_id", "step_number"])
 

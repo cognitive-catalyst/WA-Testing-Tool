@@ -2,6 +2,7 @@ from typing import Any
 
 from src.models.assistant import Assistant
 from src.models.handler import HandlerType
+from src.models.resolvers import CalloutResolver
 from src.output_handlers import OutputFormat, create_output_handler
 from src.utils.parse_wxa_ids import build_long_id
 
@@ -157,6 +158,51 @@ class ActionAnalyzer:
                         "source": "step context",
                         **statement.to_dict()
                     })
+        
+        handler = create_output_handler(return_as)
+        return handler.handle(results)
+
+    def step_summary(
+        self,
+        *action_ids: str,
+        return_as: OutputFormat | str = OutputFormat.PYTHON
+    ) -> Any:
+        """Get a comprehensive summary of each step for specified actions."""
+        results = []
+        
+        for action in self.assistant.actions.values():
+            if len(action_ids) and action.id not in action_ids:
+                continue
+            
+            for i, step in enumerate(action.steps):
+                # Get the variable for this step (if it exists)
+                variable = self.assistant.get_variable(step.id, action_id=action.id)
+                
+                # Build extension info if this step uses a callout resolver
+                extension_info = None
+                if isinstance(step.resolver, CalloutResolver):
+                    extension_info = f"{step.resolver.method} {step.resolver.path}"
+                
+                # Build the step summary
+                step_data = {
+                    "action_id": action.id,
+                    "action_title": action.title,
+                    "step_id": step.id,
+                    "step_title": step.title,
+                    "step_number": i + 1,
+                    "action_step_id": build_long_id(action.id, step.id),
+                    "condition": step.condition.spel_expression,
+                    "context": step.context.spel_expression,
+                    "customer_response_collection_behavior": step.question.response_collection_behavior.value if step.question else None,
+                    "display_options_toggle": step.get_display_options_toggle(),
+                    "is_protected": variable.is_protected if variable else None,
+                    "response": "\n".join([str(response) for response in step.responses]),
+                    "extension": extension_info,
+                    "resolver": step.resolver.resolver_type.title,
+                    "resolver_type": step.resolver.resolver_type.id,
+                }
+                
+                results.append(step_data)
         
         handler = create_output_handler(return_as)
         return handler.handle(results)
