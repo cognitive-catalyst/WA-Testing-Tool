@@ -49,9 +49,12 @@ class Action:
                 step_variables[step_variable.id] = step_variable
         
         condition_dict = action_dict.get("condition", {})
-        
-        intent_id = condition_dict.get("intent")
-        intent = intents.get(intent_id, Intent())
+        condition = Condition.from_dict(condition_dict)
+
+        intent_id = Action._get_intent_id(condition_dict)
+        intent = Intent()
+        if intent_id in intents:
+            intent = intents[intent_id]
 
         steps: List[Step] = []
         for step_dict in action_dict["steps"]:
@@ -64,7 +67,7 @@ class Action:
             description=action_dict.get("description"),
             
             intent=intent,
-            condition=Condition.from_dict(condition_dict),
+            condition=condition,
             settings=ActionSettings.from_dict(action_dict),
 
             steps=steps,
@@ -85,3 +88,21 @@ class Action:
         """Get all skill variable IDs referenced in this action."""
         skill_variable_ids =  []
         return skill_variable_ids
+
+    @staticmethod
+    def _get_intent_id(obj: Any) -> Optional[str]:
+        if isinstance(obj, dict):
+            if "intent" in obj:
+                return obj["intent"]
+            for value in obj.values():
+                intent_id = Action._get_intent_id(value)
+                if intent_id:
+                    return intent_id
+        
+        if isinstance(obj, list):
+            for value in obj:
+                intent_id = Action._get_intent_id(value)
+                if intent_id:
+                    return intent_id
+        
+        return None

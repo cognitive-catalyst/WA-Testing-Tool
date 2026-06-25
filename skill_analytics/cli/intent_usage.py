@@ -3,6 +3,7 @@ from argparse import ArgumentParser, RawDescriptionHelpFormatter
 from config.config import get_config
 from src.analyzers import IntentAnalyzer
 from src.models.assistant import Assistant
+from src.output_handlers import OutputFormat
 
 from .utils.clean_cli_list import clean_cli_list
 from .utils.file_path_helper import (
@@ -52,7 +53,7 @@ def main():
     intent_analyzer = IntentAnalyzer(assistant)
 
     action_ids = clean_cli_list(args.action_ids)
-    intent_usage_df = intent_analyzer.intent_usage(*action_ids, return_as="dataframe")
+    intent_usage_df = intent_analyzer.intent_usage(*action_ids, return_as=OutputFormat.DATAFRAME)
 
     default_file_name = "all_intent_usage.csv"
     if len(action_ids):

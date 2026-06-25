@@ -12,9 +12,9 @@ from argparse import ArgumentParser
 def main():
     """Main entry point for the wxa-analyze CLI."""
     parser = ArgumentParser(
-        prog="wxa-analyze",
+        prog="python -m cli",
         description="Analyze and search various aspects of a watsonx Assistant instance",
-        epilog="Use 'wxa-analyze <command> --help' for more information on a specific command."
+        epilog="Use 'python -m cli.<command> --help' for more information on a specific command."
     )
     
     subparsers = parser.add_subparsers(
@@ -27,59 +27,63 @@ def main():
     
     # Define all available commands
     commands = {
-        "action-metadata": {
+        "action_metadata": {
             "module": "cli.action_metadata",
             "help": "Extract metadata for all actions in the assistant"
         },
-        "assistant-metadata": {
+        "assistant_metadata": {
             "module": "cli.assistant_metadata",
             "help": "Extract comprehensive metadata about the assistant"
         },
-        "condition-usage": {
+        "condition_usage": {
             "module": "cli.condition_usage",
             "help": "Report all conditions used in action steps"
         },
-        "context-usage": {
+        "context_usage": {
             "module": "cli.context_usage",
             "help": "Report all context statements used in action steps"
         },
-        "customer-response-settings": {
+        "customer_response_settings": {
             "module": "cli.customer_response_settings",
             "help": "Extract customer response settings for action steps"
         },
-        "entity-metadata": {
+        "entity_metadata": {
             "module": "cli.entity_metadata",
             "help": "Extract metadata for all entities defined in the assistant"
         },
-        "entity-usage": {
+        "entity_usage": {
             "module": "cli.entity_usage",
             "help": "Find where entities are used throughout the assistant"
         },
-        "extension-usage": {
+        "extension_usage": {
             "module": "cli.extension_usage",
             "help": "Find all custom extension calls in the assistant"
         },
-        "intent-usage": {
+        "intent_usage": {
             "module": "cli.intent_usage",
             "help": "Find where intents are used in action conditions and step handlers"
         },
-        "response-usage": {
+        "response_usage": {
             "module": "cli.response_usage",
             "help": "Report all customer response types used in action steps"
+        },
+        "step_summary": {
+            "module": "cli.step_summary",
+            "help": "Get a comprehensive summary of each step for specified actions"
         },
         "subaction-usage": {
             "module": "cli.subaction_usage",
             "help": "Find all subaction invocations in the assistant"
         },
-        "validation-settings": {
+        "validation_settings": {
             "module": "cli.validation_settings",
             "help": "Extract validation settings for action steps"
         },
-        "variable-metadata": {
+        "variable_metadata": {
             "module": "cli.variable_metadata",
             "help": "Extract metadata for all variables defined in the assistant"
         },
-        "variable-usage": {
+        "variable_usage": {
             "module": "cli.variable_usage",
             "help": "Find where variables are used throughout the assistant"
         },
@@ -103,7 +107,7 @@ def main():
         # Import and run the command's main function
         try:
             # Restore sys.argv to include the remaining arguments
-            sys.argv = [f"wxa-analyze {args.command}"] + remaining
+            sys.argv = [f"python -m cli.{args.command.replace('-', '_')}"] + remaining
             
             # Import the module dynamically
             import importlib

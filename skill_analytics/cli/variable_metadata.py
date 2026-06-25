@@ -3,6 +3,7 @@ from argparse import ArgumentParser, RawDescriptionHelpFormatter
 from config.config import get_config
 from src.analyzers import VariableAnalyzer
 from src.models.assistant import Assistant
+from src.output_handlers import OutputFormat
 
 from .utils.file_path_helper import (
     create_directory,
@@ -70,13 +71,14 @@ def main():
     
     all_false = not any([args.skill_variables, args.step_variables, args.result_variables, args.system_variables])
     if all_false:
-        variable_metadata_df = variable_analyzer.get_variable_metadata(return_as="dataframe")
+        variable_metadata_df = variable_analyzer.get_variable_metadata(return_as=OutputFormat.DATAFRAME)
     else:
         variable_metadata_df = variable_analyzer.get_variable_metadata(
             include_skill_variables=args.skill_variables,
             include_step_variables=args.step_variables,
             include_result_variables=args.result_variables,
             include_system_variables=args.system_variables,
+            return_as=OutputFormat.DATAFRAME,
         )
 
     variable_metadata_df = variable_metadata_df.sort_values("id")

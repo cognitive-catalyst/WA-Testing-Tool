@@ -3,6 +3,7 @@ from argparse import ArgumentParser
 from config.config import get_config
 from src.analyzers import ResolverAnalyzer
 from src.models.assistant import Assistant
+from src.output_handlers import OutputFormat
 
 from .utils.file_path_helper import (
     create_directory,
@@ -40,7 +41,7 @@ def main():
     assistant = Assistant.from_dict(assistant_dict)
     resolver_analyzer = ResolverAnalyzer(assistant)
     
-    subaction_usage_df = resolver_analyzer.subaction_usage(return_as="dataframe")
+    subaction_usage_df = resolver_analyzer.subaction_usage(return_as=OutputFormat.DATAFRAME)
 
     subaction_usage_df = subaction_usage_df.sort_values(["action_id", "step_number"])
 

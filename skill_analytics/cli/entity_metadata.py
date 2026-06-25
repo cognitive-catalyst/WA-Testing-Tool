@@ -3,6 +3,7 @@ from argparse import ArgumentParser
 from config.config import get_config
 from src.analyzers import EntityAnalyzer
 from src.models.assistant import Assistant
+from src.output_handlers import OutputFormat
 
 from .utils.file_path_helper import (
     create_directory,
@@ -40,7 +41,7 @@ def main():
     assistant = Assistant.from_dict(assistant_dict)
     entity_analyzer = EntityAnalyzer(assistant)
     
-    entity_metadata_df = entity_analyzer.entity_metadata(return_as="dataframe")
+    entity_metadata_df = entity_analyzer.entity_metadata(return_as=OutputFormat.DATAFRAME)
 
     entity_metadata_df = entity_metadata_df.sort_values("entity_id")
 

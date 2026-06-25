@@ -4,6 +4,7 @@ from argparse import ArgumentParser
 from config.config import get_config
 from src.analyzers import AssistantAnalyzer
 from src.models.assistant import Assistant
+from src.output_handlers import OutputFormat
 
 from .utils.file_path_helper import (
     create_directory,
@@ -42,7 +43,7 @@ def main():
     assistant_analyzer = AssistantAnalyzer(assistant)
     
     # Get metadata as Python dict (list with single dict)
-    assistant_metadata = assistant_analyzer.assistant_metadata(return_as="python")
+    assistant_metadata = assistant_analyzer.assistant_metadata(return_as=OutputFormat.PYTHON)
     
     # Since there's only one assistant, extract the single dict from the list
     metadata_dict = assistant_metadata[0] if assistant_metadata else {}

@@ -7,12 +7,12 @@ This becomes very useful in the final stages of a project. For example, you want
 ## Table of Contents
 
 - [Installation](#installation)
-   * [Option 1: Install as a Package (Recommended)](#option-1-install-as-a-package-recommended)
-   * [Option 2: Development Setup](#option-2-development-setup)
+   * [Set Up a Development Environment](#set-up-a-development-environment)
    * [Configuration](#configuration)
 - [How to Use This Repository](#how-to-use-this-repository)
 - [Command-Line Interface](#command-line-interface)
    * [Quick Start](#quick-start)
+   * [Alternative CLI Usage](#alternative-cli-usage)
    * [Common Options](#common-options)
    * [Available Commands](#available-commands)
       - [Assistant Metadata](#assistant-metadata)
@@ -21,7 +21,6 @@ This becomes very useful in the final stages of a project. For example, you want
       - [Entity Analysis](#entity-analysis)
       - [Intent Analysis](#intent-analysis)
       - [Extension & Subaction Analysis](#extension--subaction-analysis)
-   * [Alternative CLI Usage](#alternative-cli-usage)
 - [Software Development Kit](#software-development-kit)
    * [Basic Usage](#basic-usage)
    * [Output Formats](#output-formats)
@@ -39,31 +38,7 @@ This becomes very useful in the final stages of a project. For example, you want
 
 ## Installation
 
-### Option 1: Install as a Package (Recommended)
-
-Install the package directly using pip:
-
-```bash
-pip install wxa-analyze
-```
-
-Or install from source:
-
-```bash
-git clone https://github.com/cognitive-catalyst/WA-Testing-Tool.git
-cd WA-Testing-Tool/skill_analytics
-pip install -e .
-```
-
-After installation, you can use the `wxa-analyze` command from anywhere:
-
-```bash
-wxa-analyze --help
-```
-
-### Option 2: Development Setup
-
-If you want to contribute or modify the code, set up a development environment:
+### Set Up a Development Environment
 
 ```bash
 # Optional but highly recommended: create a virtual environment
@@ -107,6 +82,16 @@ Get help for a specific command:
 ```bash
 wxa-analyze action-metadata --help
 ```
+
+### Alternative CLI Usage
+
+You can also run commands directly using Python modules:
+```bash
+python -m cli --help
+python -m cli.action_metadata --help
+```
+
+This approach provides the same functionality as the `wxa-analyze` command. Note that the  `-` will be replaced with `_`. However, the documentation will assume the usage of `wxa-analyze`.
 
 ### Common Options
 
@@ -174,6 +159,14 @@ wxa-analyze validation-settings action_1 action_2  # Multiple actions
 ```
 Output: CSV with validation rules and error messages
 
+**step-summary** - Get a comprehensive summary of each step for specified actions:
+```bash
+wxa-analyze step-summary                    # All actions
+wxa-analyze step-summary action_1           # Single action
+wxa-analyze step-summary action_1 action_2  # Multiple actions
+```
+Output: CSV with detailed step information including conditions, context, responses, extensions, and resolvers
+
 #### Variable Analysis
 
 **variable-metadata** - Extract metadata for all variables defined in the assistant:
@@ -240,17 +233,6 @@ wxa-analyze subaction-usage -i assistant.json -o ./reports
 ```
 Output: CSV with subaction IDs, titles, and where they are called
 
-### Alternative CLI Usage
-
-You can also run commands directly using Python modules:
-```bash
-python -m cli.action_metadata -i assistant.json -o ./reports
-python -m cli.variable_usage var1 var2 --metadata
-python -m cli.entity_usage sys-date --metadata
-```
-
-This approach provides the same functionality as the `wxa-analyze` command.
-
 ---
 
 ## Software Development Kit
@@ -313,6 +295,7 @@ df = variable_analyzer.get_variable_usage(return_as="dataframe")
 - `context_usage(*action_ids, return_as="python")` - Get all context statements
 - `customer_response_settings(*action_ids, return_as="python")` - Get customer response settings
 - `response_usage(*action_ids, return_as="python")` - Get all response types used
+- `step_summary(*action_ids, return_as="python")` - Get comprehensive summary of each step
 - `validation_settings(*action_ids, return_as="python")` - Get validation settings
 
 #### VariableAnalyzer
